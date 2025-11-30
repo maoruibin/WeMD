@@ -178,6 +178,27 @@ export const luxuryGoldTheme = `/* 黑金奢华风格 */
     font-style: italic;
 }
 
+/* 加粗斜体 */
+#wemd em strong {
+    color: #9E8045;
+    font-weight: bold;
+}
+
+/* 高亮 - 淡金背景 */
+#wemd mark {
+    background: rgba(158, 128, 69, 0.15);
+    color: #9E8045;
+    padding: 2px 6px;
+    border-bottom: 1px solid rgba(158, 128, 69, 0.3);
+}
+
+/* 删除线 */
+#wemd del {
+    text-decoration: line-through;
+    color: #999;
+    text-decoration-color: #9E8045;
+}
+
 /* 分隔线 - 极简短线 */
 #wemd hr {
     margin: 60px auto;

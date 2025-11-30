@@ -172,6 +172,38 @@ export const receiptTheme = `/* 购物小票风格 */
     padding: 0 4px;
 }
 
+/* 斜体 */
+#wemd em {
+    font-style: italic;
+    color: #000;
+}
+
+/* 加粗斜体 */
+#wemd em strong {
+    font-weight: 900;
+    font-style: italic;
+}
+
+/* 高亮 - 灰色背景 */
+#wemd mark {
+    background: #ddd;
+    color: #000;
+    padding: 0 4px;
+}
+
+/* 删除线 */
+#wemd del {
+    text-decoration: line-through;
+    color: #666;
+}
+
+/* 分割线 - 虚线 */
+#wemd hr {
+    margin: 30px 0;
+    border: none;
+    border-top: 2px dashed #000;
+}
+
 /* 行内代码 - 反色打印块 */
 #wemd p code,
 #wemd li code {

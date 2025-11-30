@@ -156,6 +156,43 @@ export const bauhausTheme = `/* 包豪斯风格 */
     font-weight: 900;
 }
 
+/* 斜体 - 蓝色 */
+#wemd em {
+    font-style: italic;
+    color: #1976D2;
+    font-weight: bold;
+}
+
+/* 加粗斜体 */
+#wemd em strong {
+    color: #D32F2F;
+    font-weight: 900;
+}
+
+/* 高亮 - 黄色块 */
+#wemd mark {
+    background: #FBC02D;
+    color: #000;
+    padding: 2px 6px;
+    font-weight: bold;
+}
+
+/* 删除线 - 粗红线 */
+#wemd del {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: #D32F2F;
+    color: #666;
+}
+
+/* 分割线 - 粗黑线 */
+#wemd hr {
+    margin: 40px 0;
+    border: none;
+    height: 4px;
+    background: #000;
+}
+
 /* 
  * 行内代码 - 黄色高亮 (修复重点) 
  * 亮黄背景 + 黑色文字 + 粗体

@@ -166,6 +166,45 @@ export const cyberpunkNeonTheme = `/* 赛博朋克风格 */
     text-shadow: 0 0 2px rgba(255, 0, 193, 0.4);
 }
 
+/* 斜体 - 粉色发光 */
+#wemd em {
+    font-style: italic;
+    color: #FF00C1;
+    text-shadow: 0 0 3px rgba(255, 0, 193, 0.5);
+}
+
+/* 加粗斜体 */
+#wemd em strong {
+    color: #00F3FF;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+}
+
+/* 高亮 - 霓虹背景 */
+#wemd mark {
+    background: rgba(255, 0, 193, 0.2);
+    color: #FF00C1;
+    padding: 2px 4px;
+    border: 1px solid rgba(255, 0, 193, 0.3);
+    box-shadow: 0 0 5px rgba(255, 0, 193, 0.2);
+}
+
+/* 删除线 - 发光线 */
+#wemd del {
+    text-decoration: line-through;
+    text-decoration-color: #FF00C1;
+    color: #8B9BB4;
+}
+
+/* 分割线 - 霓虹线 */
+#wemd hr {
+    margin: 50px 0;
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00F3FF, transparent);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+
 /* 
  * 行内代码 - 黑客终端指令 (修复重点) 
  * 纯黑底 + 青色字 + 等宽字体 + 微发光

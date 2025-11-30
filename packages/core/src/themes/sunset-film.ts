@@ -228,6 +228,20 @@ export const sunsetFilmTheme = `/* 落日胶片风格 */
     color: #B33D25;
 }
 
+/* 高亮 - 暖黄背景 */
+#wemd mark {
+    background: rgba(242, 201, 76, 0.3);
+    color: #B33D25;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+/* 删除线 */
+#wemd del {
+    text-decoration: line-through;
+    color: #8D5B4C;
+}
+
 /* 分隔线 - 虚线剪裁线 */
 #wemd hr {
     margin: 60px auto;

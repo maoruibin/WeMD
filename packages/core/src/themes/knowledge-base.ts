@@ -239,6 +239,20 @@ export const knowledgeBaseTheme = `/* 知识库风格 */
     opacity: 1;
 }
 
+/* 高亮 - 黄色标记 */
+#wemd mark {
+    background: #FDECC8;
+    color: #37352F;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* 删除线 */
+#wemd del {
+    text-decoration: line-through;
+    color: #999;
+}
+
 /* 分隔线 */
 #wemd hr {
     margin: 40px auto;

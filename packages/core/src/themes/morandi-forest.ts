@@ -201,6 +201,19 @@ export const morandiForestTheme = `/* 莫兰迪森林风格 */
   color: #4F6F52;
 }
 
+/* 高亮 - 浅绿背景 */
+#wemd mark {
+  background: linear-gradient(to top, rgba(134, 167, 137, 0.3) 50%, transparent 50%);
+  color: #1A261D;
+  padding: 0 2px;
+}
+
+/* 删除线 */
+#wemd del {
+  text-decoration: line-through;
+  color: #889E8B;
+}
+
 /* 
  * 分隔线 
  * 修复了这里无效的颜色代码 #D2DSD4

@@ -250,6 +250,23 @@ export const neoBrutalismTheme = `/* 新粗野主义风格 */
     color: #fff;
 }
 
+/* 高亮 - 荧光黄块 */
+#wemd mark {
+    background: #CCFF00;
+    color: #000;
+    padding: 2px 6px;
+    border: 2px solid #000;
+    font-weight: bold;
+}
+
+/* 删除线 - 粗线 */
+#wemd del {
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    text-decoration-color: #FF6B9D;
+    color: #666;
+}
+
 /* 分隔线 - 粗黑条 */
 #wemd hr {
     margin: 60px auto;

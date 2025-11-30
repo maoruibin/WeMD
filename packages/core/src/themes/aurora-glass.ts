@@ -245,6 +245,21 @@ export const auroraGlassTheme = `/* 极光玻璃风格 */
   color: #C850C0;
 }
 
+/* 高亮 - 渐变背景 */
+#wemd mark {
+    background: linear-gradient(135deg, rgba(65, 88, 208, 0.15), rgba(200, 80, 192, 0.15));
+    color: #4158D0;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* 删除线 - 渐变色 */
+#wemd del {
+    text-decoration: line-through;
+    color: #999;
+    text-decoration-color: #C850C0;
+}
+
 /* 分隔线 - 渐变光束 */
 #wemd hr {
   margin: 60px auto;

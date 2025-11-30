@@ -255,6 +255,21 @@ export const templateTheme = `/*
     color: #333;
 }
 
+/* 加粗斜体 */
+#wemd em strong {
+    font-weight: bold;
+    font-style: italic;
+    color: #000;
+}
+
+/* 高亮 */
+#wemd mark {
+    background: #fff3cd;
+    color: #000;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
 /* 删除线 */
 #wemd del {
     text-decoration: line-through;
