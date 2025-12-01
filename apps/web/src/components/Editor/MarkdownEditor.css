@@ -228,10 +228,13 @@
 /* === 整体优化 === */
 /* 提升可读性 */
 .editor-container .cm-content {
-    line-height: 1.8;
+    line-height: 1.75;
     color: var(--text-primary);
-    font-family: var(--font-sans);
-    font-size: 15px;
+    font-family: var(--font-mono);
+    /* 使用等宽字体 */
+    font-size: 14px;
+    /* 稍微调小字号以适应等宽字体 */
+    letter-spacing: 0;
 }
 
 /* 代码块背景 */

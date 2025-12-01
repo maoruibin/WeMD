@@ -1,22 +1,27 @@
 .app-header {
-    height: 64px;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    height: 72px;
+    /* 悬浮设计 */
+    margin: 16px 24px 0;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 32px;
     position: sticky;
-    top: 0;
+    top: 16px;
     z-index: 100;
     transition: all 0.3s ease;
 }
 
-/* 滚动时增加阴影 (可选，需配合 JS，这里先给个默认微阴影) */
+/* 移除旧的阴影 */
 .app-header {
-    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .header-left {
@@ -84,20 +89,20 @@
     font-size: 14px;
     font-weight: 600;
     box-shadow: 0 4px 12px rgba(7, 193, 96, 0.25);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     letter-spacing: 0.3px;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(7, 193, 96, 0.35);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(7, 193, 96, 0.3);
     filter: brightness(1.05);
 }
 
 .btn-primary:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(7, 193, 96, 0.25);
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(7, 193, 96, 0.2);
 }
 
 .btn-primary svg {

@@ -3,7 +3,9 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: var(--bg-page);
+  /* 极简柔光背景 - 专业、干净 */
+  background:
+    radial-gradient(circle at 50% 0%, #ffffff, #f0f2f5);
 }
 
 .app-main {
@@ -25,11 +27,18 @@
   min-height: 0;
   overflow: hidden;
   border-radius: var(--radius-xl);
-  background: var(--bg-primary);
-  /* 移除边框，使用高级阴影 */
-  border: none;
-  box-shadow: var(--shadow-premium);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  /* 玻璃态样式 */
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  box-shadow:
+    0 8px 32px 0 rgba(31, 38, 135, 0.05),
+    0 1px 2px 0 rgba(0, 0, 0, 0.02);
+
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .workspace {
@@ -45,21 +54,31 @@
   height: 100%;
   min-height: 0;
   border-radius: var(--radius-xl);
-  /* 移除边框，使用高级阴影 */
-  border: none;
-  background: var(--bg-primary);
-  box-shadow: var(--shadow-premium);
+
+  /* 玻璃态样式 */
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+
+  box-shadow:
+    0 8px 32px 0 rgba(31, 38, 135, 0.05),
+    0 1px 2px 0 rgba(0, 0, 0, 0.02);
+
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-/* 悬浮微动效 */
+/* 悬浮微动效 - 更柔和的上浮 */
 .editor-pane:hover,
 .preview-pane:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.03),
+    0 8px 20px rgba(0, 0, 0, 0.06),
+    0 20px 40px rgba(0, 0, 0, 0.04);
 }
 
 /* 响应式布局 */

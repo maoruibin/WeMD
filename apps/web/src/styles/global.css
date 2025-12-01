@@ -37,12 +37,15 @@
     --warning: #f59e0b;
     --error: #ef4444;
 
-    /* 高级感阴影 (弥散阴影) */
+    /* 高级感阴影 (弥散阴影 - 优化版) */
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-    --shadow-premium: 0 20px 40px -10px rgba(0, 0, 0, 0.08), 0 10px 20px -10px rgba(0, 0, 0, 0.04);
-    /* 悬浮卡片专用 */
+    /* 更柔和的悬浮阴影 */
+    --shadow-premium:
+        0 0 0 1px rgba(0, 0, 0, 0.03),
+        0 2px 8px rgba(0, 0, 0, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.04);
 
     /* 圆角 */
     --radius-sm: 6px;
@@ -59,9 +62,9 @@
     --spacing-xl: 32px;
     --spacing-xxl: 40px;
 
-    /* 字体 */
+    /* 字体 - 增加专业等宽字体 */
     --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-    --font-mono: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
 }
 
 * {
@@ -72,36 +75,39 @@
 
 body {
     font-family: var(--font-sans);
-    background: var(--bg-secondary);
+    background: var(--bg-page);
+    /* 修正为 bg-page */
     color: var(--text-primary);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* 滚动条样式 */
+/* 滚动条样式 - 更加纤细现代 */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: background 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--text-tertiary);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 /* 选中文本 */
 ::selection {
-    background: rgba(102, 126, 234, 0.2);
-    color: var(--text-primary);
+    background: rgba(7, 193, 96, 0.15);
+    /* 使用品牌色 */
+    color: inherit;
 }
 
 /* 按钮基础样式 */
