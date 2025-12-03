@@ -45,6 +45,54 @@
     position: relative;
 }
 
+.editor-body-wrapper {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    /* Critical for flex scrolling */
+}
+
+.editor-container.guarded {
+    filter: blur(1px);
+    pointer-events: none;
+}
+
+.workspace-guard {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.9));
+    z-index: 2;
+    backdrop-filter: blur(6px);
+}
+
+.workspace-guard-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: 0 12px 40px -18px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    text-align: center;
+    max-width: 320px;
+}
+
+.guard-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #1a1a1a;
+}
+
+.guard-subtitle {
+    font-size: 13px;
+    color: #4a5568;
+    margin-bottom: 12px;
+}
+
 /* CodeMirror 自定义样式 */
 .editor-container .cm-editor {
     height: 100%;

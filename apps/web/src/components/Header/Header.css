@@ -30,6 +30,43 @@
     gap: 24px;
 }
 
+.workspace-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.04);
+    font-size: 12px;
+    color: #4a5568;
+}
+
+.workspace-status .workspace-label {
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.workspace-status .workspace-path {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #2d3748;
+}
+
+.workspace-status .workspace-path.unset {
+    color: #e53e3e;
+}
+
+.workspace-status .btn-ghost {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: white;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
 .logo {
     display: flex;
     align-items: center;

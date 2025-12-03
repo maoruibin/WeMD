@@ -8,6 +8,7 @@ import { useEditorStore } from '../../store/editorStore';
 import { useSettingsStore } from '../../store/settingsStore';
 import { uploadImageToGitHub, uploadImageToLocal } from '../../services/imageUploader';
 import { countWords, countLines } from '../../utils/wordCount';
+import { Toolbar } from './Toolbar';
 import toast from 'react-hot-toast';
 import './MarkdownEditor.css';
 
@@ -22,8 +23,12 @@ export function MarkdownEditor() {
     const editorRef = useRef<HTMLDivElement>(null);
     const viewRef = useRef<EditorView | null>(null);
     const { markdown: content, setMarkdown } = useEditorStore();
+    const workspaceDir = useEditorStore((state) => state.workspaceDir);
+    const currentFilePath = useEditorStore((state) => state.currentFilePath);
+    const setWorkspaceDir = useEditorStore((state) => state.setWorkspaceDir);
     const initialContent = useRef(content);
     const isSyncingRef = useRef(false);
+    const isElectron = typeof window !== 'undefined' && !!(window as any).electron;
 
     useEffect(() => {
         if (!editorRef.current) return;
@@ -191,12 +196,40 @@ export function MarkdownEditor() {
     const wordCount = countWords(content);
     const lineCount = countLines(content);
 
+    // Handle toolbar text insertion
+    const handleInsert = (prefix: string, suffix: string, placeholder: string) => {
+        const view = viewRef.current;
+        if (!view) return;
+
+        const selection = view.state.selection.main;
+        const selectedText = view.state.doc.sliceString(selection.from, selection.to);
+        const textToInsert = selectedText || placeholder;
+        const fullText = prefix + textToInsert + suffix;
+
+        view.dispatch({
+            changes: {
+                from: selection.from,
+                to: selection.to,
+                insert: fullText
+            },
+            selection: {
+                anchor: selection.from + prefix.length,
+                head: selection.from + prefix.length + textToInsert.length
+            }
+        });
+
+        view.focus();
+    };
+
     return (
         <div className="markdown-editor">
             <div className="editor-header">
                 <span className="editor-title">Markdown 编辑器</span>
             </div>
-            <div ref={editorRef} className="editor-container" />
+            <Toolbar onInsert={handleInsert} />
+            <div className="editor-body-wrapper">
+                <div ref={editorRef} className="editor-container" />
+            </div>
             <div className="editor-footer">
                 <span className="editor-stat">行数: {lineCount}</span>
                 <span className="editor-stat">字数: {wordCount}</span>

@@ -49,6 +49,7 @@ export async function loadHistoryFromDb() {
       ...entry,
       title: entry.title || '未命名文章',
       createdAt: entry.createdAt || entry.savedAt,
+      filePath: entry.filePath,
     }));
     history.sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime());
     return history;

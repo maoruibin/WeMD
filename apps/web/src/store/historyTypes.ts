@@ -5,9 +5,9 @@ export interface HistorySnapshot {
   theme: string;
   themeName: string;
   customCSS: string;
+  filePath?: string;
   createdAt: string;
   savedAt: string;
 }
 
 export type HistorySnapshotInput = Omit<HistorySnapshot, 'id' | 'savedAt' | 'createdAt'>;
-

@@ -1,39 +1,54 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-// 暴露安全的 API 给渲染进程
 contextBridge.exposeInMainWorld('electron', {
-    // 检测是否在 Electron 环境中
     isElectron: true,
-
-    // 平台信息
     platform: process.platform,
 
-    // 文件操作 API
-    file: {
-        open: () => ipcRenderer.invoke('file:open'),
-        save: (content) => ipcRenderer.invoke('file:save', content),
-        saveAs: (content) => ipcRenderer.invoke('file:saveAs', content),
+    // 新版文件系统 API
+    fs: {
+        selectWorkspace: () => ipcRenderer.invoke('workspace:select'),
+        setWorkspace: (dir) => ipcRenderer.invoke('workspace:set', dir),
+        listFiles: (dir) => ipcRenderer.invoke('file:list', dir),
+        readFile: (filePath) => ipcRenderer.invoke('file:read', filePath),
+        createFile: (payload) => ipcRenderer.invoke('file:create', payload),
+        saveFile: (payload) => ipcRenderer.invoke('file:save', payload),
+        renameFile: (payload) => ipcRenderer.invoke('file:rename', payload),
+        deleteFile: (filePath) => ipcRenderer.invoke('file:delete', filePath),
+        revealInFinder: (filePath) => ipcRenderer.invoke('file:reveal', filePath),
 
-        // 监听文件操作事件
-        onOpened: (callback) => {
-            ipcRenderer.on('file:opened', (event, data) => callback(data));
+        // 事件监听
+        onRefresh: (callback) => {
+            const handler = () => callback();
+            ipcRenderer.on('file:refresh', handler);
+            return handler;
         },
-        onSaveRequest: (callback) => {
-            ipcRenderer.on('file:save-request', () => callback());
-        },
-        onSaveAsRequest: (callback) => {
-            ipcRenderer.on('file:saveAs-request', () => callback());
+        removeRefreshListener: (handler) => {
+            ipcRenderer.removeListener('file:refresh', handler);
         },
 
-        // 移除监听器
-        removeOpenedListener: (callback) => {
-            ipcRenderer.removeListener('file:opened', callback);
+        // 菜单事件
+        onMenuNewFile: (callback) => {
+            const handler = () => callback();
+            ipcRenderer.on('menu:new-file', handler);
+            return handler;
         },
-        removeSaveRequestListener: (callback) => {
-            ipcRenderer.removeListener('file:save-request', callback);
+        onMenuSave: (callback) => {
+            const handler = () => callback();
+            ipcRenderer.on('menu:save', handler);
+            return handler;
         },
-        removeSaveAsRequestListener: (callback) => {
-            ipcRenderer.removeListener('file:saveAs-request', callback);
+        onMenuSwitchWorkspace: (callback) => {
+            const handler = () => callback();
+            ipcRenderer.on('menu:switch-workspace', handler);
+            return handler;
         },
-    },
+
+        // 清理所有菜单监听 (可选)
+        removeAllListeners: () => {
+            ipcRenderer.removeAllListeners('file:refresh');
+            ipcRenderer.removeAllListeners('menu:new-file');
+            ipcRenderer.removeAllListeners('menu:save');
+            ipcRenderer.removeAllListeners('menu:switch-workspace');
+        }
+    }
 });

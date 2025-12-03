@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { useEditorStore } from './editorStore';
 import {
   addHistoryToDb,
   clearHistoryDb,
@@ -29,6 +30,37 @@ interface HistoryStore {
   updateTitle: (id: string, title: string) => Promise<void>;
 }
 
+type ElectronFileAPI = {
+  deleteFiles?: (paths: string[]) => Promise<{ success: boolean }>;
+  renameFile?: (from: string, to: string) => Promise<{ success: boolean; filePath?: string; error?: string }>;
+  fileExists?: (path: string) => Promise<{ success: boolean; exists: boolean }>;
+};
+
+const getElectronFile = (): ElectronFileAPI | null => {
+  if (typeof window === 'undefined') return null;
+  const electron = (window as typeof window & { electron?: { file?: ElectronFileAPI } }).electron;
+  return electron?.file ?? null;
+};
+
+const normalizeFileName = (title: string) => {
+  const base = (title || '未命名文章').trim() || '未命名文章';
+  return `${base.replace(/[\\\\/:*?"<>|]/g, '_').replace(/\s+/g, ' ').slice(0, 60)}.md`;
+};
+
+const splitPath = (filePath: string) => {
+  const last = Math.max(filePath.lastIndexOf('/'), filePath.lastIndexOf('\\'));
+  const dir = last >= 0 ? filePath.slice(0, last) : '';
+  const base = last >= 0 ? filePath.slice(last + 1) : filePath;
+  const sep = filePath.includes('\\') ? '\\' : '/';
+  return { dir, base, sep };
+};
+
+const joinPath = (dir: string, name: string, sep: string) => {
+  if (!dir) return name;
+  if (dir.endsWith(sep)) return `${dir}${name}`;
+  return `${dir}${sep}${name}`;
+};
+
 function createSnapshot(data: HistorySnapshotInput): HistorySnapshot {
   const randomId =
     typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
@@ -50,7 +82,8 @@ function isSameSnapshot(a?: HistorySnapshot, b?: HistorySnapshotInput) {
     a.theme === b.theme &&
     a.themeName === b.themeName &&
     a.customCSS === b.customCSS &&
-    a.title === (b.title?.trim() || '未命名文章')
+    a.title === (b.title?.trim() || '未命名文章') &&
+    a.filePath === b.filePath
   );
 }
 
@@ -60,12 +93,50 @@ function hasChanges(entry: HistorySnapshot, data: Partial<HistorySnapshotInput>)
   if (data.themeName !== undefined && data.themeName !== entry.themeName) return true;
   if (data.customCSS !== undefined && data.customCSS !== entry.customCSS) return true;
   if (data.title !== undefined && (data.title.trim() || '未命名文章') !== entry.title) return true;
+  if (data.filePath !== undefined && data.filePath !== entry.filePath) return true;
   return false;
 }
 
 export const useHistoryStore = create<HistoryStore>((set, get) => {
   const refreshOrder = (entries: HistorySnapshot[]) =>
     [...entries].sort((a, b) => new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime());
+
+  const deleteFiles = async (paths: string[]) => {
+    if (typeof window === 'undefined') return;
+    const electronFile = getElectronFile();
+    if (!electronFile?.deleteFiles) return;
+    const valid = paths.filter(Boolean);
+    if (valid.length === 0) return;
+    try {
+      await electronFile.deleteFiles(valid);
+    } catch (error) {
+      console.error('[History] delete files failed', error);
+    }
+  };
+
+  const pruneMissingFiles = async (entries: HistorySnapshot[]) => {
+    const electronFile = getElectronFile();
+    if (!electronFile?.fileExists) return entries;
+    const checks = await Promise.all(
+      entries.map((entry) =>
+        entry.filePath ? electronFile.fileExists(entry.filePath).catch(() => ({ exists: true })) : Promise.resolve({ exists: true }),
+      ),
+    );
+    const remaining: HistorySnapshot[] = [];
+    const removed: HistorySnapshot[] = [];
+    entries.forEach((entry, idx) => {
+      const exists = entry.filePath ? checks[idx]?.exists !== false : true;
+      if (exists) {
+        remaining.push(entry);
+      } else {
+        removed.push(entry);
+      }
+    });
+    if (removed.length) {
+      await Promise.all(removed.map((entry) => deleteHistoryFromDb(entry.id)));
+    }
+    return remaining;
+  };
 
   const updateEntryState = async (id: string, updates: Partial<HistorySnapshot>) => {
     const entries = get().history;
@@ -92,7 +163,8 @@ export const useHistoryStore = create<HistoryStore>((set, get) => {
     activeId: null,
     loadHistory: async () => {
       set({ loading: true });
-      const history = refreshOrder(await loadHistoryFromDb());
+      let history = refreshOrder(await loadHistoryFromDb());
+      history = await pruneMissingFiles(history);
       set({ history, loading: false, activeId: history[0]?.id ?? null });
     },
     setFilter: (value) => set({ filter: value }),
@@ -127,6 +199,10 @@ export const useHistoryStore = create<HistoryStore>((set, get) => {
       return updateEntryState(id, payload);
     },
     deleteEntry: async (id) => {
+      const entry = get().history.find((item) => item.id === id);
+      if (entry?.filePath) {
+        await deleteFiles([entry.filePath]);
+      }
       await deleteHistoryFromDb(id);
       const nextHistory = get()
         .history.filter((entry) => entry.id !== id)
@@ -135,12 +211,40 @@ export const useHistoryStore = create<HistoryStore>((set, get) => {
       set({ history: nextHistory, activeId: nextActive });
     },
     clearHistory: async () => {
+      const filePaths = get()
+        .history.map((entry) => entry.filePath)
+        .filter((p): p is string => !!p);
+      await deleteFiles(filePaths);
       await clearHistoryDb();
       set({ history: [], activeId: null });
     },
     updateTitle: async (id, title) => {
       const trimmed = title.trim() || '未命名文章';
-      await updateEntryState(id, { title: trimmed, savedAt: new Date().toISOString() });
+      const entry = get().history.find((item) => item.id === id);
+      let nextFilePath = entry?.filePath;
+      if (entry?.filePath) {
+        const { dir, base, sep } = splitPath(entry.filePath);
+        const target = joinPath(dir, normalizeFileName(trimmed), sep);
+        if (target !== entry.filePath) {
+          const electronFile = getElectronFile();
+          if (electronFile?.renameFile) {
+            try {
+              const result = await electronFile.renameFile(entry.filePath, target);
+              if (result?.success && result.filePath) {
+                nextFilePath = result.filePath;
+                if (get().activeId === id) {
+                  useEditorStore.getState().setFilePath(result.filePath);
+                }
+              } else if (result?.error) {
+                console.error('[History] rename failed', result.error);
+              }
+            } catch (error) {
+              console.error('[History] rename error', error);
+            }
+          }
+        }
+      }
+      await updateEntryState(id, { title: trimmed, savedAt: new Date().toISOString(), filePath: nextFilePath });
     },
   };
 });

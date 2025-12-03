@@ -20,6 +20,7 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
   const getAllThemes = useEditorStore((state) => state.getAllThemes);
   const persistActiveSnapshot = useHistoryStore((state) => state.persistActiveSnapshot);
   const allThemes = useMemo(() => getAllThemes(), [getAllThemes]);
+  const isElectron = typeof window !== 'undefined' && !!(window as any).electron;
   const [selectedThemeId, setSelectedThemeId] = useState<string>('');
   const [nameInput, setNameInput] = useState('');
   const [cssInput, setCssInput] = useState('');
@@ -65,13 +66,15 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
 
   const handleApply = async () => {
     selectTheme(selectedThemeId);
-    const state = useEditorStore.getState();
-    await persistActiveSnapshot({
-      markdown: state.markdown,
-      theme: selectedThemeId,
-      customCSS: '',
-      themeName: selectedTheme?.name || '默认主题',
-    });
+    if (!isElectron) {
+      const state = useEditorStore.getState();
+      await persistActiveSnapshot({
+        markdown: state.markdown,
+        theme: selectedThemeId,
+        customCSS: '',
+        themeName: selectedTheme?.name || '默认主题',
+      });
+    }
     onClose();
   };
 
@@ -81,13 +84,15 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
       const newTheme = createTheme(nameInput, cssInput);
       selectTheme(newTheme.id);
 
-      const state = useEditorStore.getState();
-      await persistActiveSnapshot({
-        markdown: state.markdown,
-        theme: newTheme.id,
-        customCSS: '',
-        themeName: newTheme.name,
-      });
+      if (!isElectron) {
+        const state = useEditorStore.getState();
+        await persistActiveSnapshot({
+          markdown: state.markdown,
+          theme: newTheme.id,
+          customCSS: '',
+          themeName: newTheme.name,
+        });
+      }
 
       setSelectedThemeId(newTheme.id);
       setIsCreating(false);
@@ -98,14 +103,16 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
         css: cssInput,
       });
 
-      const state = useEditorStore.getState();
-      if (state.theme === selectedThemeId) {
-        await persistActiveSnapshot({
-          markdown: state.markdown,
-          theme: selectedThemeId,
-          customCSS: '',
-          themeName: nameInput.trim() || '未命名主题',
-        });
+      if (!isElectron) {
+        const state = useEditorStore.getState();
+        if (state.theme === selectedThemeId) {
+          await persistActiveSnapshot({
+            markdown: state.markdown,
+            theme: selectedThemeId,
+            customCSS: '',
+            themeName: nameInput.trim() || '未命名主题',
+          });
+        }
       }
     }
   };

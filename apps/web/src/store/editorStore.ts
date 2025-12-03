@@ -64,6 +64,11 @@ interface EditorStore {
 
   resetDocument: (options?: ResetOptions) => void;
   copyToWechat: () => void;
+
+  currentFilePath?: string;
+  workspaceDir?: string;
+  setFilePath: (path?: string) => void;
+  setWorkspaceDir: (dir?: string) => void;
 }
 
 export const defaultMarkdown = `# 欢迎使用 WeMD
@@ -500,4 +505,9 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
       // Toast is handled in the service, but we catch here just in case
     }
   },
+
+  currentFilePath: undefined,
+  workspaceDir: undefined,
+  setFilePath: (path) => set({ currentFilePath: path }),
+  setWorkspaceDir: (dir) => set({ workspaceDir: dir }),
 }));

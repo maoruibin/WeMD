@@ -1,15 +1,67 @@
+import type { CSSProperties } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Header } from './components/Header/Header';
+import { FileSidebar } from './components/Sidebar/FileSidebar';
 import { HistoryPanel } from './components/History/HistoryPanel';
+import { Welcome } from './components/Welcome/Welcome';
 import { MarkdownEditor } from './components/Editor/MarkdownEditor';
 import { MarkdownPreview } from './components/Preview/MarkdownPreview';
-import { useElectronFile } from './hooks/useElectronFile';
+import { useFileSystem } from './hooks/useFileSystem';
 import './styles/global.css';
 import './App.css';
 
 function App() {
-  // Initialize Electron file operations
-  useElectronFile();
+  const { workspacePath } = useFileSystem();
+
+  // Check if running in Electron
+  const isElectron = useMemo(() => {
+    // @ts-ignore
+    return typeof window !== 'undefined' && window.electron?.isElectron;
+  }, []);
+
+  const [showHistory, setShowHistory] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    const saved = localStorage.getItem('wemd-show-history');
+    return saved !== 'false';
+  });
+  const [historyWidth, setHistoryWidth] = useState<string>(showHistory ? '280px' : '0px');
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('wemd-show-history', String(showHistory));
+    } catch {
+      /* ignore persistence errors */
+    }
+  }, [showHistory]);
+
+  useEffect(() => {
+    if (showHistory) {
+      setHistoryWidth('280px');
+      return;
+    }
+    const timer = window.setTimeout(() => setHistoryWidth('0px'), 350);
+    return () => window.clearTimeout(timer);
+  }, [showHistory]);
+
+  const mainClass = 'app-main';
+  const mainStyle = useMemo(
+    () =>
+      ({
+        '--history-width': historyWidth,
+      }) as CSSProperties,
+    [historyWidth],
+  );
+
+  // Electron Mode: Force Workspace Selection
+  if (isElectron && !workspacePath) {
+    return (
+      <>
+        <Toaster position="top-center" />
+        <Welcome />
+      </>
+    );
+  }
 
   return (
     <div className="app">
@@ -23,7 +75,7 @@ function App() {
             WebkitBackdropFilter: 'blur(12px)',
             color: '#1a1a1a',
             boxShadow: '0 12px 30px -10px rgba(0, 0, 0, 0.12)',
-            borderRadius: '50px', // 胶囊形状
+            borderRadius: '50px',
             padding: '10px 20px',
             fontSize: '14px',
             fontWeight: 500,
@@ -32,7 +84,7 @@ function App() {
           },
           success: {
             iconTheme: {
-              primary: '#07c160', // 微信绿
+              primary: '#07c160',
               secondary: '#fff',
             },
             duration: 2000,
@@ -47,9 +99,18 @@ function App() {
         }}
       />
       <Header />
-      <main className="app-main">
-        <div className="history-pane">
-          <HistoryPanel />
+      <main className={mainClass} style={mainStyle} data-show-history={showHistory}>
+        <button
+          className={`history-toggle ${showHistory ? '' : 'is-collapsed'}`}
+          onClick={() => setShowHistory((prev) => !prev)}
+          aria-label={showHistory ? '隐藏列表' : '显示列表'}
+        >
+          <span className="sr-only">{showHistory ? '隐藏列表' : '显示列表'}</span>
+        </button>
+        <div className={`history-pane ${showHistory ? 'is-visible' : 'is-hidden'}`} aria-hidden={!showHistory}>
+          <div className="history-pane__content">
+            {isElectron ? <FileSidebar /> : <HistoryPanel />}
+          </div>
         </div>
         <div className="workspace">
           <div className="editor-pane">

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useEditorStore } from '../../store/editorStore';
 import { useHistoryStore } from '../../store/historyStore';
 
-const AUTO_SAVE_INTERVAL = 60 * 1000;
+const AUTO_SAVE_INTERVAL = 10 * 1000; // 10 seconds - better balance for web storage
 const UNTITLED_TITLE = '未命名文章';
 
 function deriveTitle(markdown: string) {
@@ -25,6 +25,8 @@ export function HistoryManager() {
   const setTheme = useEditorStore((state) => state.setTheme);
   const setCustomCSS = useEditorStore((state) => state.setCustomCSS);
   const setThemeName = useEditorStore((state) => state.setThemeName);
+  const setFilePath = useEditorStore((state) => state.setFilePath);
+  const setWorkspaceDir = useEditorStore((state) => state.setWorkspaceDir);
 
   const persistActiveSnapshot = useHistoryStore((state) => state.persistActiveSnapshot);
   const saveSnapshot = useHistoryStore((state) => state.saveSnapshot);
@@ -158,6 +160,16 @@ export function HistoryManager() {
     setCustomCSS(candidateEntry.customCSS);
     if (candidateEntry.themeName) {
       setThemeName(candidateEntry.themeName);
+    }
+    setFilePath(candidateEntry.filePath);
+    if (candidateEntry.filePath) {
+      const last = Math.max(candidateEntry.filePath.lastIndexOf('/'), candidateEntry.filePath.lastIndexOf('\\'));
+      if (last >= 0) {
+        const dir = candidateEntry.filePath.slice(0, last);
+        if (dir) {
+          setWorkspaceDir(dir);
+        }
+      }
     }
     latestRef.current = {
       markdown: candidateEntry.markdown,

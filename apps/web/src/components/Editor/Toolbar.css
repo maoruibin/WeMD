@@ -1,0 +1,33 @@
+.md-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-wrap: wrap;
+}
+
+.md-toolbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.md-toolbar-btn:hover {
+    background: rgba(7, 193, 96, 0.1);
+    color: var(--wechat-green, #07c160);
+}
+
+.md-toolbar-btn:active {
+    transform: scale(0.95);
+}

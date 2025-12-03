@@ -1,0 +1,342 @@
+.file-sidebar {
+    height: 100%;
+    /* 移除白色背景，让父容器的毛玻璃透出来 */
+    background: transparent;
+    /* 移除边框，使用父容器的边框 */
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    user-select: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.fs-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.fs-workspace-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary, #0f172a);
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    max-width: 180px;
+    background-color: transparent;
+    opacity: 0.9;
+}
+
+.fs-workspace-info:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    opacity: 1;
+}
+
+.fs-workspace-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fs-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fs-btn-secondary {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary, #64748b);
+    border-radius: 50%;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fs-btn-icon-only {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+}
+
+.fs-btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--text-primary, #0f172a);
+}
+
+.fs-search {
+    padding: 12px 24px 4px;
+}
+
+.fs-search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.fs-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary, #94a3b8);
+    pointer-events: none;
+}
+
+.fs-search-wrapper input {
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    padding: 10px 16px 10px 36px;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.4);
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+    outline: none;
+    color: #333;
+}
+
+.fs-search-wrapper input:focus {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--accent-primary, #07c160);
+    box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.1);
+}
+
+.fs-body {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.fs-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: transparent;
+}
+
+.fs-item {
+    border: 1px solid transparent;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.4);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    min-height: 80px;
+}
+
+.fs-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.fs-item.active {
+    background: #fff;
+    border: 1px solid rgba(7, 193, 96, 0.3);
+    box-shadow: 0 8px 20px -4px rgba(7, 193, 96, 0.15), 0 0 0 1px rgba(7, 193, 96, 0.1);
+}
+
+.fs-item-main {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    height: 100%;
+}
+
+.fs-title-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.fs-time {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.fs-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+}
+
+.fs-theme-info {
+    font-size: 11px;
+    color: var(--wechat-green, #07c160);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* Rename UI - Web Style */
+.fs-rename {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 4px 0;
+}
+
+.fs-rename input {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 6px 12px;
+    font-size: 14px;
+    background: #fff;
+    min-width: 160px;
+    width: 100%;
+    /* Take full width */
+    outline: none;
+    transition: all 0.2s;
+}
+
+.fs-rename input:focus {
+    border-color: var(--wechat-green, #07c160);
+    box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.1);
+}
+
+.fs-rename button {
+    border: none;
+    background: #f5f6fa;
+    padding: 6px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #111827;
+    transition: background 0.2s;
+}
+
+.fs-rename button:hover {
+    background: #e6f5eb;
+    color: var(--wechat-green, #07c160);
+}
+
+.fs-action-trigger {
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    opacity: 0;
+    margin-top: 4px;
+}
+
+.fs-item:hover .fs-action-trigger,
+.fs-item.active .fs-action-trigger {
+    opacity: 1;
+}
+
+.fs-action-trigger:hover {
+    background: #f1f5f9;
+    color: #475467;
+    transform: scale(1.1);
+}
+
+.fs-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #7c889c;
+    padding: 24px;
+    text-align: center;
+}
+
+/* Context Menu */
+.fs-context-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+}
+
+.fs-context-menu {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 1200;
+    min-width: 180px;
+    white-space: nowrap;
+    animation: fs-menu-fade 0.15s ease-out;
+}
+
+@keyframes fs-menu-fade {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.fs-context-menu button {
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: #334155;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.fs-context-menu button:hover {
+    background: #f1f5f9;
+    color: var(--wechat-green, #07c160);
+}
+
+.fs-context-menu button.danger {
+    color: #f04438;
+}
+
+.fs-context-menu button.danger:hover {
+    background: #fef2f2;
+}
