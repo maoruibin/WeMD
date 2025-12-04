@@ -134,13 +134,12 @@
     border: 1px solid transparent;
     border-radius: 16px;
     background: rgba(255, 255, 255, 0.4);
-    padding: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-    min-height: 80px;
 }
 
 .fs-item:hover {
@@ -159,7 +158,6 @@
     display: flex;
     justify-content: space-between;
     gap: 10px;
-    height: 100%;
 }
 
 .fs-title-block {
@@ -179,10 +177,12 @@
     font-size: 15px;
     font-weight: 600;
     color: #0f172a;
+    line-height: 1.5;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.5;
+    display: block;
+    flex-shrink: 0;
 }
 
 .fs-theme-info {
@@ -199,7 +199,6 @@
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
-    margin: 4px 0;
 }
 
 .fs-rename input {
@@ -208,7 +207,6 @@
     padding: 6px 12px;
     font-size: 14px;
     background: #fff;
-    min-width: 160px;
     width: 100%;
     /* Take full width */
     outline: none;
@@ -223,12 +221,14 @@
 .fs-rename button {
     border: none;
     background: #f5f6fa;
-    padding: 6px 16px;
+    padding: 6px 12px;
     border-radius: 12px;
     cursor: pointer;
     font-size: 13px;
     color: #111827;
     transition: background 0.2s;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .fs-rename button:hover {

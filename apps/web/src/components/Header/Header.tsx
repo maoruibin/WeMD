@@ -1,14 +1,16 @@
 import { useCallback, useState } from 'react';
 import { useEditorStore } from '../../store/editorStore';
 import { ThemePanel } from '../Theme/ThemePanel';
+import { StorageModeSelector } from '../StorageModeSelector/StorageModeSelector';
 import './Header.css';
-import { Palette, Send } from 'lucide-react';
+import { Layers, Palette, Send } from 'lucide-react';
 
 export function Header() {
     const { copyToWechat } = useEditorStore();
     const workspaceDir = useEditorStore((state) => state.workspaceDir);
     const setWorkspaceDir = useEditorStore((state) => state.setWorkspaceDir);
     const [showThemePanel, setShowThemePanel] = useState(false);
+    const [showStorageModal, setShowStorageModal] = useState(false);
 
     const handlePickWorkspace = useCallback(async () => {
         const electron = (window as any).electron;
@@ -45,6 +47,12 @@ export function Header() {
                 </div>
 
                 <div className="header-right">
+                    {!isElectron && (
+                        <button className="btn-secondary" onClick={() => setShowStorageModal(true)}>
+                            <Layers size={18} strokeWidth={2} />
+                            <span>存储模式</span>
+                        </button>
+                    )}
                     <button className="btn-secondary" onClick={() => setShowThemePanel(true)}>
                         <Palette size={18} strokeWidth={2} />
                         <span>主题管理</span>
@@ -57,6 +65,19 @@ export function Header() {
             </header>
 
             <ThemePanel open={showThemePanel} onClose={() => setShowThemePanel(false)} />
+            {showStorageModal && (
+                <div className="storage-modal-overlay" onClick={() => setShowStorageModal(false)}>
+                    <div className="storage-modal-panel" onClick={(e) => e.stopPropagation()}>
+                        <div className="storage-modal-header">
+                            <h3>选择存储模式</h3>
+                            <button className="storage-modal-close" onClick={() => setShowStorageModal(false)} aria-label="关闭">
+                                ×
+                            </button>
+                        </div>
+                        <StorageModeSelector />
+                    </div>
+                </div>
+            )}
         </>
     );
 }

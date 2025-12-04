@@ -190,3 +190,8 @@ a:hover {
     -webkit-text-fill-color: transparent;
     background-clip: text;
 }
+
+.fs-title,
+.history-title {
+    -webkit-text-fill-color: inherit;
+}

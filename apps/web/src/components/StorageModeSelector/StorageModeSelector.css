@@ -1,0 +1,114 @@
+.storage-mode-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.storage-mode-tip {
+  margin: 0 0 4px;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.storage-mode-options {
+  display: grid;
+  gap: 12px;
+}
+
+.storage-mode-option {
+  text-align: left;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 14px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.storage-mode-option.active {
+  border-color: #07c160;
+  box-shadow: 0 4px 12px rgba(7, 193, 96, 0.15);
+}
+
+.storage-mode-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.storage-mode-option__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  color: #111827;
+}
+
+.storage-mode-option__label small {
+  font-size: 11px;
+  color: #07c160;
+}
+
+.storage-mode-option p {
+  margin: 8px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.storage-mode-notice {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #b45309;
+  background: rgba(251, 191, 36, 0.15);
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.storage-mode-status {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(7, 193, 96, 0.1);
+  color: #065f46;
+  font-size: 13px;
+}
+
+.storage-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.storage-modal-panel {
+  background: #fff;
+  border-radius: 20px;
+  width: min(480px, 100%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 24px;
+}
+
+.storage-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.storage-modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.storage-modal-close {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+}

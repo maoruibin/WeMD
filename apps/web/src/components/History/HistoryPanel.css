@@ -142,6 +142,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .history-time {
@@ -153,6 +155,12 @@
   font-size: 15px;
   font-weight: 600;
   color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  line-height: 1.5;
+  flex-shrink: 0;
 }
 
 .history-theme {

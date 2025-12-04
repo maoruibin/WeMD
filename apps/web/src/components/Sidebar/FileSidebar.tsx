@@ -104,7 +104,7 @@ export function FileSidebar() {
                                             <button onClick={() => setRenamingPath(null)}>取消</button>
                                         </div>
                                     ) : (
-                                        <span className="fs-title">{file.name}</span>
+                                        <span className="fs-title" title={file.name}>{file.name}</span>
                                     )}
                                     {renamingPath !== file.path && (
                                         <span className="fs-theme-info">

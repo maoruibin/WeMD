@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useFileStore } from '../store/fileStore';
 import { useEditorStore } from '../store/editorStore';
+import { useStorageContext } from '../storage/StorageContext';
 import toast from 'react-hot-toast';
 
 // Define Electron API type locally for safety
@@ -32,7 +33,10 @@ const getElectron = (): ElectronAPI | null => {
 const WORKSPACE_KEY = 'wemd-workspace-path';
 
 export function useFileSystem() {
+    const { adapter, ready: storageReady, type: storageType } = useStorageContext();
     const electron = getElectron();
+    const webMode = !electron && storageReady;
+
     const {
         workspacePath, files, currentFile, isLoading, isSaving,
         setWorkspacePath, setFiles, setCurrentFile, setLoading, setSaving
@@ -49,65 +53,105 @@ export function useFileSystem() {
 
     // 1. Load Workspace
     const loadWorkspace = useCallback(async (path: string) => {
-        if (!electron) return;
-        setLoading(true);
-        try {
-            const res = await electron.fs.setWorkspace(path);
-            if (res.success) {
-                setWorkspacePath(path);
-                localStorage.setItem(WORKSPACE_KEY, path);
-                await refreshFiles(path);
-            } else {
-                // If invalid, clear
-                setWorkspacePath(null);
-                localStorage.removeItem(WORKSPACE_KEY);
+        if (electron) {
+            setLoading(true);
+            try {
+                const res = await electron.fs.setWorkspace(path);
+                if (res.success) {
+                    setWorkspacePath(path);
+                    localStorage.setItem(WORKSPACE_KEY, path);
+                    await refreshFiles(path);
+                } else {
+                    setWorkspacePath(null);
+                    localStorage.removeItem(WORKSPACE_KEY);
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                setLoading(false);
             }
-        } catch (e) {
-            console.error(e);
-        } finally {
-            setLoading(false);
+        } else {
+            // Web mode: workspace is managed by adapter init
+            setWorkspacePath(path); // For web, path is just a label or identifier
+            await refreshFiles();
         }
-    }, []);
+    }, [electron]);
 
     // 2. Refresh File List
     const refreshFiles = useCallback(async (dir?: string) => {
-        if (!electron) return;
-        const target = dir || workspacePath;
-        if (!target) return;
+        if (electron) {
+            const target = dir || workspacePath;
+            if (!target) return;
 
-        const res = await electron.fs.listFiles(target);
-        if (res.success && res.files) {
-            // Convert date strings to Date objects if needed
-            const mapped = res.files.map((f: any) => ({
-                ...f,
-                createdAt: new Date(f.createdAt),
-                updatedAt: new Date(f.updatedAt)
-            }));
-            setFiles(mapped);
+            const res = await electron.fs.listFiles(target);
+            if (res.success && res.files) {
+                const mapped = res.files.map((f: any) => ({
+                    ...f,
+                    createdAt: new Date(f.createdAt),
+                    updatedAt: new Date(f.updatedAt)
+                }));
+                setFiles(mapped);
+            }
+        } else if (adapter && storageReady) {
+            try {
+                const files = await adapter.listFiles();
+                // Adapter returns FileItem[], compatible with store
+                setFiles(files.map(f => ({
+                    name: f.name,
+                    path: f.path,
+                    size: f.size ?? 0,
+                    createdAt: f.updatedAt ? new Date(f.updatedAt) : new Date(),
+                    updatedAt: f.updatedAt ? new Date(f.updatedAt) : new Date(),
+                    themeName: (f.meta?.themeName as string) || undefined
+                })));
+            } catch (error) {
+                console.error('Failed to list files:', error);
+                toast.error('无法加载文件列表');
+            }
         }
-    }, [workspacePath]);
+    }, [workspacePath, electron, adapter, storageReady]);
 
     // 3. Select Workspace (Dialog)
     const selectWorkspace = useCallback(async () => {
-        if (!electron) return;
-        const res = await electron.fs.selectWorkspace();
-        if (res.success && res.path) {
-            await loadWorkspace(res.path);
+        if (electron) {
+            const res = await electron.fs.selectWorkspace();
+            if (res.success && res.path) {
+                await loadWorkspace(res.path);
+            }
+        } else {
+            // Web mode: Trigger adapter selection via StorageContext (usually handled by UI)
+            // But if we are here, it means user clicked folder icon
+            // For FileSystem adapter, we might want to re-init
+            toast('请在右上角"存储模式"中切换文件夹', { icon: 'ℹ️' });
         }
-    }, [loadWorkspace]);
+    }, [loadWorkspace, electron]);
 
     // 4. Open File
     const openFile = useCallback(async (file: any) => {
-        if (!electron) return;
-
         isRestoring.current = true; // Mark as restoring to prevent auto-save
 
-        const res = await electron.fs.readFile(file.path);
-        if (res.success && typeof res.content === 'string') {
+        let content = '';
+        let success = false;
+
+        if (electron) {
+            const res = await electron.fs.readFile(file.path);
+            if (res.success && typeof res.content === 'string') {
+                content = res.content;
+                success = true;
+            }
+        } else if (adapter && storageReady) {
+            try {
+                content = await adapter.readFile(file.path);
+                success = true;
+            } catch (error) {
+                console.error('Read file error:', error);
+            }
+        }
+
+        if (success) {
             setCurrentFile(file);
 
             // Parse Frontmatter
-            const content = res.content;
             const match = content.match(/^---\n([\s\S]*?)\n---/);
 
             if (match) {
@@ -117,11 +161,9 @@ export function useFileSystem() {
                 // Simple YAML parser for our needs
                 const themeMatch = frontmatterRaw.match(/theme:\s*(.+)/);
                 const themeNameMatch = frontmatterRaw.match(/themeName:\s*(.+)/);
-                const cssMatch = frontmatterRaw.match(/customCSS:\s*\|([\s\S]*)/); // Multi-line support is tricky with regex, simplified for now
 
                 const theme = themeMatch ? themeMatch[1].trim() : 'default';
                 const themeName = themeNameMatch ? themeNameMatch[1].trim().replace(/^['"]|['"]$/g, '') : '默认主题';
-                // Custom CSS parsing is complex with regex, skipping for now or need better parser
 
                 setMarkdown(body);
                 useEditorStore.getState().setTheme(theme);
@@ -144,35 +186,55 @@ export function useFileSystem() {
         setTimeout(() => {
             isRestoring.current = false;
         }, 100);
-    }, [setMarkdown]);
+    }, [setMarkdown, electron, adapter, storageReady]);
 
     // 5. Create File
     const createFile = useCallback(async () => {
-        if (!electron || !workspacePath) return;
         const initialContent = '---\ntheme: default\nthemeName: 默认主题\n---\n\n# 新文章\n\n';
-        const res = await electron.fs.createFile({ content: initialContent });
-        if (res.success && res.filePath) {
-            await refreshFiles();
-            // Auto open the new file
-            const newFile = {
-                name: res.filename!,
-                path: res.filePath!,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                size: 0,
-                themeName: '默认主题'
-            };
-            await openFile(newFile);
-            toast.success('已创建新文章');
+
+        if (electron) {
+            if (!workspacePath) return;
+            const res = await electron.fs.createFile({ content: initialContent });
+            if (res.success && res.filePath) {
+                await refreshFiles();
+                const newFile = {
+                    name: res.filename!,
+                    path: res.filePath!,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    size: 0,
+                    themeName: '默认主题'
+                };
+                await openFile(newFile);
+                toast.success('已创建新文章');
+            }
+        } else if (adapter && storageReady) {
+            const filename = `未命名文章-${Date.now()}.md`;
+            try {
+                await adapter.writeFile(filename, initialContent);
+                await refreshFiles();
+                const newFile = {
+                    name: filename,
+                    path: filename,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    size: initialContent.length,
+                    themeName: '默认主题'
+                };
+                await openFile(newFile);
+                toast.success('已创建新文章');
+            } catch (error) {
+                toast.error('创建失败');
+            }
         }
-    }, [workspacePath, refreshFiles, openFile]);
+    }, [workspacePath, refreshFiles, openFile, electron, adapter, storageReady]);
 
     // 6. Save File
     const saveFile = useCallback(async () => {
-        if (!electron || !currentFile) return;
+        if (!currentFile) return;
         setSaving(true);
 
-        const { markdown, theme, themeName, customCSS } = useEditorStore.getState();
+        const { markdown, theme, themeName } = useEditorStore.getState();
 
         // Construct Frontmatter
         const frontmatter = `---
@@ -188,40 +250,80 @@ themeName: ${themeName}
             return; // Skip save if no change
         }
 
-        const res = await electron.fs.saveFile({ filePath: currentFile.path, content: fullContent });
+        let success = false;
+        let errorMsg = '';
+
+        if (electron) {
+            const res = await electron.fs.saveFile({ filePath: currentFile.path, content: fullContent });
+            if (res.success) success = true;
+            else errorMsg = res.error || 'Unknown error';
+        } else if (adapter && storageReady) {
+            try {
+                await adapter.writeFile(currentFile.path, fullContent);
+                success = true;
+            } catch (e: any) {
+                errorMsg = e.message;
+            }
+        }
+
         setSaving(false);
 
-        if (res.success) {
-            lastSavedContent.current = fullContent; // Update with full content including frontmatter
+        if (success) {
+            lastSavedContent.current = fullContent;
             // toast.success('已保存');
         } else {
-            toast.error('保存失败: ' + res.error);
+            toast.error('保存失败: ' + errorMsg);
         }
-    }, [currentFile]);
+    }, [currentFile, electron, adapter, storageReady]);
 
     // 7. Rename File
     const renameFile = useCallback(async (file: any, newName: string) => {
-        if (!electron) return;
-        const res = await electron.fs.renameFile({ oldPath: file.path, newName });
-        if (res.success) {
-            toast.success('重命名成功');
-            await refreshFiles();
-            // If renamed current file, update current file ref
-            if (currentFile && currentFile.path === file.path) {
-                setCurrentFile({ ...currentFile, path: res.filePath!, name: newName.endsWith('.md') ? newName : `${newName}.md` });
+        const safeName = newName.endsWith('.md') ? newName : `${newName}.md`;
+
+        if (electron) {
+            const res = await electron.fs.renameFile({ oldPath: file.path, newName });
+            if (res.success) {
+                toast.success('重命名成功');
+                await refreshFiles();
+                if (currentFile && currentFile.path === file.path) {
+                    setCurrentFile({ ...currentFile, path: res.filePath!, name: safeName });
+                }
+            } else {
+                toast.error(res.error || '重命名失败');
             }
-        } else {
-            toast.error(res.error || '重命名失败');
+        } else if (adapter && storageReady) {
+            try {
+                await adapter.renameFile(file.path, safeName);
+                toast.success('重命名成功');
+                await refreshFiles();
+                if (currentFile && currentFile.path === file.path) {
+                    setCurrentFile({ ...currentFile, path: safeName, name: safeName });
+                }
+            } catch (error) {
+                toast.error('重命名失败');
+            }
         }
-    }, [refreshFiles, currentFile]);
+    }, [refreshFiles, currentFile, electron, adapter, storageReady]);
 
     // 8. Delete File
     const deleteFile = useCallback(async (file: any) => {
-        if (!electron) return;
         if (!confirm(`确定要删除 "${file.name}" 吗？`)) return;
 
-        const res = await electron.fs.deleteFile(file.path);
-        if (res.success) {
+        let success = false;
+
+        if (electron) {
+            const res = await electron.fs.deleteFile(file.path);
+            success = res.success;
+        } else if (adapter && storageReady) {
+            try {
+                await adapter.deleteFile(file.path);
+                success = true;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        if (success) {
             toast.success('已删除');
             await refreshFiles();
             if (currentFile && currentFile.path === file.path) {
@@ -231,28 +333,35 @@ themeName: ${themeName}
         } else {
             toast.error('删除失败');
         }
-    }, [refreshFiles, currentFile, setMarkdown]);
+    }, [refreshFiles, currentFile, setMarkdown, electron, adapter, storageReady]);
 
     // --- Effects ---
 
-    // Init: Load saved workspace
+    // Init: Load saved workspace (Electron only)
     useEffect(() => {
-        const saved = localStorage.getItem(WORKSPACE_KEY);
-        if (saved) {
-            loadWorkspace(saved);
+        if (electron) {
+            const saved = localStorage.getItem(WORKSPACE_KEY);
+            if (saved) {
+                loadWorkspace(saved);
+            }
+        } else if (storageReady) {
+            // Web: refresh files when storage is ready
+            refreshFiles();
+            // Set a virtual workspace path for UI display
+            setWorkspacePath(storageType === 'filesystem' ? '本地文件夹' : '浏览器存储');
         }
-    }, []);
+    }, [electron, storageReady, storageType]);
 
-    // Watcher Events
+    // Watcher Events (Electron)
     useEffect(() => {
         if (!electron) return;
         const handler = electron.fs.onRefresh(() => {
             refreshFiles();
         });
         return () => electron.fs.removeRefreshListener(handler);
-    }, [refreshFiles]);
+    }, [refreshFiles, electron]);
 
-    // Menu Events
+    // Menu Events (Electron)
     useEffect(() => {
         if (!electron) return;
         const newHandler = electron.fs.onMenuNewFile(() => createFile());
@@ -260,20 +369,15 @@ themeName: ${themeName}
         const switchHandler = electron.fs.onMenuSwitchWorkspace(() => selectWorkspace());
 
         return () => {
-            // Cleanup is tricky with anonymous functions if not careful, 
-            // but here we use the returned handler which is safe.
-            // Actually preload exposes removeAllListeners too.
+            // Cleanup
         };
-    }, [createFile, saveFile, selectWorkspace]);
+    }, [createFile, saveFile, selectWorkspace, electron]);
 
-    // Auto Save - only when content is actually edited by user
+    // Auto Save
     useEffect(() => {
         if (!currentFile || !markdown) return;
-
-        // Skip if we're currently loading a file
         if (isRestoring.current) return;
 
-        // Construct what would be saved (with frontmatter)
         const { theme, themeName } = useEditorStore.getState();
         const frontmatter = `---
 theme: ${theme}
@@ -282,12 +386,10 @@ themeName: ${themeName}
 `;
         const fullContent = frontmatter + '\n' + markdown;
 
-        // Mark as dirty if full content differs from last saved
         if (fullContent !== lastSavedContent.current) {
             isDirty.current = true;
         }
 
-        // Only set timer if content is dirty
         if (!isDirty.current) return;
 
         const timer = setTimeout(() => {
@@ -295,7 +397,7 @@ themeName: ${themeName}
                 saveFile();
                 isDirty.current = false;
             }
-        }, 3000); // 3 seconds - reasonable balance between responsiveness and performance
+        }, 3000);
 
         return () => clearTimeout(timer);
     }, [markdown, currentFile, saveFile]);

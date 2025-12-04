@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File System Access API - Spike Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .status.info { background: #e3f2fd; color: #1976d2; }
+        .status.success { background: #e8f5e9; color: #388e3c; }
+        .status.error { background: #ffebee; color: #d32f2f; }
+        .status.warning { background: #fff3e0; color: #f57c00; }
+
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .test-section h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        button {
+            background: #07c160;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #06ad56;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .log {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+        }
+
+        .log-entry.success { color: #388e3c; }
+        .log-entry.error { color: #d32f2f; }
+        .log-entry.info { color: #1976d2; }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .metric {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 3px solid #07c160;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 File System Access API - 技术验证</h1>
+        <div id="browserSupport" class="status info">检测中...</div>
+
+        <!-- Test 1: DirectoryHandle 持久化 -->
+        <div class="test-section">
+            <h2>Test 1: DirectoryHandle 持久化与权限恢复</h2>
+            <button id="selectDir">选择文件夹</button>
+            <button id="restoreDir">恢复文件夹</button>
+            <button id="checkPermission">检查权限</button>
+            <button id="requestPermission">请求权限</button>
+            <div id="handleLog" class="log"></div>
+        </div>
+
+        <!-- Test 2: 文件 CRUD 操作 -->
+        <div class="test-section">
+            <h2>Test 2: 文件 CRUD 操作</h2>
+            <button id="createFile">创建文件</button>
+            <button id="readFile">读取文件</button>
+            <button id="updateFile">更新文件</button>
+            <button id="deleteFile">删除文件</button>
+            <button id="listFiles">列出所有文件</button>
+            <div id="crudLog" class="log"></div>
+        </div>
+
+        <!-- Test 3: 性能测试 -->
+        <div class="test-section">
+            <h2>Test 3: 性能测试</h2>
+            <button id="perfTest">运行性能测试</button>
+            <button id="clearTestFiles">清理测试文件</button>
+            <div class="metrics" id="metrics"></div>
+            <div id="perfLog" class="log"></div>
+        </div>
+
+        <!-- Test 4: 数据迁移模拟 -->
+        <div class="test-section">
+            <h2>Test 4: 数据迁移模拟</h2>
+            <button id="simulateMigration">模拟从 IndexedDB 迁移</button>
+            <div id="migrationLog" class="log"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // ========== 工具函数 ==========
+        let lastFileName = null;
+        function log(elementId, message, type = 'info') {
+            const logEl = document.getElementById(elementId);
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEl.appendChild(entry);
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function showMetric(label, value, unit = '') {
+            const metricsEl = document.getElementById('metrics');
+            const metric = document.createElement('div');
+            metric.className = 'metric';
+            metric.innerHTML = `
+                <div class="metric-label">${label}</div>
+                <div class="metric-value">${value}${unit}</div>
+            `;
+            metricsEl.appendChild(metric);
+        }
+
+        // ========== 浏览器支持检测 ==========
+        const isSupported = 'showDirectoryPicker' in window;
+        const supportEl = document.getElementById('browserSupport');
+        
+        if (isSupported) {
+            supportEl.className = 'status success';
+            supportEl.textContent = '✅ 浏览器支持 File System Access API';
+        } else {
+            supportEl.className = 'status error';
+            supportEl.textContent = '❌ 浏览器不支持 File System Access API（需要 Chrome 86+ 或 Edge 86+）';
+        }
+
+        // ========== IndexedDB 工具 ==========
+        let db;
+        async function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('wemd-spike-test', 1);
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('handles')) {
+                        db.createObjectStore('handles');
+                    }
+                };
+            });
+        }
+
+        async function saveHandle(key, handle) {
+            const tx = db.transaction('handles', 'readwrite');
+            const store = tx.objectStore('handles');
+            await store.put(handle, key);
+            await tx.complete;
+        }
+
+        async function getHandle(key) {
+            const tx = db.transaction('handles', 'readonly');
+            const store = tx.objectStore('handles');
+            return new Promise((resolve, reject) => {
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // ========== 全局状态 ==========
+        let dirHandle = null;
+
+        // ========== Test 1: DirectoryHandle 持久化 ==========
+        document.getElementById('selectDir').addEventListener('click', async () => {
+            try {
+                await initDB();
+                dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+                await saveHandle('workspace', dirHandle);
+                log('handleLog', `✅ 已选择文件夹: ${dirHandle.name}`, 'success');
+                log('handleLog', '✅ Handle 已保存到 IndexedDB', 'success');
+            } catch (error) {
+                log('handleLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('restoreDir').addEventListener('click', async () => {
+            try {
+                await initDB();
+                dirHandle = await getHandle('workspace');
+                if (dirHandle) {
+                    log('handleLog', `✅ 已从 IndexedDB 恢复 Handle: ${dirHandle.name}`, 'success');
+                } else {
+                    log('handleLog', '⚠️ 未找到保存的 Handle', 'warning');
+                }
+            } catch (error) {
+                log('handleLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('checkPermission').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('handleLog', '⚠️ 请先选择或恢复文件夹', 'warning');
+                return;
+            }
+            try {
+                const permission = await dirHandle.queryPermission({ mode: 'readwrite' });
+                log('handleLog', `📋 当前权限状态: ${permission}`, 'info');
+            } catch (error) {
+                log('handleLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('requestPermission').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('handleLog', '⚠️ 请先选择或恢复文件夹', 'warning');
+                return;
+            }
+            try {
+                const permission = await dirHandle.requestPermission({ mode: 'readwrite' });
+                log('handleLog', `✅ 权限请求结果: ${permission}`, permission === 'granted' ? 'success' : 'error');
+            } catch (error) {
+                log('handleLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        // ========== Test 2: 文件 CRUD 操作 ==========
+        document.getElementById('createFile').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('crudLog', '⚠️ 请先选择文件夹', 'warning');
+                return;
+            }
+            try {
+                const fileName = `test-${Date.now()}.md`;
+                const fileHandle = await dirHandle.getFileHandle(fileName, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(`# 测试文章\n\n创建时间: ${new Date().toLocaleString()}`);
+                await writable.close();
+                lastFileName = fileName;
+                log('crudLog', `✅ 已创建文件: ${fileName}`, 'success');
+            } catch (error) {
+                log('crudLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('listFiles').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('crudLog', '⚠️ 请先选择文件夹', 'warning');
+                return;
+            }
+            try {
+                const files = [];
+                for await (const entry of dirHandle.values()) {
+                    if (entry.kind === 'file' && entry.name.endsWith('.md')) {
+                        files.push(entry.name);
+                    }
+                }
+                log('crudLog', `📁 找到 ${files.length} 个 .md 文件`, 'info');
+                files.forEach(name => log('crudLog', `  - ${name}`, 'info'));
+            } catch (error) {
+                log('crudLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('readFile').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('crudLog', '⚠️ 请先选择文件夹', 'warning');
+                return;
+            }
+            if (!lastFileName) {
+                log('crudLog', 'ℹ️ 还没有创建过文件，请先点击“创建文件”', 'info');
+                return;
+            }
+            try {
+                const fileHandle = await dirHandle.getFileHandle(lastFileName);
+                const file = await fileHandle.getFile();
+                const content = await file.text();
+                log('crudLog', `📖 读取 ${lastFileName} 成功，内容预览: ${content.slice(0, 60)}...`, 'success');
+            } catch (error) {
+                log('crudLog', `❌ 读取失败: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('updateFile').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('crudLog', '⚠️ 请先选择文件夹', 'warning');
+                return;
+            }
+            if (!lastFileName) {
+                log('crudLog', 'ℹ️ 没有可更新的文件，请先创建一个', 'info');
+                return;
+            }
+            try {
+                const fileHandle = await dirHandle.getFileHandle(lastFileName);
+                const writable = await fileHandle.createWritable();
+                await writable.write(`# 更新后的内容\n\n更新时间: ${new Date().toLocaleString()}`);
+                await writable.close();
+                log('crudLog', `✏️ 已更新文件: ${lastFileName}`, 'success');
+            } catch (error) {
+                log('crudLog', `❌ 更新失败: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('deleteFile').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('crudLog', '⚠️ 请先选择文件夹', 'warning');
+                return;
+            }
+            if (!lastFileName) {
+                log('crudLog', 'ℹ️ 没有可删除的文件，请先创建一个', 'info');
+                return;
+            }
+            try {
+                await dirHandle.removeEntry(lastFileName);
+                log('crudLog', `🗑️ 已删除文件: ${lastFileName}`, 'success');
+                lastFileName = null;
+            } catch (error) {
+                log('crudLog', `❌ 删除失败: ${error.message}`, 'error');
+            }
+        });
+
+        // ========== Test 3: 性能测试 ==========
+        document.getElementById('perfTest').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('perfLog', '⚠️ 请先选择文件夹', 'warning');
+                return;
+            }
+            
+            document.getElementById('metrics').innerHTML = '';
+            log('perfLog', '🚀 开始性能测试...', 'info');
+            
+            try {
+                // 测试 1: 写入性能
+                const writeCount = 100;
+                const writeStart = performance.now();
+                for (let i = 0; i < writeCount; i++) {
+                    const fileHandle = await dirHandle.getFileHandle(`perf-test-${i}.md`, { create: true });
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(`# Test ${i}\n\nContent here...`);
+                    await writable.close();
+                }
+                const writeTime = performance.now() - writeStart;
+                showMetric('写入 100 文件', writeTime.toFixed(0), 'ms');
+                log('perfLog', `✅ 写入测试完成: ${writeTime.toFixed(0)}ms`, 'success');
+                
+                // 测试 2: 列表性能
+                const listStart = performance.now();
+                const files = [];
+                for await (const entry of dirHandle.values()) {
+                    if (entry.kind === 'file') files.push(entry);
+                }
+                const listTime = performance.now() - listStart;
+                showMetric('列出文件', listTime.toFixed(0), 'ms');
+                showMetric('文件总数', files.length, '');
+                log('perfLog', `✅ 列表测试完成: ${listTime.toFixed(0)}ms, ${files.length} 个文件`, 'success');
+                
+                // 测试 3: 读取性能
+                const readStart = performance.now();
+                for (let i = 0; i < Math.min(writeCount, files.length); i++) {
+                    const entry = files[i];
+                    if (entry.name.startsWith('perf-test-')) {
+                        const file = await entry.getFile();
+                        await file.text();
+                    }
+                }
+                const readTime = performance.now() - readStart;
+                showMetric('读取 100 文件', readTime.toFixed(0), 'ms');
+                log('perfLog', `✅ 读取测试完成: ${readTime.toFixed(0)}ms`, 'success');
+                
+                log('perfLog', '🎉 性能测试全部完成！', 'success');
+            } catch (error) {
+                log('perfLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('clearTestFiles').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('perfLog', '⚠️ 请先选择文件夹', 'warning');
+                return;
+            }
+            try {
+                let count = 0;
+                for await (const entry of dirHandle.values()) {
+                    if (entry.kind === 'file' && entry.name.startsWith('perf-test-')) {
+                        await dirHandle.removeEntry(entry.name);
+                        count++;
+                    }
+                }
+                log('perfLog', `✅ 已清理 ${count} 个测试文件`, 'success');
+            } catch (error) {
+                log('perfLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        // ========== Test 4: 数据迁移模拟 ==========
+        document.getElementById('simulateMigration').addEventListener('click', async () => {
+            if (!dirHandle) {
+                log('migrationLog', '⚠️ 请先选择文件夹', 'warning');
+                return;
+            }
+            
+            try {
+                log('migrationLog', '📦 模拟从 IndexedDB 迁移数据...', 'info');
+                
+                // 模拟的 IndexedDB 数据
+                const mockData = [
+                    { id: '1', title: '我的第一篇文章', content: '# 我的第一篇文章\n\n这是内容...' },
+                    { id: '2', title: '技术笔记', content: '# 技术笔记\n\n学习记录...' },
+                    { id: '3', title: '每日总结', content: '# 每日总结\n\n今天学到了...' }
+                ];
+                
+                const startTime = performance.now();
+                for (const item of mockData) {
+                    const fileName = `${item.title}-${item.id}.md`;
+                    const fileHandle = await dirHandle.getFileHandle(fileName, { create: true });
+                    const writable = await fileHandle.createWritable();
+                    await writable.write(item.content);
+                    await writable.close();
+                    log('migrationLog', `✅ 已迁移: ${fileName}`, 'success');
+                }
+                const elapsed = performance.now() - startTime;
+                
+                log('migrationLog', `🎉 迁移完成！用时 ${elapsed.toFixed(0)}ms`, 'success');
+            } catch (error) {
+                log('migrationLog', `❌ 错误: ${error.message}`, 'error');
+            }
+        });
+
+        // 初始化
+        initDB().catch(console.error);
+    </script>
+</body>
+</html>
