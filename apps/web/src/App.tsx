@@ -11,8 +11,15 @@ import { useFileSystem } from './hooks/useFileSystem';
 import './styles/global.css';
 import './App.css';
 
+import { useStorageContext } from './storage/StorageContext';
+import { HistoryManager } from './components/History/HistoryManager';
+import { Loader2 } from 'lucide-react';
+import { useHistoryStore } from './store/historyStore';
+
 function App() {
   const { workspacePath } = useFileSystem();
+  const { type: storageType } = useStorageContext();
+  const historyLoading = useHistoryStore((state) => state.loading);
 
   // Check if running in Electron
   const isElectron = useMemo(() => {
@@ -65,62 +72,80 @@ function App() {
 
   return (
     <div className="app">
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          className: 'premium-toast',
-          style: {
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(12px)',
-            WebkitBackdropFilter: 'blur(12px)',
-            color: '#1a1a1a',
-            boxShadow: '0 12px 30px -10px rgba(0, 0, 0, 0.12)',
-            borderRadius: '50px',
-            padding: '10px 20px',
-            fontSize: '14px',
-            fontWeight: 500,
-            border: '1px solid rgba(0, 0, 0, 0.05)',
-            maxWidth: '400px',
-          },
-          success: {
-            iconTheme: {
-              primary: '#07c160',
-              secondary: '#fff',
-            },
-            duration: 2000,
-          },
-          error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
-            },
-            duration: 3000,
-          },
-        }}
-      />
-      <Header />
-      <main className={mainClass} style={mainStyle} data-show-history={showHistory}>
-        <button
-          className={`history-toggle ${showHistory ? '' : 'is-collapsed'}`}
-          onClick={() => setShowHistory((prev) => !prev)}
-          aria-label={showHistory ? '隐藏列表' : '显示列表'}
-        >
-          <span className="sr-only">{showHistory ? '隐藏列表' : '显示列表'}</span>
-        </button>
-        <div className={`history-pane ${showHistory ? 'is-visible' : 'is-hidden'}`} aria-hidden={!showHistory}>
-          <div className="history-pane__content">
-            {isElectron ? <FileSidebar /> : <HistoryPanel />}
-          </div>
-        </div>
+      {!isElectron && storageType === 'indexeddb' && <HistoryManager />}
+
+      <>
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              className: 'premium-toast',
+              style: {
+                background: 'rgba(255, 255, 255, 0.9)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                color: '#1a1a1a',
+                boxShadow: '0 12px 30px -10px rgba(0, 0, 0, 0.12)',
+                borderRadius: '50px',
+                padding: '10px 20px',
+                fontSize: '14px',
+                fontWeight: 500,
+                border: '1px solid rgba(0, 0, 0, 0.05)',
+                maxWidth: '400px',
+              },
+              success: {
+                iconTheme: {
+                  primary: '#07c160',
+                  secondary: '#fff',
+                },
+                duration: 2000,
+              },
+              error: {
+                iconTheme: {
+                  primary: '#ef4444',
+                  secondary: '#fff',
+                },
+                duration: 3000,
+              },
+            }}
+          />
+          <Header />
+          <main className={mainClass} style={mainStyle} data-show-history={showHistory}>
+            <button
+              className={`history-toggle ${showHistory ? '' : 'is-collapsed'}`}
+              onClick={() => setShowHistory((prev) => !prev)}
+              aria-label={showHistory ? '隐藏列表' : '显示列表'}
+            >
+              <span className="sr-only">{showHistory ? '隐藏列表' : '显示列表'}</span>
+            </button>
+            <div className={`history-pane ${showHistory ? 'is-visible' : 'is-hidden'}`} aria-hidden={!showHistory}>
+              <div className="history-pane__content">
+                {isElectron || storageType === 'filesystem' ? <FileSidebar /> : <HistoryPanel />}
+              </div>
+            </div>
         <div className="workspace">
           <div className="editor-pane">
-            <MarkdownEditor />
+            {historyLoading && !isElectron && storageType === 'indexeddb' ? (
+              <div className="workspace-loading">
+                <Loader2 className="animate-spin" size={24} />
+                <p>正在加载文章</p>
+              </div>
+            ) : (
+              <MarkdownEditor />
+            )}
           </div>
           <div className="preview-pane">
-            <MarkdownPreview />
+            {historyLoading && !isElectron && storageType === 'indexeddb' ? (
+              <div className="workspace-loading">
+                <Loader2 className="animate-spin" size={24} />
+                <p>正在加载文章</p>
+              </div>
+            ) : (
+              <MarkdownPreview />
+            )}
           </div>
         </div>
-      </main>
+          </main>
+      </>
     </div>
   );
 }

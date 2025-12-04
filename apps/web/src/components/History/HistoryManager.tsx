@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useEditorStore } from '../../store/editorStore';
+import { useEditorStore, defaultMarkdown } from '../../store/editorStore';
 import { useHistoryStore } from '../../store/historyStore';
 
 const AUTO_SAVE_INTERVAL = 10 * 1000; // 10 seconds - better balance for web storage
@@ -34,35 +34,67 @@ export function HistoryManager() {
   const history = useHistoryStore((state) => state.history);
   const activeId = useHistoryStore((state) => state.activeId);
   const setActiveId = useHistoryStore((state) => state.setActiveId);
+  const loading = useHistoryStore((state) => state.loading);
 
   const latestRef = useRef({ markdown, theme, customCSS, themeName });
+  const prevMarkdownRef = useRef(markdown);
   const isInitialMountRef = useRef(true);
   const isRestoringRef = useRef(false);
   const hasUserEditedRef = useRef(false);
   const hasAppliedInitialHistoryRef = useRef(false);
   const creatingInitialSnapshotRef = useRef(false);
+  const hasLoadedHistoryRef = useRef(false);
+  const wasLoadingRef = useRef(false);
+  const restoringContentRef = useRef<string | null>(null);
 
   useEffect(() => {
     loadHistory();
   }, [loadHistory]);
 
+  // Track loading lifecycle
+  useEffect(() => {
+    if (loading) {
+      wasLoadingRef.current = true;
+    } else if (wasLoadingRef.current) {
+      hasLoadedHistoryRef.current = true;
+    }
+  }, [loading]);
+
   useEffect(() => {
     latestRef.current = { markdown, theme, customCSS, themeName };
+
+    const markdownChanged = markdown !== prevMarkdownRef.current;
+    prevMarkdownRef.current = markdown;
+
     if (isInitialMountRef.current) {
       isInitialMountRef.current = false;
       return;
     }
-    if (isRestoringRef.current) {
-      return;
+
+    // Check if this change matches the content we are restoring
+    if (restoringContentRef.current !== null && markdown === restoringContentRef.current) {
+      console.log('[History] Content matched restoring content, skipping edit mark');
+      restoringContentRef.current = null; // Reset
+      return; // Skip marking as edited
     }
-    hasUserEditedRef.current = true;
+
+    // Only mark as edited if:
+    // 1. Markdown actually changed
+    // 2. We are not restoring (legacy check, keep for safety)
+    // 3. We are not loading
+    // 4. History has finished loading at least once
+    if (markdownChanged && !isRestoringRef.current && !loading && hasLoadedHistoryRef.current) {
+      console.log('[History] User edit detected:', { markdownChanged, isRestoring: isRestoringRef.current, loading, hasLoadedHistory: hasLoadedHistoryRef.current });
+      hasUserEditedRef.current = true;
+    }
 
     if (creatingInitialSnapshotRef.current) return;
 
-    const { activeId: currentActiveId, history: currentHistory, loading } = useHistoryStore.getState();
-    if (loading) return;
+    const { activeId: currentActiveId, history: currentHistory, loading: storeLoading } = useHistoryStore.getState();
+    if (storeLoading) return;
 
     if (!currentActiveId && currentHistory.length === 0 && markdown.trim()) {
+      console.log('[History] Creating initial snapshot');
       creatingInitialSnapshotRef.current = true;
       void saveSnapshot(
         {
@@ -82,20 +114,34 @@ export function HistoryManager() {
   const persistLatestSnapshot = useCallback(async () => {
     const snapshot = latestRef.current;
     if (!snapshot.markdown.trim()) return;
-    const { activeId: currentActiveId } = useHistoryStore.getState();
-    if (!currentActiveId) {
-      await saveSnapshot(
-        {
-          markdown: snapshot.markdown,
-          theme: snapshot.theme,
-          customCSS: snapshot.customCSS,
-          title: deriveTitle(snapshot.markdown),
-          themeName: snapshot.themeName,
-        },
-        { force: true },
-      );
+
+    // Prevent auto-save if user hasn't edited or if we are currently restoring history
+    if (!hasUserEditedRef.current || isRestoringRef.current) {
+      // console.log('[History] Skipping auto-save:', { hasUserEdited: hasUserEditedRef.current, isRestoring: isRestoringRef.current });
       return;
     }
+
+    const { activeId: currentActiveId, history: currentHistory, loading: storeLoading } = useHistoryStore.getState();
+    if (storeLoading) return;
+
+    console.log('[History] Auto-saving...', { activeId: currentActiveId });
+
+    if (!currentActiveId) {
+      if (currentHistory.length === 0) {
+        await saveSnapshot(
+          {
+            markdown: snapshot.markdown,
+            theme: snapshot.theme,
+            customCSS: snapshot.customCSS,
+            title: deriveTitle(snapshot.markdown),
+            themeName: snapshot.themeName,
+          },
+          { force: true },
+        );
+      }
+      return;
+    }
+
     await persistActiveSnapshot({
       markdown: snapshot.markdown,
       theme: snapshot.theme,
@@ -154,7 +200,9 @@ export function HistoryManager() {
       setActiveId(candidateEntry.id);
     }
 
+    console.log('[History] Restoring content:', candidateEntry.id);
     isRestoringRef.current = true;
+    restoringContentRef.current = candidateEntry.markdown; // Set expected content
     setMarkdown(candidateEntry.markdown);
     setTheme(candidateEntry.theme);
     setCustomCSS(candidateEntry.customCSS);
