@@ -6,6 +6,7 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors();
+  app.setGlobalPrefix('api');
 
   // 配置静态文件服务
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {

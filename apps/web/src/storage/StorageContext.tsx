@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { StorageAdapter } from './StorageAdapter';
-import type { StorageType } from './types';
+import type { StorageType, StorageInitResult } from './types';
 import { useStorage } from '../hooks/useStorage';
 
 interface StorageContextValue {
@@ -8,7 +8,7 @@ interface StorageContextValue {
   type: StorageType;
   ready: boolean;
   message: string;
-  select: (type: StorageType) => Promise<void>;
+  select: (type: StorageType) => Promise<StorageInitResult>;
   isFileSystemSupported: boolean;
 }
 

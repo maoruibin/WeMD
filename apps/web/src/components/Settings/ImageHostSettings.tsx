@@ -58,7 +58,7 @@ export function ImageHostSettings() {
         setTestResult('测试中...');
         try {
             const { ImageHostManager } = await import('../../services/image/ImageUploader');
-            const manager = new ImageHostManager(config);
+            const manager = new ImageHostManager(currentConfig);
             const valid = await manager.validate();
             setTestResult(valid ? '✅ 配置有效' : '❌ 配置无效');
         } catch (error) {

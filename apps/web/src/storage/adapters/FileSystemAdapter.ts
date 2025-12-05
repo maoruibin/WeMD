@@ -71,7 +71,7 @@ export class FileSystemAdapter implements StorageAdapter {
     const result: FileItem[] = [];
     for await (const entry of handle.values()) {
       if (entry.kind === 'file' && entry.name.endsWith('.md')) {
-        const file = await entry.getFile();
+        const file = await (entry as FileSystemFileHandle).getFile();
         result.push({
           path: entry.name,
           name: entry.name,
