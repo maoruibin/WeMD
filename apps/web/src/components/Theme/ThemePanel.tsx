@@ -3,11 +3,37 @@ import toast from 'react-hot-toast';
 import { Plus, Copy, Trash2, X, AlertTriangle } from 'lucide-react';
 import { useEditorStore } from '../../store/editorStore';
 import { useHistoryStore } from '../../store/historyStore';
+import { useUITheme } from '../../hooks/useUITheme';
 import './ThemePanel.css';
 
 interface ThemePanelProps {
   open: boolean;
   onClose: () => void;
+}
+
+// UI 主题选择器组件
+function UIThemeSelector() {
+  const { theme, setTheme } = useUITheme();
+
+  return (
+    <div className="ui-theme-selector">
+      <div className="ui-theme-label">界面风格</div>
+      <div className="ui-theme-options">
+        <button
+          className={`ui-theme-option ${theme === 'default' ? 'active' : ''}`}
+          onClick={() => setTheme('default')}
+        >
+          微信绿
+        </button>
+        <button
+          className={`ui-theme-option ${theme === 'structuralism' ? 'active' : ''}`}
+          onClick={() => setTheme('structuralism')}
+        >
+          复古蓝
+        </button>
+      </div>
+    </div>
+  );
 }
 
 export function ThemePanel({ open, onClose }: ThemePanelProps) {
@@ -149,7 +175,10 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
     <div className="theme-overlay" onClick={onClose}>
       <div className="theme-modal" onClick={(e) => e.stopPropagation()}>
         <div className="theme-header">
-          <h3>主题管理</h3>
+          <div className="theme-header-left">
+            <h3>主题管理</h3>
+            <UIThemeSelector />
+          </div>
           <button className="close-btn" onClick={onClose} aria-label="关闭">
             <X size={20} />
           </button>

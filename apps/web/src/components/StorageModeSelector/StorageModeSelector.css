@@ -7,7 +7,7 @@
 
 .storage-mode-tip {
   margin: 0 0 4px;
-  color: #4b5563;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
@@ -18,17 +18,17 @@
 
 .storage-mode-option {
   text-align: left;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
+  border: var(--border-width) solid var(--border-light);
   padding: 14px;
-  background: white;
+  background: var(--bg-primary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .storage-mode-option.active {
-  border-color: #07c160;
-  box-shadow: 0 4px 12px rgba(7, 193, 96, 0.15);
+  border-color: var(--accent-primary);
+  box-shadow: var(--shadow-md);
 }
 
 .storage-mode-option:disabled {
@@ -41,34 +41,34 @@
   align-items: center;
   justify-content: space-between;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .storage-mode-option__label small {
   font-size: 11px;
-  color: #07c160;
+  color: var(--accent-primary);
 }
 
 .storage-mode-option p {
   margin: 8px 0 0;
-  color: #6b7280;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
 .storage-mode-notice {
   margin-top: 6px;
   font-size: 12px;
-  color: #b45309;
-  background: rgba(251, 191, 36, 0.15);
+  color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 20%, transparent);
   padding: 6px 10px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 
 .storage-mode-status {
   padding: 10px 12px;
-  border-radius: 10px;
-  background: rgba(7, 193, 96, 0.1);
-  color: #065f46;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--accent-primary) 18%, transparent);
+  color: color-mix(in srgb, var(--accent-primary) 65%, #000000);
   font-size: 13px;
 }
 
@@ -84,13 +84,13 @@
 }
 
 .storage-modal-panel {
-  background: #fff;
-  border-radius: 20px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
   width: min(900px, 90vw);
   max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-xl);
+  border: var(--border-width) solid var(--border-light);
   padding: 24px;
 }
 
@@ -104,6 +104,7 @@
 .storage-modal-header h3 {
   margin: 0;
   font-size: 18px;
+  color: var(--text-primary);
 }
 
 .storage-modal-close {
@@ -112,5 +113,5 @@
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
-  color: #6b7280;
+  color: var(--text-secondary);
 }

@@ -13,9 +13,9 @@
 }
 
 .theme-modal {
-  background: rgba(255, 255, 255, 0.96);
-  border-radius: 24px;
-  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  border-radius: var(--radius-xl);
+  border: var(--border-width) solid var(--border-light);
   width: 90%;
   max-width: 1000px;
   height: 650px;
@@ -38,27 +38,76 @@
   margin: 0;
   font-size: 18px;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .close-btn {
-  background: #f2f4f7;
+  background: var(--bg-secondary);
   border: none;
   font-size: 24px;
-  color: #7c889c;
+  color: var(--text-secondary);
   cursor: pointer;
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   transition: all 0.2s;
 }
 
 .close-btn:hover {
-  background: #eefbf4;
+  background: var(--bg-hover);
   color: var(--accent-primary);
+}
+
+/* UI 主题选择器 - 标题旁边 */
+.theme-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ui-theme-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ui-theme-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.ui-theme-options {
+  display: flex;
+  gap: 4px;
+}
+
+.ui-theme-option {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ui-theme-option:hover:not(.active) {
+  background: var(--bg-hover);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.ui-theme-option.active {
+  background: var(--accent-gradient);
+  color: white;
+  border-color: transparent;
 }
 
 .theme-body {
@@ -77,16 +126,16 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: #f6f8fb;
+  background: var(--bg-secondary);
 }
 
 .btn-new-theme {
   width: 100%;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #07c160 0%, #05a850 100%);
+  background: var(--accent-gradient);
   color: white;
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -95,7 +144,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  box-shadow: 0 8px 20px rgba(7, 193, 96, 0.3);
+  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -103,7 +152,7 @@
 
 .btn-new-theme:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(7, 193, 96, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .theme-group {
@@ -115,7 +164,7 @@
 .theme-group-title {
   font-size: 11px;
   font-weight: 600;
-  color: #9aa3b5;
+  color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding-bottom: 6px;
@@ -126,25 +175,25 @@
   text-align: left;
   padding: 10px 14px;
   border: none;
-  background: rgba(255, 255, 255, 0.6);
+  background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
   cursor: pointer;
   font-size: 13px;
-  color: #344054;
+  color: var(--text-secondary);
   transition: all 0.2s;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   position: relative;
 }
 
 .theme-item:hover {
-  background: rgba(255, 255, 255, 0.9);
-  color: #111827;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .theme-item.active {
-  background: #f0fff7;
+  background: var(--bg-hover);
   color: var(--accent-primary);
   font-weight: 600;
-  box-shadow: inset 0 0 0 1px rgba(7, 193, 96, 0.4);
+  box-shadow: inset 0 0 0 var(--border-width) color-mix(in srgb, var(--accent-primary) 35%, transparent);
 }
 
 /* 右侧编辑区 */
@@ -168,7 +217,7 @@
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
   margin-bottom: 6px;
 }
 
@@ -176,24 +225,25 @@
 .theme-form textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #d4dae3;
-  border-radius: 14px;
+  border: var(--border-width) solid var(--border-light);
+  border-radius: var(--radius-md);
   font-size: 14px;
   transition: all 0.2s;
-  background: #fff;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .theme-form input:focus,
 .theme-form textarea:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.15);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 25%, transparent);
 }
 
 .theme-form input:disabled,
 .theme-form textarea:disabled {
-  background: #f5f7fb;
-  color: #9ca3af;
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
   cursor: not-allowed;
 }
 
@@ -208,11 +258,11 @@
 .info-hint {
   margin: 0;
   padding: 12px 16px;
-  background: #f0fff7;
+  background: color-mix(in srgb, var(--accent-primary) 12%, transparent);
   border-left: 3px solid var(--accent-primary);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-size: 13px;
-  color: #0f6b3c;
+  color: color-mix(in srgb, var(--accent-primary) 65%, #000000);
   line-height: 1.5;
 }
 
@@ -222,7 +272,7 @@
   gap: 8px;
   padding: 16px 28px;
   border-top: 1px solid var(--border-light);
-  background: #f7f9fc;
+  background: var(--bg-secondary);
 }
 
 .flex-spacer {
@@ -232,8 +282,8 @@
 .btn-icon-text {
   padding: 8px 14px;
   border: 1px solid var(--border-light);
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
@@ -243,24 +293,24 @@
 }
 
 .btn-icon-text:hover {
-  background: #f2fbf6;
+  background: var(--bg-hover);
   border-color: var(--accent-primary);
   color: var(--accent-primary);
 }
 
 .btn-icon-text.btn-danger {
-  color: #f04438;
-  border-color: #f9d4cf;
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 40%, transparent);
 }
 
 .btn-icon-text.btn-danger:hover {
-  background: #fdecec;
+  background: color-mix(in srgb, var(--error) 12%, transparent);
 }
 
 .btn-secondary,
 .btn-primary {
   padding: 10px 20px;
-  border-radius: 12px;
+  border-radius: var(--radius-pill);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -269,8 +319,8 @@
 }
 
 .btn-secondary {
-  background: white;
-  color: #475467;
+  background: var(--bg-primary);
+  color: var(--text-secondary);
   border: 1px solid var(--border-light);
 }
 
@@ -280,18 +330,18 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #07c160 0%, #05a850 100%);
+  background: var(--accent-gradient);
   color: white;
-  box-shadow: 0 8px 20px rgba(7, 193, 96, 0.3);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(7, 193, 96, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-primary:disabled {
-  background: #d3dbe3;
+  background: var(--border-light);
   box-shadow: none;
   cursor: not-allowed;
 }
@@ -310,7 +360,7 @@
   .theme-sidebar {
     width: 100%;
     border-right: none;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid var(--border-light);
     max-height: 200px;
   }
 
@@ -338,11 +388,11 @@
 }
 
 .delete-confirm-box {
-  background: white;
+  background: var(--bg-primary);
   padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: var(--border-width) solid var(--border-light);
   width: 320px;
   text-align: center;
   animation: popIn 0.2s ease-out;
@@ -364,13 +414,13 @@
   margin: 0 0 12px;
   font-size: 16px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .delete-confirm-box p {
   margin: 0 0 20px;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 

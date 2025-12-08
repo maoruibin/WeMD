@@ -5,14 +5,15 @@ interface OfficialConfig {
 }
 
 /**
- * 官方图床（通过后端上传到腾讯云 COS）
+ * 官方图床（通过 Cloudflare Worker 上传到 R2）
  */
 export class OfficialUploader implements ImageUploader {
     name = '官方图床';
     private serverUrl: string;
 
     constructor(config?: OfficialConfig) {
-        this.serverUrl = config?.serverUrl || 'http://localhost:4000';
+        // 默认使用 Cloudflare Worker API
+        this.serverUrl = config?.serverUrl || 'https://api.wemd.app';
     }
 
     configure(config: OfficialConfig) {
@@ -30,11 +31,16 @@ export class OfficialUploader implements ImageUploader {
             body: formData,
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            throw new Error(`上传失败: ${response.statusText}`);
+            throw new Error(data.error || `上传失败: ${response.statusText}`);
         }
 
-        const data = await response.json();
+        if (!data.url) {
+            throw new Error('服务器未返回图片地址');
+        }
+
         return data.url;
     }
 }

@@ -1,74 +1,50 @@
 /* 全局样式 - 现代亮色主题 */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-    /* 配色方案 - 高级感亮色主题 */
-    --bg-page: #f5f7f9;
-    /* 极淡的冷灰/蓝灰色背景 */
-    --bg-primary: #ffffff;
-    /* 纯白卡片背景 */
-    --bg-secondary: #f8f9fa;
-    /* 次要背景 */
-    --bg-tertiary: #e9ecef;
-    /* 第三级背景 */
-    --bg-hover: #f1f3f5;
-    /* 悬停背景 */
+    --bg-page: var(--ui-bg-page);
+    --bg-primary: var(--ui-bg-primary);
+    --bg-secondary: var(--ui-bg-secondary);
+    --bg-tertiary: var(--ui-bg-tertiary);
+    --bg-hover: var(--ui-bg-hover);
+    --bg-card-muted: var(--ui-bg-card-muted);
 
-    --text-primary: #1a1a1a;
-    /* 更深的主文本色 */
-    --text-secondary: #64748b;
-    /* 蓝灰色次要文本 */
-    --text-tertiary: #94a3b8;
-    /* 玻璃态变量 */
-    --glass-bg: rgba(255, 255, 255, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.5);
-    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-    --glass-blur: blur(20px);
+    --text-primary: var(--ui-text-primary);
+    --text-secondary: var(--ui-text-secondary);
+    --text-tertiary: var(--ui-text-tertiary);
 
-    --border-color: #e2e8f0;
-    /* 浅色边框 */
-    --border-light: #f1f5f9;
-    /* 极浅边框 */
+    --glass-bg: color-mix(in srgb, var(--ui-bg-primary) 92%, transparent);
+    --glass-border: color-mix(in srgb, var(--ui-border-color) 40%, transparent);
+    --glass-shadow: var(--ui-shadow-lg);
+    --glass-blur: var(--ui-glass-blur);
 
-    /* 品牌色 - 微信绿的优化版 */
-    --accent-primary: #07c160;
-    --accent-hover: #06ad56;
-    --accent-active: #059b4c;
-    --accent-gradient: linear-gradient(135deg, #07c160 0%, #05a850 100%);
+    --border-color: var(--ui-border-color);
+    --border-light: var(--ui-border-light);
 
-    /* 功能色 */
+    --accent-primary: var(--ui-accent-primary);
+    --accent-hover: color-mix(in srgb, var(--ui-accent-primary) 85%, #ffffff);
+    --accent-active: color-mix(in srgb, var(--ui-accent-primary) 75%, #000000);
+    --accent-gradient: var(--ui-accent-gradient);
+
     --success: #10b981;
     --success-bg: #ecfdf5;
     --warning: #f59e0b;
     --error: #ef4444;
 
-    /* 高级感阴影 (弥散阴影 - 优化版) */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-    /* 更柔和的悬浮阴影 */
+    --shadow-sm: var(--ui-shadow-sm);
+    --shadow-md: var(--ui-shadow-md);
+    --shadow-lg: var(--ui-shadow-lg);
     --shadow-premium:
-        0 0 0 1px rgba(0, 0, 0, 0.03),
-        0 2px 8px rgba(0, 0, 0, 0.04),
-        0 8px 24px rgba(0, 0, 0, 0.04);
+        0 0 0 var(--border-width) color-mix(in srgb, var(--ui-border-color) 25%, transparent),
+        var(--ui-shadow-md);
 
-    /* 圆角 */
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
-    /* 卡片圆角 */
+    --radius-sm: var(--ui-radius-sm);
+    --radius-md: var(--ui-radius-md);
+    --radius-lg: var(--ui-radius-lg);
+    --radius-xl: var(--ui-radius-xl);
 
-    /* 间距 */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-    --spacing-xxl: 40px;
-
-    /* 字体 - 增加专业等宽字体 */
-    --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-    --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+    --font-sans: var(--ui-font-sans, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif);
+    --font-mono: var(--ui-font-mono);
 }
 
 * {
@@ -80,7 +56,6 @@
 body {
     font-family: var(--font-sans);
     background: var(--bg-page);
-    /* 修正为 bg-page */
     color: var(--text-primary);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -109,8 +84,7 @@ body {
 
 /* 选中文本 */
 ::selection {
-    background: rgba(7, 193, 96, 0.15);
-    /* 使用品牌色 */
+    background: color-mix(in srgb, var(--accent-primary) 25%, transparent);
     color: inherit;
 }
 
@@ -118,8 +92,11 @@ body {
 button {
     font-family: var(--font-sans);
     cursor: pointer;
-    border: none;
+    border: var(--border-width) solid transparent;
+    border-radius: var(--radius-sm);
     outline: none;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     transition: all 0.2s ease;
 }
 

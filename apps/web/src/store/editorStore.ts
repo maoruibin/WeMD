@@ -180,7 +180,7 @@ $$
 ---
 
 ## 9. 图片
-![WeMD](https://wemd-1302564514.cos.ap-guangzhou.myqcloud.com/images/CleanShot%202025-11-28%20at%2016.40.11%402x.png)
+![WeMD](https://img.wemd.app/favicon-dark.png)
 
 **开始编辑吧!** 🚀
 `;

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useEditorStore, defaultMarkdown } from '../../store/editorStore';
+import { useEditorStore } from '../../store/editorStore';
 import { useHistoryStore } from '../../store/historyStore';
 
 const AUTO_SAVE_INTERVAL = 10 * 1000; // 10 seconds - better balance for web storage

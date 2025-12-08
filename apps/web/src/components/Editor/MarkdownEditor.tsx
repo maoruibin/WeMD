@@ -5,8 +5,6 @@ import { EditorState } from '@codemirror/state';
 import { githubLight } from '@uiw/codemirror-theme-github';
 import { wechatMarkdownHighlighting } from './markdownTheme';
 import { useEditorStore } from '../../store/editorStore';
-import { useSettingsStore } from '../../store/settingsStore';
-import { uploadImageToGitHub, uploadImageToLocal } from '../../services/imageUploader';
 import { countWords, countLines } from '../../utils/wordCount';
 import { Toolbar } from './Toolbar';
 import toast from 'react-hot-toast';
@@ -23,12 +21,8 @@ export function MarkdownEditor() {
     const editorRef = useRef<HTMLDivElement>(null);
     const viewRef = useRef<EditorView | null>(null);
     const { markdown: content, setMarkdown } = useEditorStore();
-    const workspaceDir = useEditorStore((state) => state.workspaceDir);
-    const currentFilePath = useEditorStore((state) => state.currentFilePath);
-    const setWorkspaceDir = useEditorStore((state) => state.setWorkspaceDir);
     const initialContent = useRef(content);
     const isSyncingRef = useRef(false);
-    const isElectron = typeof window !== 'undefined' && !!(window as any).electron;
 
     useEffect(() => {
         if (!editorRef.current) return;

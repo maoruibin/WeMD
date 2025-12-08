@@ -22,20 +22,21 @@
     align-items: center;
     gap: 12px;
     padding: 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
+    border: 2px solid var(--border-light);
+    border-radius: var(--radius-lg);
     cursor: pointer;
     transition: all 0.2s;
+    background: var(--bg-primary);
 }
 
 .host-type-selector label:hover {
-    border-color: #cbd5e1;
-    background: #f8fafc;
+    border-color: var(--border-color);
+    background: var(--bg-secondary);
 }
 
 .host-type-selector label:has(input:checked) {
-    border-color: #07c160;
-    background: #f0fdf4;
+    border-color: var(--accent-primary);
+    background: var(--bg-hover);
 }
 
 .host-option {
@@ -47,12 +48,12 @@
 
 .host-option strong {
     font-size: 15px;
-    color: #0f172a;
+    color: var(--text-primary);
 }
 
 .host-option span {
     font-size: 13px;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .host-config-panel {
@@ -68,21 +69,21 @@
     justify-content: center;
     height: 100%;
     padding: 40px;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 2px dashed #cbd5e1;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--border-light);
 }
 
 .config-empty p {
     margin: 0;
     font-size: 15px;
-    color: #64748b;
+    color: var(--text-secondary);
 }
 
 .host-config {
     padding: 20px;
-    background: #f8fafc;
-    border-radius: 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -97,30 +98,32 @@
 .config-field label {
     font-size: 14px;
     font-weight: 500;
-    color: #334155;
+    color: var(--text-primary);
 }
 
 .config-field input {
     padding: 10px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s;
+    background: var(--bg-primary);
+    color: var(--text-primary);
 }
 
 .config-field input:focus {
-    border-color: #07c160;
-    box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 25%, transparent);
 }
 
 .config-field small {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-tertiary);
 }
 
 .config-field small a {
-    color: #07c160;
+    color: var(--accent-primary);
     text-decoration: none;
 }
 
@@ -130,11 +133,11 @@
 
 .host-config>small {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-tertiary);
 }
 
 .host-config>small a {
-    color: #07c160;
+    color: var(--accent-primary);
     text-decoration: none;
 }
 
@@ -144,10 +147,10 @@
 
 .host-config button {
     padding: 10px 20px;
-    background: #07c160;
-    color: white;
+    background: var(--accent-primary);
+    color: #ffffff;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-pill);
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
@@ -156,13 +159,13 @@
 }
 
 .host-config button:hover {
-    background: #06a84f;
+    background: color-mix(in srgb, var(--accent-primary) 85%, #000000);
 }
 
 .test-result {
     padding: 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     font-size: 14px;
-    background: #f1f5f9;
-    color: #334155;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
 }

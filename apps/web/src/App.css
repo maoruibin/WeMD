@@ -3,9 +3,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  /* 极简柔光背景 - 专业、干净 */
-  background:
-    radial-gradient(circle at 50% 0%, #ffffff, #f0f2f5);
+  background: var(--bg-page);
 }
 
 .app-main {
@@ -39,14 +37,11 @@
   border-radius: var(--radius-xl);
 
   /* 玻璃态样式 */
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-
-  box-shadow:
-    0 8px 32px 0 rgba(31, 38, 135, 0.05),
-    0 1px 2px 0 rgba(0, 0, 0, 0.02);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 
   transition:
     transform 0.35s ease,
@@ -79,7 +74,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  color: #475467;
+  color: var(--text-secondary);
   font-size: 14px;
   height: 100%;
   width: 100%;
@@ -92,14 +87,11 @@
   border-radius: var(--radius-xl);
 
   /* 玻璃态样式 */
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-
-  box-shadow:
-    0 8px 32px 0 rgba(31, 38, 135, 0.05),
-    0 1px 2px 0 rgba(0, 0, 0, 0.02);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: var(--border-width) solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
 
   overflow: hidden;
   display: flex;
@@ -111,10 +103,8 @@
 .editor-pane:hover,
 .preview-pane:hover {
   transform: translateY(-4px);
-  box-shadow:
-    0 0 0 1px rgba(0, 0, 0, 0.03),
-    0 8px 20px rgba(0, 0, 0, 0.06),
-    0 20px 40px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-premium);
+  border-color: color-mix(in srgb, var(--border-color) 60%, transparent);
 }
 
 /* 响应式布局 */
@@ -156,14 +146,14 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(7, 193, 96, 0.35);
-  background: rgba(255, 255, 255, 0.82);
-  color: #0f172a;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  border: var(--border-width) solid color-mix(in srgb, var(--accent-primary) 60%, transparent);
+  background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-md);
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
@@ -186,17 +176,17 @@
 
 .history-toggle:hover {
   transform: translateY(-50%) translateX(2px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
-  background: rgba(255, 255, 255, 0.94);
-  border-color: rgba(7, 193, 96, 0.5);
+  box-shadow: var(--shadow-lg);
+  background: var(--bg-primary);
+  border-color: var(--accent-primary);
 }
 
 .history-toggle.is-collapsed {
-  background: rgba(15, 23, 42, 0.9);
-  color: #f8fafc;
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  border-color: color-mix(in srgb, var(--text-primary) 35%, transparent);
   transform: translateY(-50%) translateX(-1px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .history-toggle.is-collapsed::before {

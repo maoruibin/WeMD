@@ -25,43 +25,61 @@ export interface ImageHostConfig {
 
 /**
  * 图床管理器
+ * 使用动态导入实现按需加载，减少首屏加载体积
  */
 export class ImageHostManager {
-    private uploader: ImageUploader;
+    private uploaderPromise: Promise<ImageUploader>;
+    private config: ImageHostConfig;
 
     constructor(config: ImageHostConfig) {
-        this.uploader = this.createUploader(config);
+        this.config = config;
+        this.uploaderPromise = this.createUploader(config);
     }
 
-    private createUploader(config: ImageHostConfig): ImageUploader {
+    /**
+     * 动态加载对应的图床上传器
+     * 只有在用户选择特定图床时才会加载对应的 SDK
+     */
+    private async createUploader(config: ImageHostConfig): Promise<ImageUploader> {
         switch (config.type) {
-            case 'official':
+            case 'official': {
+                const { OfficialUploader } = await import('./uploaders/OfficialUploader');
                 return new OfficialUploader(config.config);
-            case 'qiniu':
+            }
+            case 'qiniu': {
+                const { QiniuUploader } = await import('./uploaders/QiniuUploader');
                 return new QiniuUploader(config.config);
-            case 'aliyun':
+            }
+            case 'aliyun': {
+                const { AliyunUploader } = await import('./uploaders/AliyunUploader');
                 return new AliyunUploader(config.config);
-            case 'tencent':
+            }
+            case 'tencent': {
+                const { TencentUploader } = await import('./uploaders/TencentUploader');
                 return new TencentUploader(config.config);
-            default:
+            }
+            default: {
+                const { OfficialUploader } = await import('./uploaders/OfficialUploader');
                 return new OfficialUploader(config.config);
+            }
         }
     }
 
     async upload(file: File): Promise<string> {
-        return await this.uploader.upload(file);
+        // 统一检查文件大小（最大 10MB）
+        const MAX_SIZE = 10 * 1024 * 1024;
+        if (file.size > MAX_SIZE) {
+            throw new Error('图片大小不能超过 10MB');
+        }
+        const uploader = await this.uploaderPromise;
+        return await uploader.upload(file);
     }
 
     async validate(): Promise<boolean> {
-        if (this.uploader.validate) {
-            return await this.uploader.validate();
+        const uploader = await this.uploaderPromise;
+        if (uploader.validate) {
+            return await uploader.validate();
         }
         return true;
     }
 }
-
-// 导入各个实现
-import { OfficialUploader } from './uploaders/OfficialUploader';
-import { QiniuUploader } from './uploaders/QiniuUploader';
-import { AliyunUploader } from './uploaders/AliyunUploader';
-import { TencentUploader } from './uploaders/TencentUploader';

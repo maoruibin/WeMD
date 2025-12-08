@@ -1,14 +1,12 @@
 .app-header {
     height: 72px;
-    /* 悬浮设计 */
     margin: 16px 24px 0;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
-
+    border-radius: var(--radius-xl);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: var(--border-width) solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -17,11 +15,6 @@
     top: 16px;
     z-index: 100;
     transition: all 0.3s ease;
-}
-
-/* 移除旧的阴影 */
-.app-header {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .header-left {
@@ -35,15 +28,15 @@
     align-items: center;
     gap: 8px;
     padding: 6px 10px;
-    border-radius: 999px;
-    background: rgba(0, 0, 0, 0.04);
+    border-radius: var(--radius-pill);
+    background: var(--bg-hover);
     font-size: 12px;
-    color: #4a5568;
+    color: var(--text-secondary);
 }
 
 .workspace-status .workspace-label {
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--text-primary);
 }
 
 .workspace-status .workspace-path {
@@ -51,20 +44,21 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #2d3748;
+    color: var(--text-secondary);
 }
 
 .workspace-status .workspace-path.unset {
-    color: #e53e3e;
+    color: var(--error);
 }
 
 .workspace-status .btn-ghost {
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    background: white;
+    border: var(--border-width) solid var(--border-light);
+    background: var(--bg-primary);
     padding: 4px 10px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     font-size: 12px;
     cursor: pointer;
+    color: var(--text-secondary);
 }
 
 .logo {
@@ -97,12 +91,39 @@
 .logo-subtitle {
     font-size: 11px;
     color: var(--text-secondary);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-hover);
     padding: 2px 8px;
-    border-radius: 100px;
-    /* 胶囊形状 */
+    border-radius: var(--radius-pill);
     font-weight: 500;
     letter-spacing: 0.5px;
+}
+
+/* UI 主题切换按钮 */
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--ui-border-light);
+    border-radius: var(--ui-radius-sm);
+    background: var(--ui-bg-primary);
+    color: var(--ui-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--ui-accent-primary);
+    color: white;
+    border-color: var(--ui-accent-primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle-btn:active {
+    transform: translateY(0);
 }
 
 .header-right {
@@ -119,13 +140,12 @@
     gap: 8px;
     padding: 10px 24px;
     background: var(--accent-gradient) !important;
-    color: white !important;
+    color: #ffffff !important;
     border: none;
-    border-radius: 100px;
-    /* 全圆角 */
+    border-radius: var(--radius-pill);
     font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(7, 193, 96, 0.25);
+    box-shadow: var(--shadow-md);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     letter-spacing: 0.3px;
@@ -133,13 +153,12 @@
 
 .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(7, 193, 96, 0.3);
-    filter: brightness(1.05);
+    box-shadow: var(--shadow-lg);
 }
 
 .btn-primary:active {
     transform: translateY(1px);
-    box-shadow: 0 2px 4px rgba(7, 193, 96, 0.2);
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-primary svg {
@@ -155,8 +174,8 @@
     padding: 10px 20px;
     background: transparent;
     color: var(--text-secondary);
-    border: 1px solid transparent;
-    border-radius: 100px;
+    border: var(--border-width) solid var(--border-light);
+    border-radius: var(--radius-pill);
     font-size: 14px;
     font-weight: 500;
     transition: all 0.2s ease;
@@ -164,8 +183,9 @@
 }
 
 .btn-secondary:hover {
-    background: rgba(0, 0, 0, 0.03);
+    background: var(--bg-hover);
     color: var(--text-primary);
+    border-color: var(--border-color);
 }
 
 .btn-secondary svg {
@@ -183,16 +203,14 @@
     height: 40px;
     background: transparent;
     border: none;
-    /* 移除边框 */
-    border-radius: 50%;
-    /* 圆形 */
+    border-radius: var(--radius-pill);
     color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .btn-icon:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-hover);
     color: var(--text-primary);
     transform: rotate(15deg);
     /* 趣味微动效 */
@@ -287,7 +305,7 @@
 
 .css-editor-textarea:focus {
     border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 35%, transparent);
 }
 
 .css-editor-footer {

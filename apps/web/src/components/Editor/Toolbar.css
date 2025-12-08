@@ -3,8 +3,8 @@
     align-items: center;
     gap: 4px;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.6);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    background: var(--bg-secondary);
+    border-bottom: var(--border-width) solid var(--border-light);
     flex-wrap: wrap;
 }
 
@@ -16,16 +16,16 @@
     height: 32px;
     padding: 0;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     background: transparent;
-    color: #64748b;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .md-toolbar-btn:hover {
-    background: rgba(7, 193, 96, 0.1);
-    color: var(--wechat-green, #07c160);
+    background: color-mix(in srgb, var(--accent-primary) 15%, transparent);
+    color: var(--accent-primary);
 }
 
 .md-toolbar-btn:active {
@@ -33,13 +33,14 @@
 }
 
 .md-toolbar-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
+    color: var(--text-tertiary);
 }
 
 .md-toolbar-btn:disabled:hover {
     background: transparent;
-    color: #64748b;
+    color: var(--text-tertiary);
 }
 
 .spinning {

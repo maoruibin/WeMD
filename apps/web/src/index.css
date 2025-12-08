@@ -15,34 +15,81 @@ body,
 
   color-scheme: light;
 
-  /* Theme Variables */
-  --bg-page: #f8f9fa;
-  --bg-primary: #ffffff;
-  --bg-secondary: #f6f8fb;
-  --bg-tertiary: #eef2f6;
-  --bg-card-muted: #f1f5f9;
-  --bg-hover: #e6f5eb;
+  /* ========================================
+     DEFAULT UI THEME (Current Style)
+     ======================================== */
 
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-tertiary: #64748b;
+  /* Colors */
+  --ui-bg-page: #f8f9fa;
+  --ui-bg-primary: #ffffff;
+  --ui-bg-secondary: #f6f8fb;
+  --ui-bg-tertiary: #eef2f6;
+  --ui-bg-card-muted: #f1f5f9;
+  --ui-bg-hover: #e6f5eb;
 
-  --border-light: #e2e8f0;
-  --border-color: #e2e8f0;
+  --ui-text-primary: #0f172a;
+  --ui-text-secondary: #334155;
+  --ui-text-tertiary: #64748b;
 
-  --accent-primary: #07c160;
-  --accent-gradient: linear-gradient(135deg, #07c160 0%, #05a850 100%);
+  --ui-border-color: #e2e8f0;
+  --ui-border-light: #e2e8f0;
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --ui-accent-primary: #07c160;
+  --ui-accent-gradient: linear-gradient(135deg, #07c160 0%, #05a850 100%);
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
+  /* Borders & Radius */
+  --ui-border-width: 1px;
+  --ui-radius-sm: 8px;
+  --ui-radius-md: 12px;
+  --ui-radius-lg: 16px;
+  --ui-radius-xl: 24px;
+  --ui-radius-pill: 999px;
 
-  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+  /* Shadows */
+  --ui-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --ui-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --ui-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --ui-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Fonts */
+  --ui-font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  --ui-font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+
+  /* Spacing */
+  --ui-spacing-unit: 8px;
+  --ui-glass-blur: blur(20px);
+
+  /* Legacy variables for backward compatibility */
+  --bg-page: var(--ui-bg-page);
+  --bg-primary: var(--ui-bg-primary);
+  --bg-secondary: var(--ui-bg-secondary);
+  --bg-tertiary: var(--ui-bg-tertiary);
+  --bg-card-muted: var(--ui-bg-card-muted);
+  --bg-hover: var(--ui-bg-hover);
+  --text-primary: var(--ui-text-primary);
+  --text-secondary: var(--ui-text-secondary);
+  --text-tertiary: var(--ui-text-tertiary);
+  --border-light: var(--ui-border-light);
+  --border-color: var(--ui-border-color);
+  --accent-primary: var(--ui-accent-primary);
+  --accent-gradient: var(--ui-accent-gradient);
+  --shadow-sm: var(--ui-shadow-sm);
+  --shadow-md: var(--ui-shadow-md);
+  --shadow-lg: var(--ui-shadow-lg);
+  --shadow-xl: var(--ui-shadow-xl);
+  --radius-sm: var(--ui-radius-sm);
+  --radius-md: var(--ui-radius-md);
+  --radius-lg: var(--ui-radius-lg);
+  --radius-xl: var(--ui-radius-xl);
+  --radius-pill: var(--ui-radius-pill);
+  --border-width: var(--ui-border-width);
+  --spacing-xs: calc(var(--ui-spacing-unit) * 0.5);
+  --spacing-sm: var(--ui-spacing-unit);
+  --spacing-md: calc(var(--ui-spacing-unit) * 2);
+  --spacing-lg: calc(var(--ui-spacing-unit) * 3);
+  --spacing-xl: calc(var(--ui-spacing-unit) * 4);
+  --spacing-xxl: calc(var(--ui-spacing-unit) * 5);
+  --font-mono: var(--ui-font-mono);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -50,66 +97,45 @@ body,
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
+/* ========================================
+   STRUCTURALISM UI THEME
+   ======================================== */
+[data-ui-theme="structuralism"] {
+  /* Colors */
+  --ui-bg-page: #f9fafb;
+  --ui-bg-primary: #ffffff;
+  --ui-bg-secondary: #f9fafb;
+  --ui-bg-tertiary: #f3f4f6;
+  --ui-bg-card-muted: #f3f4f6;
+  --ui-bg-hover: #e0e7ff;
 
-a:hover {
-  color: #535bf2;
-}
+  --ui-text-primary: #000000;
+  --ui-text-secondary: #6b7280;
+  --ui-text-tertiary: #9ca3af;
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: var(--bg-page);
-  color: var(--text-primary);
-}
+  --ui-border-color: #000000;
+  --ui-border-light: #d1d5db;
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+  --ui-accent-primary: #0025F5;
+  --ui-accent-gradient: linear-gradient(135deg, #0025F5 0%, #001bb3 100%);
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
+  /* Borders & Radius */
+  --ui-border-width: 2px;
+  --ui-radius-sm: 0px;
+  --ui-radius-md: 0px;
+  --ui-radius-lg: 0px;
+  --ui-radius-xl: 0px;
+  --ui-radius-pill: 0px;
 
-button:hover {
-  border-color: #646cff;
-}
+  /* Hard Shadows (Structuralism style) */
+  --ui-shadow-sm: 2px 2px 0px 0px #000000;
+  --ui-shadow-md: 4px 4px 0px 0px #000000;
+  --ui-shadow-lg: 6px 6px 0px 0px #000000;
+  --ui-shadow-xl: 8px 8px 0px 0px #000000;
 
-button:focus,
-button:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.25);
-  /* 微信绿光晕 */
-  border-color: var(--accent-primary);
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-
-  a:hover {
-    color: #747bff;
-  }
-
-  button {
-    background-color: #f9f9f9;
-  }
+  /* Fonts */
+  --ui-font-sans: 'Space Grotesk', 'Inter', 'Helvetica Neue', sans-serif;
+  --ui-font-mono: 'JetBrains Mono', 'SF Mono', 'Monaco', monospace;
+  --ui-spacing-unit: 8px;
+  --ui-glass-blur: blur(0px);
 }

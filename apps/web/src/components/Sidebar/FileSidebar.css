@@ -17,7 +17,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    border-bottom: var(--border-width) solid var(--border-light);
 }
 
 .fs-workspace-info {
@@ -26,10 +26,10 @@
     gap: 8px;
     font-size: 15px;
     font-weight: 700;
-    color: var(--text-primary, #0f172a);
+    color: var(--text-primary);
     cursor: pointer;
     padding: 6px 10px;
-    border-radius: 8px;
+    border-radius: var(--radius-pill);
     transition: all 0.2s ease;
     max-width: 180px;
     background-color: transparent;
@@ -37,7 +37,7 @@
 }
 
 .fs-workspace-info:hover {
-    background-color: rgba(0, 0, 0, 0.04);
+    background-color: var(--bg-hover);
     opacity: 1;
 }
 
@@ -57,8 +57,8 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--text-secondary, #64748b);
-    border-radius: 50%;
+    color: var(--text-secondary);
+    border-radius: var(--radius-pill);
     transition: all 0.2s;
     display: flex;
     align-items: center;
@@ -72,8 +72,8 @@
 }
 
 .fs-btn-secondary:hover {
-    background: rgba(0, 0, 0, 0.04);
-    color: var(--text-primary, #0f172a);
+    background: var(--bg-hover);
+    color: var(--text-primary);
 }
 
 .fs-search {
@@ -90,27 +90,27 @@
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-tertiary, #94a3b8);
+    color: var(--text-tertiary);
     pointer-events: none;
 }
 
 .fs-search-wrapper input {
     width: 100%;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 12px;
+    border: var(--border-width) solid var(--border-light);
+    border-radius: var(--radius-md);
     padding: 10px 16px 10px 36px;
     font-size: 13px;
-    background: rgba(255, 255, 255, 0.4);
+    background: color-mix(in srgb, var(--bg-primary) 85%, transparent);
     transition: all 0.2s ease;
     backdrop-filter: blur(4px);
     outline: none;
-    color: #333;
+    color: var(--text-primary);
 }
 
 .fs-search-wrapper input:focus {
-    background: rgba(255, 255, 255, 0.8);
-    border-color: var(--accent-primary, #07c160);
-    box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.1);
+    background: var(--bg-primary);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 25%, transparent);
 }
 
 .fs-body {
@@ -132,8 +132,8 @@
 
 .fs-item {
     border: 1px solid transparent;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.4);
+    border-radius: var(--radius-lg);
+    background: color-mix(in srgb, var(--bg-primary) 80%, transparent);
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -144,14 +144,14 @@
 
 .fs-item:hover {
     transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: var(--bg-primary);
+    box-shadow: var(--shadow-sm);
 }
 
 .fs-item.active {
-    background: #fff;
-    border: 1px solid rgba(7, 193, 96, 0.3);
-    box-shadow: 0 8px 20px -4px rgba(7, 193, 96, 0.15), 0 0 0 1px rgba(7, 193, 96, 0.1);
+    background: var(--bg-primary);
+    border: var(--border-width) solid color-mix(in srgb, var(--accent-primary) 35%, transparent);
+    box-shadow: var(--shadow-md);
 }
 
 .fs-item-main {
@@ -170,13 +170,13 @@
 
 .fs-time {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--text-tertiary);
 }
 
 .fs-title {
     font-size: 15px;
     font-weight: 600;
-    color: #0f172a;
+    color: var(--text-primary);
     line-height: 1.5;
     white-space: nowrap;
     overflow: hidden;
@@ -187,7 +187,7 @@
 
 .fs-theme-info {
     font-size: 11px;
-    color: var(--wechat-green, #07c160);
+    color: var(--accent-primary);
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -202,47 +202,48 @@
 }
 
 .fs-rename input {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
+    border: var(--border-width) solid var(--border-light);
+    border-radius: var(--radius-md);
     padding: 6px 12px;
     font-size: 14px;
-    background: #fff;
+    background: var(--bg-primary);
     width: 100%;
     /* Take full width */
     outline: none;
     transition: all 0.2s;
+    color: var(--text-primary);
 }
 
 .fs-rename input:focus {
-    border-color: var(--wechat-green, #07c160);
-    box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.1);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-primary) 25%, transparent);
 }
 
 .fs-rename button {
     border: none;
-    background: #f5f6fa;
+    background: var(--bg-secondary);
     padding: 6px 12px;
-    border-radius: 12px;
+    border-radius: var(--radius-pill);
     cursor: pointer;
     font-size: 13px;
-    color: #111827;
+    color: var(--text-primary);
     transition: background 0.2s;
     white-space: nowrap;
     flex-shrink: 0;
 }
 
 .fs-rename button:hover {
-    background: #e6f5eb;
-    color: var(--wechat-green, #07c160);
+    background: var(--bg-hover);
+    color: var(--accent-primary);
 }
 
 .fs-action-trigger {
     border: none;
     width: 28px;
     height: 28px;
-    border-radius: 50%;
+    border-radius: var(--radius-pill);
     background: transparent;
-    color: #94a3b8;
+    color: var(--text-tertiary);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -265,8 +266,8 @@
 }
 
 .fs-action-trigger:hover {
-    background: #f1f5f9;
-    color: #475467;
+    background: var(--bg-hover);
+    color: var(--text-secondary);
     transform: scale(1.1);
 }
 
@@ -276,7 +277,7 @@
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    color: #7c889c;
+    color: var(--text-secondary);
     padding: 24px;
     text-align: center;
 }
@@ -297,10 +298,10 @@
     flex-direction: column;
     gap: 4px;
     padding: 8px;
-    border-radius: 12px;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    border: var(--border-width) solid var(--border-light);
+    box-shadow: var(--shadow-lg);
     z-index: 1200;
     min-width: 180px;
     white-space: nowrap;
@@ -326,7 +327,7 @@
     font-size: 13px;
     padding: 6px 12px;
     border-radius: 8px;
-    color: #334155;
+    color: var(--text-secondary);
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
     display: flex;
@@ -335,14 +336,14 @@
 }
 
 .fs-context-menu button:hover {
-    background: #f1f5f9;
-    color: var(--wechat-green, #07c160);
+    background: var(--bg-hover);
+    color: var(--accent-primary);
 }
 
 .fs-context-menu button.danger {
-    color: #f04438;
+    color: var(--error);
 }
 
 .fs-context-menu button.danger:hover {
-    background: #fef2f2;
+    background: color-mix(in srgb, var(--error) 12%, transparent);
 }
