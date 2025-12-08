@@ -24,6 +24,9 @@
         "appId": "app.wemd.desktop",
         "productName": "WeMD",
         "linux": {
+            "target": [
+                "AppImage"
+            ],
             "maintainer": "tenngo <tenngo@wemd.app>",
             "category": "Office"
         }
