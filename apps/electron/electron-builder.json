@@ -7,14 +7,16 @@
     "files": [
         "main.js",
         "preload.js",
-        "assets/**/*"
+        "assets/**/*",
+        "!**/.DS_Store"
     ],
     "extraResources": [
         {
             "from": "../web/dist",
             "to": "web-dist",
             "filter": [
-                "**/*"
+                "**/*",
+                "!**/.DS_Store"
             ]
         }
     ],
