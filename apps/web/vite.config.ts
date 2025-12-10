@@ -1,12 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Electron 打包需要使用相对路径，Web 部署使用绝对路径
-const isElectronBuild = process.env.ELECTRON_BUILD === 'true';
-
 // https://vite.dev/config/
 export default defineConfig({
-  base: isElectronBuild ? './' : '/',
+  // Electron 和大多数静态部署都建议使用相对路径
+  base: './',
   plugins: [react()],
   build: {
     rollupOptions: {

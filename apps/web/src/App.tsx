@@ -18,10 +18,22 @@ import { useHistoryStore } from './store/historyStore';
 import { useFileStore } from './store/fileStore';
 
 function App() {
-  const { workspacePath } = useFileSystem();
+  const { workspacePath, saveFile } = useFileSystem();
   const { type: storageType, ready } = useStorageContext();
   const historyLoading = useHistoryStore((state) => state.loading);
   const fileLoading = useFileStore((state) => state.isLoading);
+
+  // Global Save Shortcut (One listener to rule them all)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+        e.preventDefault();
+        saveFile(true); // showToast = true
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [saveFile]);
 
   // Check if running in Electron
   const isElectron = useMemo(() => {

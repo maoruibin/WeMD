@@ -359,6 +359,7 @@ themeName: ${themeName}
 
     // --- Effects ---
 
+
     // Init: Load saved workspace (Electron only)
     useEffect(() => {
         if (electron) {
@@ -366,29 +367,42 @@ themeName: ${themeName}
             if (saved) {
                 loadWorkspace(saved);
             }
-        } else if (storageReady && storageType === 'filesystem') {
-            // Web: refresh files when storage is ready (only for filesystem mode)
-            setLoading(true);
-            (async () => {
-                try {
-                    await refreshFiles();
-                    // Auto-open last file or first file
-                    const lastPath = localStorage.getItem(LAST_FILE_KEY);
-                    const { files: currentFiles } = useFileStore.getState();
-                    if (currentFiles.length > 0) {
-                        const targetFile = lastPath
-                            ? currentFiles.find(f => f.path === lastPath) || currentFiles[0]
-                            : currentFiles[0];
-                        if (targetFile) {
-                            await openFile(targetFile);
+        } else {
+            // Web: Reset state when storage type changes
+            setCurrentFile(null);
+            setMarkdown('');
+            useEditorStore.getState().setTheme('default');
+            useEditorStore.getState().setThemeName('默认主题');
+            isDirty.current = false;
+            lastSavedContent.current = '';
+
+            if (storageReady && storageType === 'filesystem') {
+                // Web: refresh files when storage is ready (only for filesystem mode)
+                setLoading(true);
+                (async () => {
+                    try {
+                        await refreshFiles();
+                        // Auto-open last file or first file
+                        const lastPath = localStorage.getItem(LAST_FILE_KEY);
+                        const { files: currentFiles } = useFileStore.getState();
+                        if (currentFiles.length > 0) {
+                            const targetFile = lastPath
+                                ? currentFiles.find(f => f.path === lastPath) || currentFiles[0]
+                                : currentFiles[0];
+                            if (targetFile) {
+                                await openFile(targetFile);
+                            }
                         }
+                    } finally {
+                        setLoading(false);
                     }
-                } finally {
-                    setLoading(false);
-                }
-            })();
-            // Set a virtual workspace path for UI display
-            setWorkspacePath(storageType === 'filesystem' ? '本地文件夹' : '浏览器存储');
+                })();
+                // Set a virtual workspace path for UI display
+                setWorkspacePath(storageType === 'filesystem' ? '本地文件夹' : '浏览器存储');
+            } else if (storageReady && storageType === 'indexeddb') {
+                // IndexedDB Mode: Clear workspace path
+                setWorkspacePath('浏览器存储');
+            }
         }
     }, [electron, storageReady, storageType]);
 
@@ -442,17 +456,10 @@ themeName: ${themeName}
         return () => clearTimeout(timer);
     }, [markdown, theme, themeName, currentFile, saveFile]);
 
-    // Cmd+S 手动保存快捷键
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 's') {
-                e.preventDefault();
-                saveFile(true); // showToast = true
-            }
-        };
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [saveFile]);
+
+    // Removed duplicate Cmd+S listener from here. 
+    // It should be handled in App.tsx or a single top-level component.
+
 
     return {
         workspacePath,
