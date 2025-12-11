@@ -270,14 +270,45 @@ export const bauhausTheme = `/* 包豪斯风格 */
 }
 
 /* 代码块 - 极简黑 */
-/* 注意：不要设置 color，让语法高亮主题控制文字颜色 */
 #wemd pre code.hljs {
     background: #111;
-    /* color 由 .hljs 语法高亮主题控制 */
+    color: #f5f5f5; /* 默认亮色文字 */
     padding: 20px;
     border-radius: 0;
     font-family: monospace;
     border: 2px solid #111;
+}
+
+/* 语法高亮颜色覆盖 - 确保在黑色背景上可读 */
+#wemd pre code.hljs .hljs-keyword,
+#wemd pre code.hljs .hljs-selector-tag,
+#wemd pre code.hljs .hljs-built_in,
+#wemd pre code.hljs .hljs-name,
+#wemd pre code.hljs .hljs-tag {
+    color: #FBC02D; /* 包豪斯黄 */
+}
+
+#wemd pre code.hljs .hljs-string,
+#wemd pre code.hljs .hljs-title,
+#wemd pre code.hljs .hljs-section,
+#wemd pre code.hljs .hljs-attribute,
+#wemd pre code.hljs .hljs-literal,
+#wemd pre code.hljs .hljs-template-tag,
+#wemd pre code.hljs .hljs-template-variable,
+#wemd pre code.hljs .hljs-type {
+    color: #D32F2F; /* 包豪斯红 */
+}
+
+#wemd pre code.hljs .hljs-comment,
+#wemd pre code.hljs .hljs-quote {
+    color: #888; /* 灰色注释 */
+}
+
+#wemd pre code.hljs .hljs-number,
+#wemd pre code.hljs .hljs-regexp,
+#wemd pre code.hljs .hljs-variable,
+#wemd pre code.hljs .hljs-params {
+    color: #1976D2; /* 包豪斯蓝 */
 }
 
 /* 如果没有语法高亮，设置默认黄色 */

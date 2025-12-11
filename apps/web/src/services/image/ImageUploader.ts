@@ -1,6 +1,7 @@
 /**
  * 图床上传接口
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface ImageUploader {
     /** 图床名称 */
     name: string;
@@ -9,6 +10,7 @@ export interface ImageUploader {
     upload(file: File): Promise<string>;
 
     /** 配置图床（可选） */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     configure?(config: any): void;
 
     /** 验证配置（可选） */
@@ -20,6 +22,7 @@ export interface ImageUploader {
  */
 export interface ImageHostConfig {
     type: 'official' | 'qiniu' | 'aliyun' | 'tencent';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     config?: any;
 }
 

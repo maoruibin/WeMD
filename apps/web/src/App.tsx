@@ -37,7 +37,7 @@ function App() {
 
   // Check if running in Electron
   const isElectron = useMemo(() => {
-    // @ts-ignore
+    // @ts-expect-error Electron type defs
     return typeof window !== 'undefined' && window.electron?.isElectron;
   }, []);
 
@@ -142,6 +142,7 @@ function App() {
               ))}
             </div>
           </div>
+          {isElectron && <div className="window-drag-region" />}
           <div className="workspace">
             <div className="editor-pane">
               {/* 存储未就绪或文件/历史加载中显示 loading */}

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { createMarkdownParser, processHtml } from '@wemd/core';
 import { useEditorStore } from '../../store/editorStore';
+import { useThemeStore } from '../../store/themeStore';
 import './MarkdownPreview.css';
 
 const SYNC_SCROLL_EVENT = 'wemd-sync-scroll';
@@ -11,7 +12,8 @@ interface SyncScrollDetail {
 }
 
 export function MarkdownPreview() {
-  const { markdown, theme, customCSS, getThemeCSS } = useEditorStore();
+  const { markdown } = useEditorStore();
+  const { themeId: theme, customCSS, getThemeCSS } = useThemeStore();
   const [html, setHtml] = useState('');
   const previewRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);

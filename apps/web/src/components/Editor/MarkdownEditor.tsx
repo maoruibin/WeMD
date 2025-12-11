@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EditorView, minimalSetup } from 'codemirror';
 import { keymap } from '@codemirror/view';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
@@ -8,6 +8,7 @@ import { wechatMarkdownHighlighting } from './markdownTheme';
 import { useEditorStore } from '../../store/editorStore';
 import { countWords, countLines } from '../../utils/wordCount';
 import { Toolbar } from './Toolbar';
+import { SearchPanel } from './SearchPanel';
 import toast from 'react-hot-toast';
 import './MarkdownEditor.css';
 
@@ -45,6 +46,19 @@ export function MarkdownEditor() {
     const { markdown: content, setMarkdown } = useEditorStore();
     const initialContent = useRef(content);
     const isSyncingRef = useRef(false);
+    const [showSearch, setShowSearch] = useState(false);
+
+    // Cmd/Ctrl+F 打开搜索面板
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+                e.preventDefault();
+                setShowSearch(true);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     useEffect(() => {
         if (!editorRef.current) return;
@@ -68,6 +82,15 @@ export function MarkdownEditor() {
                                 event.preventDefault();
                                 const file = item.getAsFile();
                                 if (!file) continue;
+
+                                // 检查图片大小，超过 2MB 拒绝上传
+                                const MAX_SIZE_MB = 2;
+                                const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+                                if (file.size > MAX_SIZE_BYTES) {
+                                    const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+                                    toast.error(`请压缩图片后再试，公众号不支持超过 2MB 的图片外链(当前 ${sizeMB}MB)`, { duration: 4000 });
+                                    continue;
+                                }
 
                                 // 使用 ImageHostManager 统一上传
                                 const uploadPromise = (async () => {
@@ -238,6 +261,12 @@ export function MarkdownEditor() {
                 <span className="editor-title">Markdown 编辑器</span>
             </div>
             <Toolbar onInsert={handleInsert} />
+            {showSearch && viewRef.current && (
+                <SearchPanel
+                    view={viewRef.current}
+                    onClose={() => setShowSearch(false)}
+                />
+            )}
             <div className="editor-body-wrapper">
                 <div ref={editorRef} className="editor-container" />
             </div>

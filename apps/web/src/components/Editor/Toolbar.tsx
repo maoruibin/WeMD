@@ -47,9 +47,10 @@ export function Toolbar({ onInsert }: ToolbarProps) {
             return;
         }
 
-        // 验证文件大小（最大 10MB）
-        if (file.size > 10 * 1024 * 1024) {
-            toast.error('图片大小不能超过 10MB');
+        // 验证文件大小（最大 2MB，微信公众号限制）
+        if (file.size > 2 * 1024 * 1024) {
+            const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+            toast.error(`请压缩图片后再试，公众号不支持超过 2MB 的图片外链(当前 ${sizeMB}MB)`, { duration: 4000 });
             return;
         }
 
@@ -87,7 +88,7 @@ export function Toolbar({ onInsert }: ToolbarProps) {
                     key={index}
                     className="md-toolbar-btn"
                     onClick={() => onInsert(tool.prefix, tool.suffix, tool.placeholder)}
-                    title={tool.label}
+                    data-tooltip={tool.label}
                 >
                     <tool.icon size={16} />
                 </button>
@@ -98,7 +99,7 @@ export function Toolbar({ onInsert }: ToolbarProps) {
                 className="md-toolbar-btn"
                 onClick={handleImageClick}
                 disabled={uploading}
-                title="上传图片"
+                data-tooltip="上传图片"
             >
                 {uploading ? <Loader2 size={16} className="spinning" /> : <Image size={16} />}
             </button>

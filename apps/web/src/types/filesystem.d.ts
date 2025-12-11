@@ -57,6 +57,6 @@ declare global {
         | { type: 'truncate'; size: number };
 
     interface Window {
-        showDirectoryPicker(options?: any): Promise<FileSystemDirectoryHandle>;
+        showDirectoryPicker(options?: { id?: string; mode?: 'read' | 'readwrite'; startIn?: FileSystemHandle | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' }): Promise<FileSystemDirectoryHandle>;
     }
 }

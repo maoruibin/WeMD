@@ -40,6 +40,7 @@
 | 💾 | **本地优先** | 数据存储在本地，无需登录，隐私安全 |
 | 📱 | **跨平台** | Web 端 + 桌面端（macOS / Windows / Linux） |
 | 🌙 | **界面风格** | 微信绿 / 复古蓝 双主题可选 |
+| 🔍 | **高级搜索** | 支持正则匹配、全词匹配、批量替换 |
 
 ---
 
@@ -110,6 +111,7 @@ WeMD/
 │   └── electron/   # Electron 桌面端
 ├── packages/
 │   └── core/       # Markdown 解析 / 主题 / 工具
+├── templates/      # 主题 CSS 模板
 └── turbo.json      # Turborepo 配置
 ```
 

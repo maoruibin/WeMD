@@ -1,32 +1,42 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useFileStore } from '../store/fileStore';
 import { useEditorStore } from '../store/editorStore';
+import { useThemeStore } from '../store/themeStore';
 import { useStorageContext } from '../storage/StorageContext';
+import type { FileItem } from '../store/fileTypes';
 import toast from 'react-hot-toast';
 
 // Define Electron API type locally for safety
+interface ElectronFileItem {
+    name: string;
+    path: string;
+    createdAt: string;
+    updatedAt: string;
+    size?: number;
+}
+
 interface ElectronAPI {
     fs: {
         selectWorkspace: () => Promise<{ success: boolean; path?: string; canceled?: boolean }>;
         setWorkspace: (dir: string) => Promise<{ success: boolean; path?: string }>;
-        listFiles: (dir?: string) => Promise<{ success: boolean; files?: any[] }>;
+        listFiles: (dir?: string) => Promise<{ success: boolean; files?: ElectronFileItem[] }>;
         readFile: (path: string) => Promise<{ success: boolean; content?: string; error?: string }>;
         createFile: (payload: { filename?: string; content?: string }) => Promise<{ success: boolean; filePath?: string; filename?: string }>;
         saveFile: (payload: { filePath: string; content: string }) => Promise<{ success: boolean; error?: string }>;
         renameFile: (payload: { oldPath: string; newName: string }) => Promise<{ success: boolean; filePath?: string; error?: string }>;
         deleteFile: (path: string) => Promise<{ success: boolean; error?: string }>;
         revealInFinder: (path: string) => Promise<void>;
-        onRefresh: (cb: () => void) => any;
-        removeRefreshListener: (handler: any) => void;
-        onMenuNewFile: (cb: () => void) => any;
-        onMenuSave: (cb: () => void) => any;
-        onMenuSwitchWorkspace: (cb: () => void) => any;
+        onRefresh: (cb: () => void) => (() => void);
+        removeRefreshListener: (handler: (() => void)) => void;
+        onMenuNewFile: (cb: () => void) => (() => void);
+        onMenuSave: (cb: () => void) => (() => void);
+        onMenuSwitchWorkspace: (cb: () => void) => (() => void);
         removeAllListeners: () => void;
     };
 }
 
 const getElectron = (): ElectronAPI | null => {
-    // @ts-ignore
+    // @ts-expect-error - Electron API is injected at runtime
     return window.electron as ElectronAPI;
 };
 
@@ -42,7 +52,8 @@ export function useFileSystem() {
         setWorkspacePath, setFiles, setCurrentFile, setLoading, setSaving
     } = useFileStore();
 
-    const { setMarkdown, markdown, theme, themeName } = useEditorStore();
+    const { setMarkdown, markdown } = useEditorStore();
+    const { themeId: theme, themeName } = useThemeStore();
 
     // Track last saved content to prevent unnecessary saves
     const lastSavedContent = useRef<string>('');
@@ -85,8 +96,9 @@ export function useFileSystem() {
 
             const res = await electron.fs.listFiles(target);
             if (res.success && res.files) {
-                const mapped = res.files.map((f: any) => ({
+                const mapped = res.files.map((f) => ({
                     ...f,
+                    size: f.size ?? 0,
                     createdAt: new Date(f.createdAt),
                     updatedAt: new Date(f.updatedAt)
                 }));
@@ -127,10 +139,11 @@ export function useFileSystem() {
     }, [loadWorkspace, electron]);
 
     // 4. Open File
-    const openFile = useCallback(async (file: any) => {
+    const openFile = useCallback(async (file: FileItem) => {
         // 切换文件前保存当前文件的更改（包括主题）
         if (currentFile && isDirty.current && !isRestoring.current) {
-            const { markdown: currentMarkdown, theme: currentTheme, themeName: currentThemeName } = useEditorStore.getState();
+            const { markdown: currentMarkdown } = useEditorStore.getState();
+            const { themeId: currentTheme, themeName: currentThemeName } = useThemeStore.getState();
             const frontmatter = `---\ntheme: ${currentTheme}\nthemeName: ${currentThemeName}\n---\n`;
             const fullContent = frontmatter + '\n' + currentMarkdown;
 
@@ -181,18 +194,16 @@ export function useFileSystem() {
                 const themeNameMatch = frontmatterRaw.match(/themeName:\s*(.+)/);
 
                 const theme = themeMatch ? themeMatch[1].trim() : 'default';
-                const themeName = themeNameMatch ? themeNameMatch[1].trim().replace(/^['"]|['"]$/g, '') : '默认主题';
+                // themeName 暂不使用，selectTheme 会自动设置
 
                 setMarkdown(body);
-                useEditorStore.getState().setTheme(theme);
-                useEditorStore.getState().setThemeName(themeName);
+                useThemeStore.getState().selectTheme(theme);
                 lastSavedContent.current = content; // Store full content with frontmatter
                 isDirty.current = false; // Reset dirty flag
             } else {
                 setMarkdown(content);
                 // Reset to defaults if no frontmatter
-                useEditorStore.getState().setTheme('default');
-                useEditorStore.getState().setThemeName('默认主题');
+                useThemeStore.getState().selectTheme('default');
                 lastSavedContent.current = content; // Store full content
                 isDirty.current = false; // Reset dirty flag
             }
@@ -255,7 +266,8 @@ export function useFileSystem() {
         if (!currentFile) return;
         setSaving(true);
 
-        const { markdown, theme, themeName } = useEditorStore.getState();
+        const { markdown } = useEditorStore.getState();
+        const { themeId: theme, themeName } = useThemeStore.getState();
 
         // Construct Frontmatter
         const frontmatter = `---
@@ -283,8 +295,8 @@ themeName: ${themeName}
             try {
                 await adapter.writeFile(currentFile.path, fullContent);
                 success = true;
-            } catch (e: any) {
-                errorMsg = e.message;
+            } catch (e: unknown) {
+                errorMsg = e instanceof Error ? e.message : String(e);
             }
         }
 
@@ -299,7 +311,7 @@ themeName: ${themeName}
     }, [currentFile, electron, adapter, storageReady]);
 
     // 7. Rename File
-    const renameFile = useCallback(async (file: any, newName: string) => {
+    const renameFile = useCallback(async (file: FileItem, newName: string) => {
         const safeName = newName.endsWith('.md') ? newName : `${newName}.md`;
 
         if (electron) {
@@ -328,7 +340,7 @@ themeName: ${themeName}
     }, [refreshFiles, currentFile, electron, adapter, storageReady]);
 
     // 8. Delete File
-    const deleteFile = useCallback(async (file: any) => {
+    const deleteFile = useCallback(async (file: FileItem) => {
         if (!confirm(`确定要删除 "${file.name}" 吗？`)) return;
 
         let success = false;
@@ -371,8 +383,7 @@ themeName: ${themeName}
             // Web: Reset state when storage type changes
             setCurrentFile(null);
             setMarkdown('');
-            useEditorStore.getState().setTheme('default');
-            useEditorStore.getState().setThemeName('默认主题');
+            useThemeStore.getState().selectTheme('default');
             isDirty.current = false;
             lastSavedContent.current = '';
 
@@ -418,9 +429,9 @@ themeName: ${themeName}
     // Menu Events (Electron)
     useEffect(() => {
         if (!electron) return;
-        const newHandler = electron.fs.onMenuNewFile(() => createFile());
-        const saveHandler = electron.fs.onMenuSave(() => saveFile());
-        const switchHandler = electron.fs.onMenuSwitchWorkspace(() => selectWorkspace());
+        electron.fs.onMenuNewFile(() => createFile());
+        electron.fs.onMenuSave(() => saveFile());
+        electron.fs.onMenuSwitchWorkspace(() => selectWorkspace());
 
         return () => {
             // Cleanup
@@ -432,7 +443,7 @@ themeName: ${themeName}
         if (!currentFile || !markdown) return;
         if (isRestoring.current) return;
 
-        const { theme, themeName } = useEditorStore.getState();
+        const { themeId: theme, themeName } = useThemeStore.getState();
         const frontmatter = `---
 theme: ${theme}
 themeName: ${themeName}

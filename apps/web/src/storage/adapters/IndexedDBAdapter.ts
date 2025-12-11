@@ -1,5 +1,5 @@
 import type { StorageAdapter } from '../StorageAdapter';
-import type { FileItem, StorageAdapterContext, StorageInitResult } from '../types';
+import type { FileItem, StorageInitResult } from '../types';
 
 const DB_NAME = 'wemd-files';
 const STORE_NAME = 'files';

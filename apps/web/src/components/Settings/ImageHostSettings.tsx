@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import type { ImageHostConfig } from '../../services/image/ImageUploader';
 import './ImageHostSettings.css';

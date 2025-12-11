@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { FileStoreState, FileItem } from './fileTypes';
+import type { FileStoreState } from './fileTypes';
 
 export const useFileStore = create<FileStoreState>((set) => ({
     workspacePath: null,

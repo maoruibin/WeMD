@@ -223,7 +223,7 @@ export const useHistoryStore = create<HistoryStore>((set, get) => {
       const entry = get().history.find((item) => item.id === id);
       let nextFilePath = entry?.filePath;
       if (entry?.filePath) {
-        const { dir, base, sep } = splitPath(entry.filePath);
+        const { dir, sep } = splitPath(entry.filePath);
         const target = joinPath(dir, normalizeFileName(trimmed), sep);
         if (target !== entry.filePath) {
           const electronFile = getElectronFile();

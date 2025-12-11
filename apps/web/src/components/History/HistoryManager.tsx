@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useEditorStore } from '../../store/editorStore';
+import { useEditorStore, defaultMarkdown } from '../../store/editorStore';
+import { useThemeStore } from '../../store/themeStore';
 import { useHistoryStore } from '../../store/historyStore';
 
 const AUTO_SAVE_INTERVAL = 10 * 1000; // 10 seconds - better balance for web storage
@@ -18,15 +19,16 @@ function deriveTitle(markdown: string) {
 
 export function HistoryManager() {
   const markdown = useEditorStore((state) => state.markdown);
-  const theme = useEditorStore((state) => state.theme);
-  const customCSS = useEditorStore((state) => state.customCSS);
-  const themeName = useEditorStore((state) => state.themeName);
   const setMarkdown = useEditorStore((state) => state.setMarkdown);
-  const setTheme = useEditorStore((state) => state.setTheme);
-  const setCustomCSS = useEditorStore((state) => state.setCustomCSS);
-  const setThemeName = useEditorStore((state) => state.setThemeName);
   const setFilePath = useEditorStore((state) => state.setFilePath);
   const setWorkspaceDir = useEditorStore((state) => state.setWorkspaceDir);
+
+  // 主题相关状态从 themeStore 获取
+  const theme = useThemeStore((state) => state.themeId);
+  const customCSS = useThemeStore((state) => state.customCSS);
+  const themeName = useThemeStore((state) => state.themeName);
+  const selectTheme = useThemeStore((state) => state.selectTheme);
+  const setCustomCSS = useThemeStore((state) => state.setCustomCSS);
 
   const persistActiveSnapshot = useHistoryStore((state) => state.persistActiveSnapshot);
   const saveSnapshot = useHistoryStore((state) => state.saveSnapshot);
@@ -160,8 +162,17 @@ export function HistoryManager() {
   }, [persistLatestSnapshot]);
 
   useEffect(() => {
+    // 历史记录为空时，显示示例文章
     if (!history.length) {
       hasAppliedInitialHistoryRef.current = false;
+      // 只有在加载完成后才填充示例，避免加载过程中的闪烁
+      if (hasLoadedHistoryRef.current) {
+        const latest = latestRef.current;
+        // 仅当当前内容不是示例文章时才填充，避免重复设置
+        if (latest.markdown !== defaultMarkdown) {
+          setMarkdown(defaultMarkdown);
+        }
+      }
       return;
     }
     const candidateEntry = history.find((entry) => entry.id === activeId) ?? history[0];
@@ -191,11 +202,8 @@ export function HistoryManager() {
     isRestoringRef.current = true;
     restoringContentRef.current = candidateEntry.markdown; // Set expected content
     setMarkdown(candidateEntry.markdown);
-    setTheme(candidateEntry.theme);
+    selectTheme(candidateEntry.theme); // 使用 selectTheme 替代 setTheme + setThemeName
     setCustomCSS(candidateEntry.customCSS);
-    if (candidateEntry.themeName) {
-      setThemeName(candidateEntry.themeName);
-    }
     setFilePath(candidateEntry.filePath);
     if (candidateEntry.filePath) {
       const last = Math.max(candidateEntry.filePath.lastIndexOf('/'), candidateEntry.filePath.lastIndexOf('\\'));
@@ -215,7 +223,7 @@ export function HistoryManager() {
     hasUserEditedRef.current = false;
     isRestoringRef.current = false;
     hasAppliedInitialHistoryRef.current = true;
-  }, [history, activeId, setActiveId, setMarkdown, setTheme, setCustomCSS, setThemeName]);
+  }, [history, activeId, setActiveId, setMarkdown, selectTheme, setCustomCSS, setFilePath, setWorkspaceDir]);
 
   return null;
 }

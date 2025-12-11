@@ -56,3 +56,33 @@
         transform: rotate(360deg);
     }
 }
+
+/* 自定义快速 Tooltip */
+.md-toolbar-btn {
+    position: relative;
+}
+
+.md-toolbar-btn::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    padding: 4px 8px;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s, visibility 0.15s;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.md-toolbar-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
+}

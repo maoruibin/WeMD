@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import { Search, Plus, Trash2, MoreHorizontal, Edit2, Copy, Save } from 'lucide-react';
 import { useEditorStore } from '../../store/editorStore';
+import { useThemeStore } from '../../store/themeStore';
 import { useHistoryStore } from '../../store/historyStore';
 import type { HistorySnapshot } from '../../store/historyStore';
 import { useStorageContext } from '../../storage/StorageContext';
@@ -63,10 +64,13 @@ function IndexedHistoryPanel() {
   const loadHistory = useHistoryStore((state) => state.loadHistory);
 
   const setMarkdown = useEditorStore((state) => state.setMarkdown);
-  const setTheme = useEditorStore((state) => state.setTheme);
-  const setCustomCSS = useEditorStore((state) => state.setCustomCSS);
-  const themeName = useEditorStore((state) => state.themeName);
   const resetDocument = useEditorStore((state) => state.resetDocument);
+
+  // 主题相关状态从 themeStore 获取
+  const themeName = useThemeStore((state) => state.themeName);
+  const selectTheme = useThemeStore((state) => state.selectTheme);
+  const setCustomCSS = useThemeStore((state) => state.setCustomCSS);
+
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [tempTitle, setTempTitle] = useState<string>('未命名文章');
   const [actionMenuId, setActionMenuId] = useState<string | null>(null);
@@ -76,14 +80,15 @@ function IndexedHistoryPanel() {
   const handleRestore = async (entry?: HistorySnapshot) => {
     if (!entry) return;
     const editorState = useEditorStore.getState();
+    const themeState = useThemeStore.getState();
     await persistActive({
       markdown: editorState.markdown,
-      theme: editorState.theme,
-      customCSS: editorState.customCSS,
+      theme: themeState.themeId,
+      customCSS: themeState.customCSS,
       themeName,
     });
     setMarkdown(entry.markdown);
-    setTheme(entry.theme);
+    selectTheme(entry.theme);
     setCustomCSS(entry.customCSS);
     setActiveId(entry.id);
     setRenamingId(null);
@@ -101,7 +106,7 @@ function IndexedHistoryPanel() {
         const nextEntry = updatedHistory.find((item) => item.id === nextActive);
         if (nextEntry) {
           setMarkdown(nextEntry.markdown);
-          setTheme(nextEntry.theme);
+          selectTheme(nextEntry.theme);
           setCustomCSS(nextEntry.customCSS);
         }
       } else {
@@ -113,10 +118,11 @@ function IndexedHistoryPanel() {
   const handleCreateArticle = async () => {
     const initial = '# 新文章\n\n';
     const editorState = useEditorStore.getState();
+    const themeState = useThemeStore.getState();
     await persistActive({
       markdown: editorState.markdown,
-      theme: editorState.theme,
-      customCSS: editorState.customCSS,
+      theme: themeState.themeId,
+      customCSS: themeState.customCSS,
       themeName,
     });
     resetDocument({ markdown: initial, theme: 'default', customCSS: '', themeName });
@@ -319,10 +325,12 @@ function IndexedHistoryPanel() {
 
 function FileSystemHistory({ adapter }: { adapter: StorageAdapter }) {
   const setMarkdown = useEditorStore((state) => state.setMarkdown);
-  const setTheme = useEditorStore((state) => state.setTheme);
-  const setThemeName = useEditorStore((state) => state.setThemeName);
-  const setCustomCSS = useEditorStore((state) => state.setCustomCSS);
   const setFilePath = useEditorStore((state) => state.setFilePath);
+
+  // 主题相关状态从 themeStore 获取
+  const selectTheme = useThemeStore((state) => state.selectTheme);
+  const setCustomCSS = useThemeStore((state) => state.setCustomCSS);
+
   const [files, setFiles] = useState<StorageFileItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activePath, setActivePath] = useState<string | null>(null);
@@ -355,8 +363,7 @@ function FileSystemHistory({ adapter }: { adapter: StorageAdapter }) {
       const content = await adapter.readFile(file.path);
       const parsed = parseFsFrontmatter(content);
       setMarkdown(parsed.body);
-      setTheme(parsed.theme);
-      setThemeName(parsed.themeName);
+      selectTheme(parsed.theme);
       setCustomCSS('');
       setFilePath(file.path);
       setActivePath(file.path);
@@ -386,13 +393,14 @@ function FileSystemHistory({ adapter }: { adapter: StorageAdapter }) {
     }
     try {
       setSaving(true);
-      const { markdown, theme, themeName } = useEditorStore.getState();
+      const editorState = useEditorStore.getState();
+      const themeState = useThemeStore.getState();
       const frontmatter = `---
-theme: ${theme}
-themeName: ${themeName}
+theme: ${themeState.themeId}
+themeName: ${themeState.themeName}
 ---
 `;
-      await adapter.writeFile(activePath, `${frontmatter}\n${markdown}`);
+      await adapter.writeFile(activePath, `${frontmatter}\n${editorState.markdown}`);
       toast.success('已保存当前文件');
       await refreshFiles();
     } catch (error) {

@@ -1,10 +1,76 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Plus, Copy, Trash2, X, AlertTriangle } from 'lucide-react';
+import { createMarkdownParser, processHtml } from '@wemd/core';
 import { useEditorStore } from '../../store/editorStore';
+import { useThemeStore } from '../../store/themeStore';
 import { useHistoryStore } from '../../store/historyStore';
 import { useUITheme } from '../../hooks/useUITheme';
 import './ThemePanel.css';
+
+// 主题预览用的示例 Markdown
+const PREVIEW_MARKDOWN = `# 标题示例
+
+这是一段**加粗文本**和*斜体文本*。
+
+## 二级标题
+
+> 这是一段引用文本
+
+- 列表项 1
+- 列表项 2
+
+\`\`\`js
+const hello = "world";
+\`\`\`
+`;
+
+// 实时预览组件 - 使用 iframe 隔离样式
+function ThemeLivePreview({ css }: { css: string }) {
+  const parser = useMemo(() => createMarkdownParser(), []);
+  const html = useMemo(() => {
+    const rawHtml = parser.render(PREVIEW_MARKDOWN);
+    // 使用内联样式模式，确保样式完全隔离
+    return processHtml(rawHtml, css, true);
+  }, [parser, css]);
+
+  // 构建完整的 iframe 内容
+  const iframeContent = useMemo(() => {
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            background: #fff;
+          }
+        </style>
+      </head>
+      <body>${html}</body>
+      </html>
+    `;
+  }, [html]);
+
+  return (
+    <div className="theme-live-preview">
+      <div className="preview-header-mini">
+        <span>实时预览</span>
+      </div>
+      <iframe
+        className="preview-iframe"
+        srcDoc={iframeContent}
+        title="主题预览"
+        sandbox="allow-same-origin"
+      />
+    </div>
+  );
+}
 
 interface ThemePanelProps {
   open: boolean;
@@ -37,17 +103,19 @@ function UIThemeSelector() {
 }
 
 export function ThemePanel({ open, onClose }: ThemePanelProps) {
-  const theme = useEditorStore((state) => state.theme);
-  const selectTheme = useEditorStore((state) => state.selectTheme);
-  const createTheme = useEditorStore((state) => state.createTheme);
-  const updateTheme = useEditorStore((state) => state.updateTheme);
-  const deleteTheme = useEditorStore((state) => state.deleteTheme);
-  const duplicateTheme = useEditorStore((state) => state.duplicateTheme);
-  const getAllThemes = useEditorStore((state) => state.getAllThemes);
-  const customThemesFromStore = useEditorStore((state) => state.customThemes);
+  const theme = useThemeStore((state) => state.themeId);
+  const selectTheme = useThemeStore((state) => state.selectTheme);
+  const createTheme = useThemeStore((state) => state.createTheme);
+  const updateTheme = useThemeStore((state) => state.updateTheme);
+  const deleteTheme = useThemeStore((state) => state.deleteTheme);
+  const duplicateTheme = useThemeStore((state) => state.duplicateTheme);
+  const getAllThemes = useThemeStore((state) => state.getAllThemes);
+  const customThemesFromStore = useThemeStore((state) => state.customThemes);
   const persistActiveSnapshot = useHistoryStore((state) => state.persistActiveSnapshot);
   // Re-compute allThemes when customThemes changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const allThemes = useMemo(() => getAllThemes(), [getAllThemes, customThemesFromStore]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const isElectron = typeof window !== 'undefined' && !!(window as any).electron;
   const [selectedThemeId, setSelectedThemeId] = useState<string>('');
   const [nameInput, setNameInput] = useState('');
@@ -133,10 +201,11 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
       });
 
       if (!isElectron) {
-        const state = useEditorStore.getState();
-        if (state.theme === selectedThemeId) {
+        const editorState = useEditorStore.getState();
+        const themeState = useThemeStore.getState();
+        if (themeState.themeId === selectedThemeId) {
           await persistActiveSnapshot({
-            markdown: state.markdown,
+            markdown: editorState.markdown,
             theme: selectedThemeId,
             customCSS: '',
             themeName: nameInput.trim() || '未命名主题',
@@ -195,10 +264,25 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
               <Plus size={16} /> 新建自定义主题
             </button>
 
-            {customThemes.length > 0 && (
+            <div className="theme-list-scroll">
+              {customThemes.length > 0 && (
+                <div className="theme-group">
+                  <div className="theme-group-title">自定义主题</div>
+                  {customThemes.map((item) => (
+                    <button
+                      key={item.id}
+                      className={`theme-item ${item.id === selectedThemeId ? 'active' : ''}`}
+                      onClick={() => handleSelectTheme(item.id)}
+                    >
+                      {item.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="theme-group">
-                <div className="theme-group-title">自定义主题</div>
-                {customThemes.map((item) => (
+                <div className="theme-group-title">内置主题</div>
+                {builtInThemes.map((item) => (
                   <button
                     key={item.id}
                     className={`theme-item ${item.id === selectedThemeId ? 'active' : ''}`}
@@ -208,19 +292,6 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
                   </button>
                 ))}
               </div>
-            )}
-
-            <div className="theme-group">
-              <div className="theme-group-title">内置主题</div>
-              {builtInThemes.map((item) => (
-                <button
-                  key={item.id}
-                  className={`theme-item ${item.id === selectedThemeId ? 'active' : ''}`}
-                  onClick={() => handleSelectTheme(item.id)}
-                >
-                  {item.name}
-                </button>
-              ))}
             </div>
           </div>
 
@@ -247,28 +318,35 @@ export function ThemePanel({ open, onClose }: ThemePanelProps) {
             )}
 
             <div className="theme-form">
-              <label>主题名称</label>
-              <input
-                value={nameInput}
-                onChange={(e) => setNameInput(e.target.value)}
-                placeholder="输入主题名称..."
-                disabled={!isCreating && !isCustomTheme}
-              />
+              {/* 实时预览区 - 嵌入在表单内 */}
+              <div className="theme-form-preview">
+                <ThemeLivePreview css={cssInput} />
+              </div>
 
-              <label>CSS 样式</label>
-              <textarea
-                value={cssInput}
-                onChange={(e) => setCssInput(e.target.value)}
-                placeholder="输入 CSS 样式代码..."
-                spellCheck={false}
-                disabled={!isCreating && !isCustomTheme}
-              />
+              <div className="theme-form-fields">
+                <label>主题名称</label>
+                <input
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  placeholder="输入主题名称..."
+                  disabled={!isCreating && !isCustomTheme}
+                />
 
-              {!isCreating && !isCustomTheme && (
-                <p className="info-hint">
-                  💡 内置主题不可编辑，点击"复制"按钮可以基于此主题创建自定义主题
-                </p>
-              )}
+                <label>CSS 样式</label>
+                <textarea
+                  value={cssInput}
+                  onChange={(e) => setCssInput(e.target.value)}
+                  placeholder="输入 CSS 样式代码..."
+                  spellCheck={false}
+                  disabled={!isCreating && !isCustomTheme}
+                />
+
+                {!isCreating && !isCustomTheme && (
+                  <p className="info-hint">
+                    💡 内置主题不可编辑，点击"复制"按钮可以基于此主题创建自定义主题
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="theme-actions">

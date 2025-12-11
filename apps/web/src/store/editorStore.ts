@@ -1,20 +1,10 @@
+/**
+ * 编辑器状态管理
+ * 只管理编辑器核心功能：Markdown 内容、文件路径、复制到微信
+ * 主题相关功能已迁移到 themeStore.ts
+ */
 import { create } from 'zustand';
-import {
-  basicTheme,
-  customDefaultTheme,
-  codeGithubTheme,
-  academicPaperTheme,
-  auroraGlassTheme,
-  bauhausTheme,
-  cyberpunkNeonTheme,
-  knowledgeBaseTheme,
-  luxuryGoldTheme,
-  morandiForestTheme,
-  neoBrutalismTheme,
-  receiptTheme,
-  sunsetFilmTheme,
-  templateTheme
-} from '@wemd/core';
+import { useThemeStore } from './themeStore';
 
 export interface ResetOptions {
   markdown?: string;
@@ -23,54 +13,25 @@ export interface ResetOptions {
   themeName?: string;
 }
 
-export interface ThemeDefinition {
-  id: string;
-  name: string;
-  css: string;
-}
-
-export interface CustomTheme {
-  id: string;
-  name: string;
-  css: string;
-  isBuiltIn: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
 interface EditorStore {
+  // Markdown 内容
   markdown: string;
   setMarkdown: (markdown: string) => void;
 
-  theme: string;
-  setTheme: (theme: string) => void;
-  themeName: string;
-  setThemeName: (name: string) => void;
-  themes: ThemeDefinition[];
-  setThemes: (themes: ThemeDefinition[]) => void;
-  selectTheme: (themeId: string) => void;
-
-  customCSS: string;
-  setCustomCSS: (css: string) => void;
-  getThemeCSS: (theme: string) => string;
-
-  // Custom theme management
-  customThemes: CustomTheme[];
-  getAllThemes: () => CustomTheme[];
-  createTheme: (name: string, css?: string) => CustomTheme;
-  updateTheme: (id: string, updates: Partial<Pick<CustomTheme, 'name' | 'css'>>) => void;
-  deleteTheme: (id: string) => void;
-  duplicateTheme: (id: string, newName: string) => CustomTheme;
-
-  resetDocument: (options?: ResetOptions) => void;
-  copyToWechat: () => void;
-
+  // 文件路径（本地文件模式）
   currentFilePath?: string;
   workspaceDir?: string;
   setFilePath: (path?: string) => void;
   setWorkspaceDir: (dir?: string) => void;
+
+  // 文档操作
+  resetDocument: (options?: ResetOptions) => void;
+  copyToWechat: () => void;
 }
 
+/**
+ * 默认 Markdown 内容
+ */
 export const defaultMarkdown = `# 欢迎使用 WeMD
 
 这是一个现代化的 Markdown 编辑器，专为**微信公众号**排版设计。
@@ -185,365 +146,48 @@ $$
 **开始编辑吧!** 🚀
 `;
 
-// LocalStorage key for custom themes
-const CUSTOM_THEMES_KEY = 'wemd-custom-themes';
-const SELECTED_THEME_KEY = 'wemd-selected-theme';
-
-const canUseLocalStorage = () => typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
-
-// Load custom themes from localStorage
-const loadCustomThemes = (): CustomTheme[] => {
-  if (!canUseLocalStorage()) {
-    return [];
-  }
-  try {
-    const stored = localStorage.getItem(CUSTOM_THEMES_KEY);
-    if (!stored) return [];
-    return JSON.parse(stored);
-  } catch (error) {
-    console.error('Failed to load custom themes:', error);
-    return [];
-  }
-};
-
-// Save custom themes to localStorage
-const saveCustomThemes = (themes: CustomTheme[]): void => {
-  if (!canUseLocalStorage()) {
-    return;
-  }
-  try {
-    localStorage.setItem(CUSTOM_THEMES_KEY, JSON.stringify(themes));
-  } catch (error) {
-    console.error('Failed to save custom themes:', error);
-  }
-};
-
-// Save selected theme to localStorage
-const saveSelectedTheme = (themeId: string, themeName: string): void => {
-  if (!canUseLocalStorage()) return;
-  try {
-    localStorage.setItem(SELECTED_THEME_KEY, JSON.stringify({ id: themeId, name: themeName }));
-  } catch (error) {
-    console.error('Failed to save selected theme:', error);
-  }
-};
-
-// Load selected theme from localStorage
-const loadSelectedTheme = (): { id: string; name: string } | null => {
-  if (!canUseLocalStorage()) return null;
-  try {
-    const stored = localStorage.getItem(SELECTED_THEME_KEY);
-    if (!stored) return null;
-    return JSON.parse(stored);
-  } catch (error) {
-    console.error('Failed to load selected theme:', error);
-    return null;
-  }
-};
-
-// Built-in themes converted to CustomTheme format
-const builtInThemes: CustomTheme[] = [
-  {
-    id: 'default',
-    name: '默认主题',
-    css: basicTheme + '\n' + customDefaultTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'academic-paper',
-    name: '学术论文',
-    css: basicTheme + '\n' + academicPaperTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'aurora-glass',
-    name: '极光玻璃',
-    css: basicTheme + '\n' + auroraGlassTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'bauhaus',
-    name: '包豪斯',
-    css: basicTheme + '\n' + bauhausTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'cyberpunk-neon',
-    name: '赛博朋克',
-    css: basicTheme + '\n' + cyberpunkNeonTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'knowledge-base',
-    name: '知识库',
-    css: basicTheme + '\n' + knowledgeBaseTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'luxury-gold',
-    name: '黑金奢华',
-    css: basicTheme + '\n' + luxuryGoldTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'morandi-forest',
-    name: '莫兰迪森林',
-    css: basicTheme + '\n' + morandiForestTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'neo-brutalism',
-    name: '新粗野主义',
-    css: basicTheme + '\n' + neoBrutalismTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'receipt',
-    name: '购物小票',
-    css: basicTheme + '\n' + receiptTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'sunset-film',
-    name: '落日胶片',
-    css: basicTheme + '\n' + sunsetFilmTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'template',
-    name: '主题模板',
-    css: basicTheme + '\n' + templateTheme + '\n' + codeGithubTheme,
-    isBuiltIn: true,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
-
-// Legacy format for backward compatibility
-const defaultThemes: ThemeDefinition[] = [
-  {
-    id: 'default',
-    name: '默认主题',
-    css: basicTheme + '\n' + customDefaultTheme + '\n' + codeGithubTheme,
-  },
-];
-
-// Load initial theme from localStorage and validate it exists
-const initialSelectedTheme = (() => {
-  const saved = loadSelectedTheme();
-  if (!saved) return null;
-  // Validate theme exists (check both built-in and custom themes)
-  const allThemes = [...builtInThemes, ...loadCustomThemes()];
-  const exists = allThemes.some(t => t.id === saved.id);
-  return exists ? saved : null;
-})();
-
 export const useEditorStore = create<EditorStore>((set, get) => ({
   markdown: defaultMarkdown,
   setMarkdown: (markdown) => set({ markdown }),
-
-  theme: initialSelectedTheme?.id ?? 'default',
-  setTheme: (theme) => set({ theme }),
-  themeName: initialSelectedTheme?.name ?? '默认主题',
-  setThemeName: (themeName: string) => set({ themeName }),
-  themes: defaultThemes,
-  setThemes: (themes) => set({ themes }),
-  selectTheme: (themeId: string) => {
-    const allThemes = get().getAllThemes();
-    const theme = allThemes.find((item) => item.id === themeId);
-    if (!theme) return;
-    set({
-      theme: theme.id,
-      themeName: theme.name,
-      customCSS: '',
-    });
-    // Persist to localStorage
-    saveSelectedTheme(theme.id, theme.name);
-  },
-
-  customCSS: '',
-  setCustomCSS: (css) => set({ customCSS: css }),
-
-  getThemeCSS: (theme: string) => {
-    const state = get();
-    const allThemes = state.getAllThemes();
-    const definition = allThemes.find((item) => item.id === theme);
-
-    if (definition) {
-      // If there's custom CSS override, append it to the theme CSS
-      if (state.customCSS) {
-        return definition.css + '\n' + state.customCSS;
-      }
-      return definition.css;
-    }
-
-    // Fallback to default theme
-    return builtInThemes[0].css;
-  },
-
-  // Custom theme management
-  customThemes: loadCustomThemes(),
-
-  getAllThemes: () => {
-    const state = get();
-    return [...builtInThemes, ...state.customThemes];
-  },
-
-  createTheme: (name: string, css?: string) => {
-    const state = get();
-    const trimmedName = name.trim() || '未命名主题';
-    const themeCSS = css || state.customCSS || state.getThemeCSS(state.theme);
-
-    const newTheme: CustomTheme = {
-      id: `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      name: trimmedName,
-      css: themeCSS,
-      isBuiltIn: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    const nextCustomThemes = [...state.customThemes, newTheme];
-    saveCustomThemes(nextCustomThemes);
-    set({ customThemes: nextCustomThemes });
-
-    return newTheme;
-  },
-
-  updateTheme: (id: string, updates: Partial<Pick<CustomTheme, 'name' | 'css'>>) => {
-    const state = get();
-    const themeIndex = state.customThemes.findIndex((t) => t.id === id);
-
-    if (themeIndex === -1) {
-      console.warn(`Theme ${id} not found or is built-in`);
-      return;
-    }
-
-    const updatedTheme: CustomTheme = {
-      ...state.customThemes[themeIndex],
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
-
-    const nextCustomThemes = [
-      ...state.customThemes.slice(0, themeIndex),
-      updatedTheme,
-      ...state.customThemes.slice(themeIndex + 1),
-    ];
-
-    saveCustomThemes(nextCustomThemes);
-    set({ customThemes: nextCustomThemes });
-
-    // Update current theme name if this is the active theme
-    if (state.theme === id) {
-      set({ themeName: updatedTheme.name });
-    }
-  },
-
-  deleteTheme: (id: string) => {
-    const state = get();
-    const theme = state.customThemes.find((t) => t.id === id);
-
-    if (!theme) {
-      console.warn(`Theme ${id} not found or is built-in`);
-      return;
-    }
-
-    const nextCustomThemes = state.customThemes.filter((t) => t.id !== id);
-    saveCustomThemes(nextCustomThemes);
-    set({ customThemes: nextCustomThemes });
-
-    // If the deleted theme was active, switch to default
-    if (state.theme === id) {
-      set({
-        theme: 'default',
-        themeName: '默认主题',
-        customCSS: '',
-      });
-    }
-  },
-
-  duplicateTheme: (id: string, newName: string) => {
-    const state = get();
-    const allThemes = state.getAllThemes();
-    const sourceTheme = allThemes.find((t) => t.id === id);
-
-    if (!sourceTheme) {
-      throw new Error(`Theme ${id} not found`);
-    }
-
-    return state.createTheme(newName, sourceTheme.css);
-  },
-
-  resetDocument: (options) => {
-    const state = get();
-    const allThemes = state.getAllThemes();
-
-    // Validate theme exists, fallback to default if not
-    let targetTheme = options?.theme ?? 'default';
-    let targetThemeName = options?.themeName ?? '默认主题';
-
-    const themeExists = allThemes.some((t) => t.id === targetTheme);
-    if (!themeExists) {
-      console.warn(`Theme ${targetTheme} not found, falling back to default`);
-      targetTheme = 'default';
-      targetThemeName = '默认主题';
-    }
-
-    set({
-      markdown: options?.markdown ?? defaultMarkdown,
-      theme: targetTheme,
-      themeName: targetThemeName,
-      customCSS: options?.customCSS ?? '',
-    });
-  },
-
-  copyToWechat: async () => {
-    const { markdown, theme, getThemeCSS } = get();
-    const css = getThemeCSS(theme);
-
-    // Create a temporary container to render HTML
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.top = '-9999px';
-    container.style.left = '-9999px';
-    document.body.appendChild(container);
-
-    try {
-      // Use core's processHtml to render
-      // Use the extracted service
-      const { copyToWechat } = await import('../services/wechatCopyService');
-      await copyToWechat(markdown, css);
-    } catch (error) {
-      console.error('Copy failed:', error);
-      // Toast is handled in the service, but we catch here just in case
-    }
-  },
 
   currentFilePath: undefined,
   workspaceDir: undefined,
   setFilePath: (path) => set({ currentFilePath: path }),
   setWorkspaceDir: (dir) => set({ workspaceDir: dir }),
+
+  resetDocument: (options) => {
+    const themeStore = useThemeStore.getState();
+    const allThemes = themeStore.getAllThemes();
+
+    // 验证主题是否存在
+    let targetTheme = options?.theme ?? 'default';
+
+    const themeExists = allThemes.some((t) => t.id === targetTheme);
+    if (!themeExists) {
+      console.warn(`Theme ${targetTheme} not found, falling back to default`);
+      targetTheme = 'default';
+    }
+
+    // 重置编辑器内容
+    set({ markdown: options?.markdown ?? defaultMarkdown });
+
+    // 重置主题（通过 themeStore）
+    themeStore.selectTheme(targetTheme);
+    if (options?.customCSS) {
+      themeStore.setCustomCSS(options.customCSS);
+    }
+  },
+
+  copyToWechat: async () => {
+    const { markdown } = get();
+    const themeStore = useThemeStore.getState();
+    const css = themeStore.getThemeCSS(themeStore.themeId);
+
+    try {
+      const { copyToWechat } = await import('../services/wechatCopyService');
+      await copyToWechat(markdown, css);
+    } catch (error) {
+      console.error('Copy failed:', error);
+    }
+  },
 }));
