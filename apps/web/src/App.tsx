@@ -16,12 +16,14 @@ import { HistoryManager } from './components/History/HistoryManager';
 import { Loader2 } from 'lucide-react';
 import { useHistoryStore } from './store/historyStore';
 import { useFileStore } from './store/fileStore';
+import { useUIStore } from './store/uiStore';
 
 function App() {
   const { workspacePath, saveFile } = useFileSystem();
   const { type: storageType, ready } = useStorageContext();
   const historyLoading = useHistoryStore((state) => state.loading);
   const fileLoading = useFileStore((state) => state.isLoading);
+  const isSidebarOpen = useUIStore((state) => state.isSidebarOpen);
 
   // 全局保存快捷键（统一监听器）
   useEffect(() => {
@@ -41,29 +43,16 @@ function App() {
     return typeof window !== 'undefined' && window.electron?.isElectron;
   }, []);
 
-  const [showHistory, setShowHistory] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    const saved = localStorage.getItem('wemd-show-history');
-    return saved !== 'false';
-  });
-  const [historyWidth, setHistoryWidth] = useState<string>(showHistory ? '280px' : '0px');
+  const [historyWidth, setHistoryWidth] = useState<string>(isSidebarOpen ? '320px' : '0px');
 
   useEffect(() => {
-    try {
-      localStorage.setItem('wemd-show-history', String(showHistory));
-    } catch {
-      /* 忽略持久化错误 */
-    }
-  }, [showHistory]);
-
-  useEffect(() => {
-    if (showHistory) {
-      setHistoryWidth('280px');
+    if (isSidebarOpen) {
+      setHistoryWidth('320px');
       return;
     }
     const timer = window.setTimeout(() => setHistoryWidth('0px'), 350);
     return () => window.clearTimeout(timer);
-  }, [showHistory]);
+  }, [isSidebarOpen]);
 
   const mainClass = 'app-main';
   const mainStyle = useMemo(
@@ -124,15 +113,8 @@ function App() {
           }}
         />
         <Header />
-        <main className={mainClass} style={mainStyle} data-show-history={showHistory}>
-          <button
-            className={`history-toggle ${showHistory ? '' : 'is-collapsed'}`}
-            onClick={() => setShowHistory((prev) => !prev)}
-            aria-label={showHistory ? '隐藏列表' : '显示列表'}
-          >
-            <span className="sr-only">{showHistory ? '隐藏列表' : '显示列表'}</span>
-          </button>
-          <div className={`history-pane ${showHistory ? 'is-visible' : 'is-hidden'}`} aria-hidden={!showHistory}>
+        <main className={mainClass} style={mainStyle} data-show-history={isSidebarOpen}>
+          <div className={`history-pane ${isSidebarOpen ? 'is-visible' : 'is-hidden'}`} aria-hidden={!isSidebarOpen}>
             <div className="history-pane__content">
               {/* ready 后渲染，防止闪烁 */}
               {ready && (isElectron || storageType === 'filesystem' ? (

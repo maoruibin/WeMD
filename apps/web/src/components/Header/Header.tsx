@@ -4,8 +4,9 @@ import { ThemePanel } from '../Theme/ThemePanel';
 import { StorageModeSelector } from '../StorageModeSelector/StorageModeSelector';
 import { ImageHostSettings } from '../Settings/ImageHostSettings';
 import './Header.css';
-import { Layers, Palette, Send, ImageIcon, Sun, Moon } from 'lucide-react';
+import { Layers, Palette, Send, ImageIcon, Sun, Moon, PanelLeft } from 'lucide-react';
 import { useUITheme } from '../../hooks/useUITheme';
+import { useUIStore } from '../../store/uiStore';
 
 const DefaultLogoMark = () => (
     <svg width="40" height="40" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -28,6 +29,7 @@ export function Header() {
     const [showImageHostModal, setShowImageHostModal] = useState(false);
     const uiTheme = useUITheme((state) => state.theme);
     const setTheme = useUITheme((state) => state.setTheme);
+    const { isSidebarOpen, toggleSidebar } = useUIStore();
     const isStructuralismUI = uiTheme === 'dark';
 
     const isElectron = typeof window !== 'undefined' && !!(window as unknown as { electron?: unknown }).electron;
@@ -36,6 +38,15 @@ export function Header() {
         <>
             <header className="app-header">
                 <div className="header-left">
+                    <button
+                        className="btn-icon-only"
+                        onClick={toggleSidebar}
+                        aria-label={isSidebarOpen ? '收起侧边栏' : '展开侧边栏'}
+                        title={isSidebarOpen ? '收起侧边栏' : '展开侧边栏'}
+                        style={{ marginRight: '12px' }}
+                    >
+                        <PanelLeft size={20} strokeWidth={2} />
+                    </button>
                     <div className="logo">
                         {isStructuralismUI ? <StructuralismLogoMark /> : <DefaultLogoMark />}
                         <div className="logo-info">
@@ -55,10 +66,8 @@ export function Header() {
                         {uiTheme === 'dark' ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
                     </button>
                     {!isElectron && (
-                        <button className="btn-secondary" onClick={() => setShowStorageModal(true)}>
-                            <Layers size={18} strokeWidth={2} />
-                            <span>存储模式</span>
-                        </button>
+                        /* 存储模式入口已移动到侧边栏菜单 */
+                        null
                     )}
                     <button className="btn-secondary" onClick={() => setShowImageHostModal(true)}>
                         <ImageIcon size={18} strokeWidth={2} />
@@ -77,19 +86,7 @@ export function Header() {
 
             <ThemePanel open={showThemePanel} onClose={() => setShowThemePanel(false)} />
 
-            {showStorageModal && (
-                <div className="storage-modal-overlay" onClick={() => setShowStorageModal(false)}>
-                    <div className="storage-modal-panel" onClick={(e) => e.stopPropagation()}>
-                        <div className="storage-modal-header">
-                            <h3>选择存储模式</h3>
-                            <button className="storage-modal-close" onClick={() => setShowStorageModal(false)} aria-label="关闭">
-                                ×
-                            </button>
-                        </div>
-                        <StorageModeSelector />
-                    </div>
-                </div>
-            )}
+            {/* 存储模式弹窗已移动到 HistoryPanel */}
 
             {showImageHostModal && (
                 <div className="storage-modal-overlay" onClick={() => setShowImageHostModal(false)}>

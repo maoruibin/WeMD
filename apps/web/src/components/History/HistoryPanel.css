@@ -323,6 +323,34 @@
   font-size: 13px;
 }
 
+/* 侧边栏底部 Footer */
+.history-footer {
+  padding: 16px 24px;
+  border-top: var(--border-width) solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.history-footer .btn-icon-only {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.history-footer .btn-icon-only:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
 /* 清空历史确认弹层 */
 .history-confirm-backdrop {
   position: fixed;

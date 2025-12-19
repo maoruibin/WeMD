@@ -6,7 +6,7 @@
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border: var(--border-width) solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
+    box-shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.08); /* 更柔和的阴影 */
     display: flex;
     align-items: center;
     justify-content: space-between;

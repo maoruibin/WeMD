@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
-import { Search, Plus, Trash2, MoreHorizontal, Edit2, Copy, Save } from 'lucide-react';
+import { Search, Plus, Trash2, MoreHorizontal, Edit2, Copy, Save, Database } from 'lucide-react';
 import { useEditorStore } from '../../store/editorStore';
 import { useThemeStore } from '../../store/themeStore';
 import { useHistoryStore } from '../../store/historyStore';
@@ -9,6 +9,7 @@ import type { HistorySnapshot } from '../../store/historyStore';
 import { useStorageContext } from '../../storage/StorageContext';
 import type { StorageAdapter } from '../../storage/StorageAdapter';
 import type { FileItem as StorageFileItem } from '../../storage/types';
+import { StorageModeSelector } from '../StorageModeSelector/StorageModeSelector';
 import './HistoryPanel.css';
 
 // 每次加载的记录数量
@@ -87,6 +88,10 @@ function IndexedHistoryPanel() {
   const [clearing, setClearing] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<HistorySnapshot | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  const [showGlobalMenu, setShowGlobalMenu] = useState(false);
+  const [showStorageModal, setShowStorageModal] = useState(false);
+  const globalMenuButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleRestore = async (entry?: HistorySnapshot) => {
     if (!entry) return;
@@ -199,8 +204,14 @@ function IndexedHistoryPanel() {
   };
 
   useEffect(() => {
-    const handleWindowClick = () => closeActionMenu();
-    const handleWindowScroll = () => closeActionMenu();
+    const handleWindowClick = () => {
+      closeActionMenu();
+      setShowGlobalMenu(false);
+    };
+    const handleWindowScroll = () => {
+      closeActionMenu();
+      setShowGlobalMenu(false);
+    };
     window.addEventListener('click', handleWindowClick);
     window.addEventListener('scroll', handleWindowScroll, true);
     return () => {
@@ -267,17 +278,10 @@ function IndexedHistoryPanel() {
     <>
       <aside className={sidebarClass}>
         <div className="history-header">
-          <h3>历史记录</h3>
+          <h3>文章列表</h3>
           <div className="history-actions">
             <button className="btn-secondary btn-icon-only" onClick={handleCreateArticle} data-tooltip="新增文章">
               <Plus size={16} />
-            </button>
-            <button
-              className="btn-secondary btn-icon-only"
-              onClick={() => setShowClearConfirm(true)}
-              data-tooltip="清空历史"
-            >
-              <Trash2 size={16} />
             </button>
           </div>
         </div>
@@ -347,6 +351,47 @@ function IndexedHistoryPanel() {
           </div>
         )}
       </aside>
+      {showGlobalMenu && globalMenuButtonRef.current && createPortal(
+        <div
+          className="history-action-menu"
+          style={{
+            top: globalMenuButtonRef.current.getBoundingClientRect().bottom + 8,
+            left: globalMenuButtonRef.current.getBoundingClientRect().left - 100, // 向左偏移以防溢出
+            position: 'fixed',
+            zIndex: 2000
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button onClick={() => {
+            setShowStorageModal(true);
+            setShowGlobalMenu(false);
+          }}>
+            <Database size={14} />
+            存储模式
+          </button>
+          <button className="danger" onClick={() => {
+            setShowClearConfirm(true);
+            setShowGlobalMenu(false);
+          }}>
+            <Trash2 size={14} />
+            清空历史
+          </button>
+        </div>,
+        document.body
+      )}
+      {showStorageModal && (
+        <div className="storage-modal-overlay" onClick={() => setShowStorageModal(false)}>
+          <div className="storage-modal-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="storage-modal-header">
+              <h3>选择存储模式</h3>
+              <button className="storage-modal-close" onClick={() => setShowStorageModal(false)} aria-label="关闭">
+                ×
+              </button>
+            </div>
+            <StorageModeSelector />
+          </div>
+        </div>
+      )}
       {actionMenuId && menuEntry &&
         createPortal(
           <div
@@ -453,6 +498,20 @@ function FileSystemHistory({ adapter }: { adapter: StorageAdapter }) {
   const [deleteTarget, setDeleteTarget] = useState<StorageFileItem | null>(null);
   const [deleting, setDeleting] = useState(false);
 
+  const [showGlobalMenu, setShowGlobalMenu] = useState(false);
+  const [showStorageModal, setShowStorageModal] = useState(false);
+  const globalMenuButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const handleWindowClick = () => {
+      setShowGlobalMenu(false);
+    };
+    window.addEventListener('click', handleWindowClick);
+    return () => {
+      window.removeEventListener('click', handleWindowClick);
+    };
+  }, []);
+
   const refreshFiles = useCallback(async () => {
     setLoading(true);
     try {
@@ -552,13 +611,24 @@ themeName: ${themeState.themeName}
   return (
     <aside className="history-sidebar">
       <div className="history-header">
-        <h3>文件列表</h3>
+        <h3>文章列表</h3>
         <div className="history-actions">
           <button className="btn-secondary btn-icon-only" onClick={handleCreate} data-tooltip="新建文章">
             <Plus size={16} />
           </button>
           <button className="btn-secondary btn-icon-only" onClick={handleSave} disabled={!activePath || saving} data-tooltip="保存当前">
             <Save size={16} />
+          </button>
+          <button
+            ref={globalMenuButtonRef}
+            className="btn-secondary btn-icon-only"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowGlobalMenu(!showGlobalMenu);
+            }}
+            data-tooltip="更多"
+          >
+            <MoreHorizontal size={16} />
           </button>
         </div>
       </div>
@@ -630,6 +700,40 @@ themeName: ${themeState.themeName}
           </div>
         )}
       </div>
+      {showGlobalMenu && globalMenuButtonRef.current && createPortal(
+        <div
+          className="history-action-menu"
+          style={{
+            top: globalMenuButtonRef.current.getBoundingClientRect().bottom + 8,
+            left: globalMenuButtonRef.current.getBoundingClientRect().left - 100,
+            position: 'fixed',
+            zIndex: 2000
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button onClick={() => {
+            setShowStorageModal(true);
+            setShowGlobalMenu(false);
+          }}>
+            <Database size={14} />
+            存储模式
+          </button>
+        </div>,
+        document.body
+      )}
+      {showStorageModal && (
+        <div className="storage-modal-overlay" onClick={() => setShowStorageModal(false)}>
+          <div className="storage-modal-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="storage-modal-header">
+              <h3>选择存储模式</h3>
+              <button className="storage-modal-close" onClick={() => setShowStorageModal(false)} aria-label="关闭">
+                ×
+              </button>
+            </div>
+            <StorageModeSelector />
+          </div>
+        </div>
+      )}
       {deleteTarget &&
         createPortal(
           <div className="history-confirm-backdrop" onClick={() => !deleting && setDeleteTarget(null)}>

@@ -95,6 +95,11 @@ body,
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* 玻璃效果变量 */
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.08);
 }
 
 /* ========================================
