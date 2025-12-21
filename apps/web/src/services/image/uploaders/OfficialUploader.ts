@@ -14,8 +14,8 @@ export class OfficialUploader implements ImageUploader {
     private token?: string;
 
     constructor(config?: OfficialConfig) {
-        // 默认使用 Cloudflare Worker API
-        this.serverUrl = config?.serverUrl || 'https://weimd-uploader.daxiagudong.workers.dev';
+        // Default to the deployed worker URL
+        this.serverUrl = config?.serverUrl || 'https://weimd-uploader.gudong-name.workers.dev';
         this.token = config?.token;
     }
 
