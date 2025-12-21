@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useEditorStore } from '../../store/editorStore';
 import { ThemePanel } from '../Theme/ThemePanel';
 import { StorageModeSelector } from '../StorageModeSelector/StorageModeSelector';
 import { ImageHostSettings } from '../Settings/ImageHostSettings';
 import './Header.css';
-import { Layers, Palette, Send, ImageIcon, Sun, Moon, PanelLeft } from 'lucide-react';
+import { Layers, Palette, Send, ImageIcon, Sun, Moon, PanelLeft, MoreHorizontal, Database } from 'lucide-react';
 import { useUITheme } from '../../hooks/useUITheme';
 import { useUIStore } from '../../store/uiStore';
 
@@ -34,6 +34,21 @@ export function Header() {
 
     const isElectron = typeof window !== 'undefined' && !!(window as unknown as { electron?: unknown }).electron;
 
+    const [showMoreMenu, setShowMoreMenu] = useState(false);
+    const moreMenuRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (moreMenuRef.current && !moreMenuRef.current.contains(event.target as Node)) {
+                setShowMoreMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <>
             <header className="app-header">
@@ -50,7 +65,7 @@ export function Header() {
                     <div className="logo">
                         {isStructuralismUI ? <StructuralismLogoMark /> : <DefaultLogoMark />}
                         <div className="logo-info">
-                            <span className="logo-text">WeMD</span>
+                            <span className="logo-text">WeiMD</span>
                             <span className="logo-subtitle">公众号 Markdown 排版编辑器</span>
                         </div>
                     </div>
@@ -65,18 +80,46 @@ export function Header() {
                     >
                         {uiTheme === 'dark' ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
                     </button>
-                    {!isElectron && (
-                        /* 存储模式入口已移动到侧边栏菜单 */
-                        null
-                    )}
-                    <button className="btn-secondary" onClick={() => setShowImageHostModal(true)}>
-                        <ImageIcon size={18} strokeWidth={2} />
-                        <span>图床设置</span>
-                    </button>
-                    <button className="btn-secondary" onClick={() => setShowThemePanel(true)}>
-                        <Palette size={18} strokeWidth={2} />
-                        <span>主题管理</span>
-                    </button>
+
+                    <div className="header-menu-container" ref={moreMenuRef}>
+                        <button 
+                            className="btn-icon-only"
+                            onClick={() => setShowMoreMenu(!showMoreMenu)}
+                            aria-label="更多设置"
+                            title="更多设置"
+                        >
+                            <MoreHorizontal size={20} strokeWidth={2} />
+                        </button>
+                        
+                        {showMoreMenu && (
+                            <div className="header-menu">
+                                <button className="header-menu-item" onClick={() => {
+                                    setShowImageHostModal(true);
+                                    setShowMoreMenu(false);
+                                }}>
+                                    <ImageIcon />
+                                    <span>图床设置</span>
+                                </button>
+                                <button className="header-menu-item" onClick={() => {
+                                    setShowThemePanel(true);
+                                    setShowMoreMenu(false);
+                                }}>
+                                    <Palette />
+                                    <span>主题管理</span>
+                                </button>
+                                {!isElectron && (
+                                    <button className="header-menu-item" onClick={() => {
+                                        setShowStorageModal(true);
+                                        setShowMoreMenu(false);
+                                    }}>
+                                        <Database />
+                                        <span>存储模式</span>
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
                     <button className="btn-primary" onClick={copyToWechat}>
                         <Send size={18} strokeWidth={2} />
                         <span>复制到公众号</span>
@@ -86,7 +129,19 @@ export function Header() {
 
             <ThemePanel open={showThemePanel} onClose={() => setShowThemePanel(false)} />
 
-            {/* 存储模式弹窗已移动到 HistoryPanel */}
+            {showStorageModal && (
+                <div className="storage-modal-overlay" onClick={() => setShowStorageModal(false)}>
+                    <div className="storage-modal-panel" onClick={(e) => e.stopPropagation()}>
+                        <div className="storage-modal-header">
+                            <h3>选择存储模式</h3>
+                            <button className="storage-modal-close" onClick={() => setShowStorageModal(false)} aria-label="关闭">
+                                ×
+                            </button>
+                        </div>
+                        <StorageModeSelector />
+                    </div>
+                </div>
+            )}
 
             {showImageHostModal && (
                 <div className="storage-modal-overlay" onClick={() => setShowImageHostModal(false)}>
