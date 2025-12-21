@@ -1,0 +1,10 @@
+name = "weimd-uploader"
+main = "src/index.js"
+compatibility_date = "2023-12-01"
+
+[vars]
+PUBLIC_URL = "https://img.gudong.site"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "wemid-images"
