@@ -5,6 +5,8 @@
     background: var(--bg-primary);
     /* 移除右边框，因为现在是悬浮卡片布局 */
     border-right: none;
+    /* 确保没有 margin */
+    margin: 0;
 }
 
 .editor-header {

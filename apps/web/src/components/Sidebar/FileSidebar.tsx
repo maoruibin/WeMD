@@ -1,7 +1,8 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { useFileSystem } from '../../hooks/useFileSystem';
 import { useThemeStore } from '../../store/themeStore';
-import { Search, Plus, Trash2, FolderOpen, Edit2, MoreHorizontal, Copy } from 'lucide-react';
+import { useUIStore } from '../../store/uiStore';
+import { Search, Plus, Trash2, FolderOpen, Edit2, MoreHorizontal, Copy, ChevronsLeft } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import './FileSidebar.css';
@@ -14,6 +15,7 @@ const PAGE_SIZE = 50;
 export function FileSidebar() {
     const { files, currentFile, openFile, createFile, renameFile, deleteFile, selectWorkspace, workspacePath } = useFileSystem();
     const currentThemeName = useThemeStore((state) => state.themeName);
+    const toggleSidebar = useUIStore((state) => state.toggleSidebar);
     const [filter, setFilter] = useState('');
     const [renamingPath, setRenamingPath] = useState<string | null>(null);
     const [renameValue, setRenameValue] = useState('');

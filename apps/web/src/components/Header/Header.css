@@ -1,20 +1,49 @@
+.header-layout-wrapper {
+    max-width: 1600px;
+    width: 100%;
+    margin: 16px auto 0;
+    padding: 0 40px;
+    box-sizing: border-box;
+    position: sticky;
+    top: 16px;
+    z-index: 100;
+    pointer-events: none;
+}
+
 .app-header {
+    pointer-events: auto;
     height: 72px;
-    margin: 16px 24px 0;
+    width: 100%;
+    
     border-radius: var(--radius-xl);
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border: var(--border-width) solid var(--glass-border);
-    box-shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.08); /* 更柔和的阴影 */
+    box-shadow: 0 4px 20px -8px rgba(0, 0, 0, 0.08);
+    
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 32px;
-    position: sticky;
-    top: 16px;
-    z-index: 100;
+    padding: 0 24px;
     transition: all 0.3s ease;
+}
+
+/* 响应式布局 - 保持与 App.css 中的断点一致 */
+@media (max-width: 1440px) {
+    .header-layout-wrapper {
+        padding: 0 24px;
+    }
+}
+
+@media (max-width: 960px) {
+    .header-layout-wrapper {
+        padding: 0 16px;
+    }
+
+    .app-header {
+        padding: 0 16px;
+    }
 }
 
 .header-left {
@@ -124,6 +153,28 @@
 
 .theme-toggle-btn:active {
     transform: translateY(0);
+}
+
+/* 幽灵按钮 - 用于侧边栏切换 */
+.btn-ghost {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.btn-ghost:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
 }
 
 /* 纯图标按钮 - 用于明暗模式切换 */

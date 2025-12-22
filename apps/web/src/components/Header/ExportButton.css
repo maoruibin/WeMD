@@ -1,0 +1,120 @@
+.export-split-btn {
+    display: flex;
+    align-items: center;
+    background-color: var(--accent-primary);
+    border-radius: var(--radius-pill);
+    position: relative;
+    box-shadow: 0 2px 6px color-mix(in srgb, var(--accent-primary) 30%, transparent);
+    transition: all 0.2s ease;
+}
+
+.export-split-btn:hover {
+    background-color: color-mix(in srgb, var(--accent-primary) 90%, black);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-primary) 40%, transparent);
+}
+
+.export-main-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-top-left-radius: var(--radius-pill);
+    border-bottom-left-radius: var(--radius-pill);
+    transition: background 0.2s;
+}
+
+.export-main-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.export-separator {
+    width: 1px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.export-trigger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    border-top-right-radius: var(--radius-pill);
+    border-bottom-right-radius: var(--radius-pill);
+    transition: background 0.2s;
+}
+
+.export-trigger-btn:hover,
+.export-trigger-btn.active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Dropdown Menu */
+.export-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--bg-primary);
+    border: var(--border-width) solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: 6px;
+    min-width: 160px;
+    z-index: 1000;
+    animation: fadeIn 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.export-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.export-menu-item:hover {
+    background-color: var(--bg-hover);
+    color: var(--accent-primary);
+}
+
+.export-menu-item svg {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.export-menu-item:hover svg {
+    opacity: 1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dark mode compatibility */
+[data-ui-theme='dark'] .export-dropdown {
+    border-color: var(--border-light);
+    background: var(--bg-secondary);
+}

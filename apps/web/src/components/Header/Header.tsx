@@ -4,9 +4,10 @@ import { ThemePanel } from '../Theme/ThemePanel';
 import { StorageModeSelector } from '../StorageModeSelector/StorageModeSelector';
 import { ImageHostSettings } from '../Settings/ImageHostSettings';
 import './Header.css';
-import { Layers, Palette, Send, ImageIcon, Sun, Moon, PanelLeft, MoreHorizontal, Database } from 'lucide-react';
+import { Layers, Palette, Send, ImageIcon, Sun, Moon, PanelLeft, MoreHorizontal, Database, Menu } from 'lucide-react';
 import { useUITheme } from '../../hooks/useUITheme';
 import { useUIStore } from '../../store/uiStore';
+import { ExportButton } from './ExportButton';
 
 const DefaultLogoMark = () => (
     <svg width="40" height="40" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -51,81 +52,79 @@ export function Header() {
 
     return (
         <>
-            <header className="app-header">
-                <div className="header-left">
-                    <button
-                        className="btn-icon-only"
-                        onClick={toggleSidebar}
-                        aria-label={isSidebarOpen ? '收起侧边栏' : '展开侧边栏'}
-                        title={isSidebarOpen ? '收起侧边栏' : '展开侧边栏'}
-                        style={{ marginRight: '12px' }}
-                    >
-                        <PanelLeft size={20} strokeWidth={2} />
-                    </button>
-                    <div className="logo">
-                        {isStructuralismUI ? <StructuralismLogoMark /> : <DefaultLogoMark />}
-                        <div className="logo-info">
-                            <span className="logo-text">WeiMD</span>
-                            <span className="logo-subtitle">公众号 Markdown 排版编辑器</span>
+            <div className="header-layout-wrapper">
+                <header className="app-header">
+                    <div className="header-left">
+                        <button
+                            className="btn-ghost"
+                            onClick={toggleSidebar}
+                            aria-label="展开侧边栏"
+                            title="展开侧边栏"
+                        >
+                            <Menu size={20} strokeWidth={2} />
+                        </button>
+                        <div className="logo">
+                            {isStructuralismUI ? <StructuralismLogoMark /> : <DefaultLogoMark />}
+                            <div className="logo-info">
+                                <span className="logo-text">WeiMD</span>
+                                <span className="logo-subtitle">公众号 Markdown 排版编辑器</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="header-right">
-                    <button
-                        className="btn-icon-only"
-                        onClick={() => setTheme(uiTheme === 'dark' ? 'default' : 'dark')}
-                        aria-label={uiTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
-                        title={uiTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
-                    >
-                        {uiTheme === 'dark' ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
-                    </button>
-
-                    <div className="header-menu-container" ref={moreMenuRef}>
-                        <button 
+                    <div className="header-right">
+                        <button
                             className="btn-icon-only"
-                            onClick={() => setShowMoreMenu(!showMoreMenu)}
-                            aria-label="更多设置"
-                            title="更多设置"
+                            onClick={() => setTheme(uiTheme === 'dark' ? 'default' : 'dark')}
+                            aria-label={uiTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
+                            title={uiTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
                         >
-                            <MoreHorizontal size={20} strokeWidth={2} />
+                            {uiTheme === 'dark' ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
                         </button>
-                        
-                        {showMoreMenu && (
-                            <div className="header-menu">
-                                <button className="header-menu-item" onClick={() => {
-                                    setShowImageHostModal(true);
-                                    setShowMoreMenu(false);
-                                }}>
-                                    <ImageIcon />
-                                    <span>图床设置</span>
-                                </button>
-                                <button className="header-menu-item" onClick={() => {
-                                    setShowThemePanel(true);
-                                    setShowMoreMenu(false);
-                                }}>
-                                    <Palette />
-                                    <span>主题管理</span>
-                                </button>
-                                {!isElectron && (
+
+                        <div className="header-menu-container" ref={moreMenuRef}>
+                            <button 
+                                className="btn-icon-only"
+                                onClick={() => setShowMoreMenu(!showMoreMenu)}
+                                aria-label="更多设置"
+                                title="更多设置"
+                            >
+                                <MoreHorizontal size={20} strokeWidth={2} />
+                            </button>
+                            
+                            {showMoreMenu && (
+                                <div className="header-menu">
                                     <button className="header-menu-item" onClick={() => {
-                                        setShowStorageModal(true);
+                                        setShowImageHostModal(true);
                                         setShowMoreMenu(false);
                                     }}>
-                                        <Database />
-                                        <span>存储模式</span>
+                                        <ImageIcon />
+                                        <span>图床设置</span>
                                     </button>
-                                )}
-                            </div>
-                        )}
-                    </div>
+                                    <button className="header-menu-item" onClick={() => {
+                                        setShowThemePanel(true);
+                                        setShowMoreMenu(false);
+                                    }}>
+                                        <Palette />
+                                        <span>主题管理</span>
+                                    </button>
+                                    {!isElectron && (
+                                        <button className="header-menu-item" onClick={() => {
+                                            setShowStorageModal(true);
+                                            setShowMoreMenu(false);
+                                        }}>
+                                            <Database />
+                                            <span>存储模式</span>
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
 
-                    <button className="btn-primary" onClick={copyToWechat}>
-                        <Send size={18} strokeWidth={2} />
-                        <span>复制到公众号</span>
-                    </button>
-                </div>
-            </header>
+                        <ExportButton />
+                    </div>
+                </header>
+            </div>
 
             <ThemePanel open={showThemePanel} onClose={() => setShowThemePanel(false)} />
 

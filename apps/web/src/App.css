@@ -11,7 +11,8 @@
   min-height: 0;
   display: grid;
   grid-template-columns: var(--history-width, 320px) minmax(0, 1fr);
-  gap: var(--spacing-xl);
+  /* 移除 grid gap，改用 sidebar 的 margin-right 控制间距，以解决对齐问题 */
+  gap: 0;
   padding: var(--spacing-xl) var(--spacing-xxl);
   max-width: 1600px;
   width: 100%;
@@ -58,6 +59,10 @@
   will-change: transform;
   height: 100%;
   min-height: 0;
+}
+
+.history-pane.is-hidden {
+  margin-right: 0;
 }
 
 .history-pane.is-hidden .history-pane__content {
