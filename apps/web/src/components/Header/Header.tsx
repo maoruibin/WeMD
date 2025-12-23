@@ -4,7 +4,7 @@ import { ThemePanel } from '../Theme/ThemePanel';
 import { StorageModeSelector } from '../StorageModeSelector/StorageModeSelector';
 import { ImageHostSettings } from '../Settings/ImageHostSettings';
 import './Header.css';
-import { Palette, ImageIcon, Sun, Moon, MoreHorizontal, Database, Menu, HelpCircle, X, Info } from 'lucide-react';
+import { Palette, ImageIcon, Sun, Moon, MoreHorizontal, Database, Menu, HelpCircle, X, Info, Users, ArrowLeft } from 'lucide-react';
 import { useUITheme } from '../../hooks/useUITheme';
 import { useUIStore } from '../../store/uiStore';
 import { ExportButton } from './ExportButton';
@@ -27,6 +27,7 @@ export function Header() {
     const location = useLocation();
     const navigate = useNavigate();
     const isEditorPage = location.pathname === '/';
+    const isShowcasePage = location.pathname === '/showcase';
 
     const [showThemePanel, setShowThemePanel] = useState(false);
     const [showStorageModal, setShowStorageModal] = useState(false);
@@ -58,7 +59,7 @@ export function Header() {
             <div className="header-layout-wrapper">
                 <header className="app-header">
                     <div className="header-left">
-                        {isEditorPage && (
+                        {isEditorPage ? (
                             <button
                                 className="btn-ghost"
                                 onClick={toggleSidebar}
@@ -67,7 +68,17 @@ export function Header() {
                             >
                                 <Menu size={20} strokeWidth={2} />
                             </button>
-                        )}
+                        ) : isShowcasePage ? (
+                            <button
+                                className="btn-ghost"
+                                onClick={() => navigate('/')}
+                                aria-label="返回编辑器"
+                                title="返回编辑器"
+                            >
+                                <ArrowLeft size={20} strokeWidth={2} />
+                            </button>
+                        ) : null}
+                        
                         <Link to="/" className="logo" style={{ textDecoration: 'none' }}>
                             {isStructuralismUI ? <StructuralismLogoMark /> : <DefaultLogoMark />}
                             <div className="logo-info">
@@ -78,16 +89,18 @@ export function Header() {
                     </div>
 
                     <div className="header-right">
-                        <button
-                            className="btn-icon-only"
-                            onClick={() => setTheme(uiTheme === 'dark' ? 'default' : 'dark')}
-                            aria-label={uiTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
-                            title={uiTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
-                        >
-                            {uiTheme === 'dark' ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
-                        </button>
+                        {!isShowcasePage && (
+                            <button
+                                className="btn-icon-only"
+                                onClick={() => setTheme(uiTheme === 'dark' ? 'default' : 'dark')}
+                                aria-label={uiTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
+                                title={uiTheme === 'dark' ? '切换到亮色模式' : '切换到暗色模式'}
+                            >
+                                {uiTheme === 'dark' ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
+                            </button>
+                        )}
 
-                        {!isEditorPage ? (
+                        {!isEditorPage && !isShowcasePage ? (
                             <button 
                                 className="btn-icon-only"
                                 onClick={() => navigate('/')}
@@ -109,28 +122,37 @@ export function Header() {
                                 
                                 {showMoreMenu && (
                                     <div className="header-menu">
-                                        <button className="header-menu-item" onClick={() => {
-                                            setShowImageHostModal(true);
-                                            setShowMoreMenu(false);
-                                        }}>
-                                            <ImageIcon />
-                                            <span>图床设置</span>
-                                        </button>
-                                        <button className="header-menu-item" onClick={() => {
-                                            setShowThemePanel(true);
-                                            setShowMoreMenu(false);
-                                        }}>
-                                            <Palette />
-                                            <span>主题管理</span>
-                                        </button>
-                                        {!isElectron && (
-                                            <button className="header-menu-item" onClick={() => {
-                                                setShowStorageModal(true);
-                                                setShowMoreMenu(false);
-                                            }}>
-                                                <Database />
-                                                <span>存储模式</span>
-                                            </button>
+                                        {isEditorPage && (
+                                            <>
+                                                <button className="header-menu-item" onClick={() => {
+                                                    setShowImageHostModal(true);
+                                                    setShowMoreMenu(false);
+                                                }}>
+                                                    <ImageIcon />
+                                                    <span>图床设置</span>
+                                                </button>
+                                                <button className="header-menu-item" onClick={() => {
+                                                    setShowThemePanel(true);
+                                                    setShowMoreMenu(false);
+                                                }}>
+                                                    <Palette />
+                                                    <span>主题管理</span>
+                                                </button>
+                                                {!isElectron && (
+                                                    <button className="header-menu-item" onClick={() => {
+                                                        setShowStorageModal(true);
+                                                        setShowMoreMenu(false);
+                                                    }}>
+                                                        <Database />
+                                                        <span>存储模式</span>
+                                                    </button>
+                                                )}
+                                                <div style={{ height: '1px', background: 'var(--border-color)', margin: '4px 0' }}></div>
+                                                <Link to="/showcase" className="header-menu-item" onClick={() => setShowMoreMenu(false)}>
+                                                    <Users />
+                                                    <span>创作者案例</span>
+                                                </Link>
+                                            </>
                                         )}
                                         <div style={{ height: '1px', background: 'var(--border-color)', margin: '4px 0' }}></div>
                                         <a href="/docs/" target="_blank" rel="noopener noreferrer" className="header-menu-item" onClick={() => setShowMoreMenu(false)}>

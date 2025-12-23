@@ -4,6 +4,7 @@ import './styles/global.css';
 import './App.css';
 
 import { EditorPage } from './pages/EditorPage';
+import { ShowcasePage } from './pages/ShowcasePage';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
       />
       <Routes>
         <Route path="/" element={<EditorPage />} />
+        <Route path="/showcase" element={<ShowcasePage />} />
       </Routes>
     </BrowserRouter>
   );
