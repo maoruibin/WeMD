@@ -10,9 +10,9 @@ export function ShowcasePage() {
       <main className="showcase-main">
         <div className="showcase-container">
           <div className="showcase-header">
-            <h1 className="showcase-title">WeiMD 创作者联盟</h1>
+            <h1 className="showcase-title">WeiMD 的朋友们</h1>
             <p className="showcase-slogan">
-              与 <span className="highlight">{showcaseUsers.length}+</span> 位优秀创作者一起，用 Markdown 重新定义公众号排版。
+              与 <span className="highlight">{showcaseUsers.length}+</span> 位创作者一起，连接优秀内容，让 Markdown 赋予公众号排版更多可能。。
             </p>
           </div>
 
