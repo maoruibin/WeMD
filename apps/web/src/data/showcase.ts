@@ -56,7 +56,7 @@ export const showcaseUsers: ShowcaseUser[] = [
     name: "洛卡洛",
     desc: "分享企业运行中的心得体会。注册安全工程师/经济师/咨询工程师/211",
     avatar: "https://gudong.s3.bitiful.net/weimd/1766542074339_image.png",
-    qrcode: "",
+    qrcode: "https://gudong.s3.bitiful.net/weimd/1766746730946_71591b851ddeed8491c5ef12c1215009.jpg",
     tags: ["技术", "写作", "旅游"]
   }
 
