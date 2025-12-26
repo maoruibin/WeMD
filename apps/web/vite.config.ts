@@ -15,6 +15,9 @@ export default defineConfig({
       }
     }
   },
+  optimizeDeps: {
+    exclude: ['@wemd/core'],
+  },
   build: {
     rollupOptions: {
       output: {
