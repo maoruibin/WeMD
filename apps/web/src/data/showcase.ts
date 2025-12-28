@@ -43,7 +43,7 @@ export const showcaseUsers: ShowcaseUser[] = [
     desc: "教会普通人使用AI，分享AI书签、技巧和教程。收集国内外A网站和资源。",
     avatar: "https://gudong.s3.bitiful.net/weimd/1766458041800_image.png",
     qrcode: "https://gudong.s3.bitiful.net/weimd/1766458056167_image.png",
-    tags: ["技术", "生活"]
+    tags: ["技术", "AI"]
   },
   {
     name: "张大名",
@@ -56,7 +56,7 @@ export const showcaseUsers: ShowcaseUser[] = [
     name: "洛卡洛",
     desc: "分享企业运行中的心得体会。注册安全工程师/经济师/咨询工程师/211",
     avatar: "https://gudong.s3.bitiful.net/weimd/1766542074339_image.png",
-    qrcode: "",
+    qrcode: "https://gudong.s3.bitiful.net/weimd/1766746730946_71591b851ddeed8491c5ef12c1215009.jpg",
     tags: ["技术", "写作", "旅游"]
   }
 
