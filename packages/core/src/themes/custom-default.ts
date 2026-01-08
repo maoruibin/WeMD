@@ -25,7 +25,7 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
  * 首行缩进 text-indent: 2em;
  */
 #wemd p {
-  margin: 20px 0;
+  margin: 8px 0;
   font-size: 16px;
   color: #34495e;
   line-height: 1.8;
@@ -37,7 +37,7 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
   font-size: 28px;
   font-weight: 700;
   color: #1a1a1a;
-  margin: 40px 0 24px;
+  margin: 10px 0 20px;
   text-align: center;
   padding-bottom: 12px;
   border-bottom: 2px solid #07c160;
@@ -61,7 +61,7 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
   font-size: 22px;
   font-weight: 600;
   color: #2c3e50;
-  margin: 32px 0 16px;
+  margin: 20px 0 14px;
   padding-left: 12px;
   border-left: 4px solid #07c160;
   line-height: 1.4;
@@ -145,40 +145,26 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
  */
 #wemd ul {
   padding-left: 24px;
-  list-style-type: none !important;
+  list-style-type: disc;
   color: #34495e;
 }
 
 #wemd ul li {
-  position: relative;
-  list-style-type: none !important;
+  padding-left: 4px;
+  color: #07c160;
 }
 
-#wemd ul li::before {
-  content: '•';
-  position: absolute;
-  left: -16px;
-  color: #07c160;
-  font-size: 14px;
+#wemd ul li section {
+  color: #34495e;
 }
 
 /* 嵌套列表 */
 #wemd ul ul {
-  list-style-type: none !important;
-}
-
-#wemd ul ul li::before {
-  content: '◦';
-  font-size: 14px;
+  list-style-type: circle;
 }
 
 #wemd ul ul ul {
-  list-style-type: none !important;
-}
-
-#wemd ul ul ul li::before {
-  content: '▪';
-  font-size: 10px;
+  list-style-type: square;
 }
 
 /* 有序列表整体样式
@@ -502,14 +488,14 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
   background: linear-gradient(135deg, #f7f9ff, #edf2ff);
 }
 
-#wemd .callout-info {
-  border-color: rgba(14, 165, 233, 0.25);
-  background: linear-gradient(135deg, #f0f9ff, #e0f2ff);
+#wemd .callout-tip {
+  border-color: rgba(139, 92, 246, 0.25);
+  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
 }
 
-#wemd .callout-success {
-  border-color: rgba(16, 185, 129, 0.25);
-  background: linear-gradient(135deg, #f1fff9, #e6f9f0);
+#wemd .callout-important {
+  border-color: rgba(14, 165, 233, 0.25);
+  background: linear-gradient(135deg, #f0f9ff, #e0f2ff);
 }
 
 #wemd .callout-warning {
@@ -517,38 +503,11 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
   background: linear-gradient(135deg, #fff8ed, #fff3dc);
 }
 
-#wemd .callout-danger {
+#wemd .callout-caution {
   border-color: rgba(239, 68, 68, 0.25);
   background: linear-gradient(135deg, #fff5f5, #ffe7e7);
 }
 
-/* 任务清单 */
-#wemd .task-list-item {
-  list-style: none;
-  margin-left: -1.5em;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-#wemd .task-list-item input[type='checkbox'] {
-  margin-top: 4px;
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  pointer-events: none;
-  accent-color: #07c160;
-}
-
-#wemd .task-list-item input[type='checkbox']:disabled {
-  opacity: 0.9;
-}
-
-#wemd .callout-tip {
-  border-color: rgba(139, 92, 246, 0.25);
-  background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-}
 
 /* 高亮文本 */
 #wemd mark {
@@ -571,5 +530,47 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
   font-size: 0.75em;
   vertical-align: sub;
   color: #059669;
+}
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
 }
 `;

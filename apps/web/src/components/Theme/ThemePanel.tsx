@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Plus, Copy, Trash2, X, AlertTriangle } from 'lucide-react';
-import { createMarkdownParser, processHtml, convertCssToWeChatDarkMode } from '@wemd/core';
+import * as core from '@wemd/core';
+
+const { createMarkdownParser, processHtml, convertCssToWeChatDarkMode } = core;
 import { useEditorStore } from '../../store/editorStore';
 import { useThemeStore } from '../../store/themeStore';
 import { useHistoryStore } from '../../store/historyStore';

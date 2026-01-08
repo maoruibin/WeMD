@@ -106,6 +106,15 @@ export const geekOrangeTheme = `/*
     font-size: 15px;
 }
 
+/* 连续引用块之间消除额外间距 */
+#wemd .multiquote-1 + .multiquote-1,
+#wemd .multiquote-2 + .multiquote-2,
+#wemd .multiquote-3 + .multiquote-3,
+#wemd .multiquote-1 + .multiquote-2,
+#wemd .multiquote-2 + .multiquote-3 {
+    margin-top: 0;
+}
+
 /* 6. 列表：简单的圆点 */
 #wemd ul, #wemd ol {
     margin: 20px 0;

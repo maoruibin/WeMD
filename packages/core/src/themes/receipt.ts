@@ -1,6 +1,6 @@
 export const receiptTheme = `/* 购物小票风格 */
 #wemd {
-    padding: 40px 20px;
+    padding: 5px 20px;
     max-width: 677px;
     margin: 0 auto;
     /* 强制等宽/衬线字体，模拟打印机 */
@@ -393,9 +393,50 @@ export const receiptTheme = `/* 购物小票风格 */
 }
 
 #wemd .callout-note { border-left: 2px dashed #000; }
-#wemd .callout-info { border-left: 2px dashed #000; }
 #wemd .callout-tip { border-left: 2px dashed #000; }
-#wemd .callout-success { border-left: 2px dashed #000; }
+#wemd .callout-important { border-left: 2px dashed #000; }
 #wemd .callout-warning { border-left: 2px dashed #000; }
-#wemd .callout-danger { border-left: 2px dashed #000; }
+#wemd .callout-caution { border-left: 2px dashed #000; }
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
+}
 `;

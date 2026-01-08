@@ -1,6 +1,6 @@
 export const cyberpunkNeonTheme = `/* 赛博朋克风格 */
 #wemd {
-    padding: 24px 20px;
+    padding: 5px 20px;
     max-width: 677px;
     margin: 0 auto;
     font-family: -apple-system, BlinkMacSystemFont, "Microsoft YaHei", sans-serif;
@@ -528,17 +528,12 @@ export const cyberpunkNeonTheme = `/* 赛博朋克风格 */
     box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
 }
 
-#wemd .callout-info { 
-    border-left: 3px solid #00F3FF;
-    box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-}
-
 #wemd .callout-tip { 
     border-left: 3px solid #FF00C1;
     box-shadow: 0 0 10px rgba(255, 0, 193, 0.2);
 }
 
-#wemd .callout-success { 
+#wemd .callout-important { 
     border-left: 3px solid #00F3FF;
     box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
 }
@@ -548,8 +543,50 @@ export const cyberpunkNeonTheme = `/* 赛博朋克风格 */
     box-shadow: 0 0 10px rgba(255, 184, 77, 0.2);
 }
 
-#wemd .callout-danger { 
+#wemd .callout-caution { 
     border-left: 3px solid #FF00C1;
     box-shadow: 0 0 10px rgba(255, 0, 193, 0.2);
+}
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
 }
 `;

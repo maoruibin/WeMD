@@ -4,7 +4,9 @@
  */
 import { create } from 'zustand';
 import { builtInThemes, type CustomTheme } from './themes/builtInThemes';
-import { convertCssToWeChatDarkMode } from '@wemd/core';
+import * as core from '@wemd/core';
+
+const { convertCssToWeChatDarkMode } = core;
 
 // 深色转换缓存，避免重复转换同一段 CSS
 const darkCssCache = new Map<string, string>();

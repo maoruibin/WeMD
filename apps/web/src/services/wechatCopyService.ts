@@ -1,5 +1,7 @@
 import toast from 'react-hot-toast';
-import { processHtml, createMarkdownParser } from '@wemd/core';
+import * as core from '@wemd/core';
+
+const { processHtml, createMarkdownParser } = core;
 import katexCss from 'katex/dist/katex.min.css?raw';
 import { loadMathJax } from '../utils/mathJaxLoader';
 import { hasMathFormula } from '../utils/katexRenderer';

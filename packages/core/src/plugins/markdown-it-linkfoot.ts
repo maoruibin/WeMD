@@ -1,4 +1,15 @@
-function renderFootnoteAnchorName(tokens, idx, options, env) {
+import MarkdownIt from "markdown-it";
+import Token from "markdown-it/lib/token";
+import Renderer from "markdown-it/lib/renderer";
+import StateInline from "markdown-it/lib/rules_inline/state_inline";
+import StateCore from "markdown-it/lib/rules_core/state_core";
+
+function renderFootnoteAnchorName(
+  tokens: Token[],
+  idx: number,
+  options: any,
+  env: any,
+) {
   const n = Number(tokens[idx].meta.id + 1).toString();
   let prefix = "";
 
@@ -9,7 +20,7 @@ function renderFootnoteAnchorName(tokens, idx, options, env) {
   return prefix + n;
 }
 
-function renderFootnoteCaption(tokens, idx) {
+function renderFootnoteCaption(tokens: Token[], idx: number) {
   let n = Number(tokens[idx].meta.id + 1).toString();
 
   if (tokens[idx].meta.subId > 0) {
@@ -20,18 +31,29 @@ function renderFootnoteCaption(tokens, idx) {
 }
 
 // eslint-disable-next-line
-function renderFootnoteWord(tokens, idx, options, env, slf) {
+function renderFootnoteWord(
+  tokens: Token[],
+  idx: number,
+  options: any,
+  env: any,
+  slf: Renderer,
+) {
   return '<span class="footnote-word">' + tokens[idx].content + "</span>";
 }
 
-function renderFootnoteRef(tokens, idx, options, env, slf) {
-  // var id      = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
-  const caption = slf.rules.footnote_caption(tokens, idx, options, env, slf);
+function renderFootnoteRef(
+  tokens: Token[],
+  idx: number,
+  options: any,
+  env: any,
+  slf: Renderer,
+) {
+  const caption = slf.rules.footnote_caption!(tokens, idx, options, env, slf);
   return '<sup class="footnote-ref">' + caption + "</sup>";
 }
 
 // eslint-disable-next-line
-function renderFootnoteBlockOpen(tokens, idx, options) {
+function renderFootnoteBlockOpen(tokens: Token[], idx: number, options: any) {
   return '<h3 class="footnotes-sep"></h3>\n<section class="footnotes">\n';
 }
 
@@ -39,22 +61,34 @@ function renderFootnoteBlockClose() {
   return "</section>\n";
 }
 
-function renderFootnoteOpen(tokens, idx, options, env, slf) {
-  let id = slf.rules.footnote_anchor_name(tokens, idx, options, env, slf);
+function renderFootnoteOpen(
+  tokens: Token[],
+  idx: number,
+  options: any,
+  env: any,
+  slf: Renderer,
+) {
+  let id = slf.rules.footnote_anchor_name!(tokens, idx, options, env, slf);
 
   if (tokens[idx].meta.subId > 0) {
     id += ":" + tokens[idx].meta.subId;
   }
 
-  return '<span id="fn' + id + '" class="footnote-item"><span class="footnote-num">[' + id + "] </span>";
+  return (
+    '<span id="fn' +
+    id +
+    '" class="footnote-item"><span class="footnote-num">[' +
+    id +
+    "] </span>"
+  );
 }
 
 function renderFootnoteClose() {
   return "</span>\n";
 }
 
-// Process [link](<to> "stuff")
-function isSpace(code) {
+// 处理 [link](<to> "stuff")
+function isSpace(code: number) {
   switch (code) {
     case 0x09:
     case 0x20:
@@ -64,18 +98,15 @@ function isSpace(code) {
   return false;
 }
 
-function normalizeReference(str) {
-  // use .toUpperCase() instead of .toLowerCase()
-  // here to avoid a conflict with Object.prototype
-  // members (most notably, `__proto__`)
-  return str
-    .trim()
-    .replace(/\s+/g, " ")
-    .toUpperCase();
+function normalizeReference(str: string) {
+  // 使用 .toUpperCase() 替代 .toLowerCase()
+  // 以避免与 Object.prototype 成员冲突
+  // (最显着的是 `__proto__`)
+  return str.trim().replace(/\s+/g, " ").toUpperCase();
 }
 
-function linkFoot(state, silent) {
-  let attrs,
+function linkFoot(state: StateInline, silent: boolean) {
+  let attrs: [string, string][],
     code,
     label,
     pos,
@@ -97,7 +128,7 @@ function linkFoot(state, silent) {
   const labelStart = state.pos + 1;
   const labelEnd = state.md.helpers.parseLinkLabel(state, state.pos, true);
 
-  // parser failed to find ']', so it's not a valid link
+  // 解析器未找到 ']'，因此不是有效链接
   if (labelEnd < 0) {
     return false;
   }
@@ -105,14 +136,14 @@ function linkFoot(state, silent) {
   pos = labelEnd + 1;
   if (pos < max && state.src.charCodeAt(pos) === 0x28 /* ( */) {
     //
-    // Inline link
+    // 内联链接
     //
 
-    // might have found a valid shortcut link, disable reference parsing
+    // 可能找到了有效的快捷链接，禁用引用解析
     parseReference = false;
 
     // [link](  <href>  "title"  )
-    //        ^^ skipping these spaces
+    //        ^^ 跳过这些空格
     pos++;
     for (; pos < max; pos++) {
       code = state.src.charCodeAt(pos);
@@ -125,7 +156,7 @@ function linkFoot(state, silent) {
     }
 
     // [link](  <href>  "title"  )
-    //          ^^^^^^ parsing link destination
+    //          ^^^^^^ 解析链接目标
     start = pos;
     res = state.md.helpers.parseLinkDestination(state.src, pos, state.posMax);
     if (res.ok) {
@@ -139,7 +170,7 @@ function linkFoot(state, silent) {
     }
 
     // [link](  <href>  "title"  )
-    //                ^^ skipping these spaces
+    //                ^^ 跳过这些空格
     start = pos;
     for (; pos < max; pos++) {
       code = state.src.charCodeAt(pos);
@@ -149,14 +180,14 @@ function linkFoot(state, silent) {
     }
 
     // [link](  <href>  "title"  )
-    //                  ^^^^^^^ parsing link title
+    //                  ^^^^^^^ 解析链接标题
     res = state.md.helpers.parseLinkTitle(state.src, pos, state.posMax);
     if (pos < max && start !== pos && res.ok) {
       title = res.str;
       pos = res.pos;
 
       // [link](  <href>  "title"  )
-      //                         ^^ skipping these spaces
+      //                         ^^ 跳过这些空格
       for (; pos < max; pos++) {
         code = state.src.charCodeAt(pos);
         if (!isSpace(code) && code !== 0x0a) {
@@ -168,7 +199,7 @@ function linkFoot(state, silent) {
     }
 
     if (pos >= max || state.src.charCodeAt(pos) !== 0x29 /* ) */) {
-      // parsing a valid shortcut link failed, fallback to reference
+      // 解析快捷链接失败，回退到引用解析
       parseReference = true;
     }
     pos++;
@@ -176,7 +207,7 @@ function linkFoot(state, silent) {
 
   if (parseReference) {
     //
-    // Link reference
+    // 链接引用
     //
     if (typeof state.env.references === "undefined") {
       return false;
@@ -194,8 +225,8 @@ function linkFoot(state, silent) {
       pos = labelEnd + 1;
     }
 
-    // covers label === '' and label === undefined
-    // (collapsed reference link and shortcut reference link respectively)
+    // 覆盖 label === '' 和 label === undefined 的情况
+    // (分别是折叠引用链接和快捷引用链接)
     if (!label) {
       label = state.src.slice(labelStart, labelEnd);
     }
@@ -210,8 +241,8 @@ function linkFoot(state, silent) {
   }
 
   //
-  // We found the end of the link, and know for a fact it's a valid link;
-  // so all that's left to do is to call tokenizer.
+  // 我们找到了链接的结尾，并且确信它是一个有效的链接；
+  // 所以剩下的就是调用 tokenizer。
   //
   if (!silent) {
     // 如果存在标题则转成脚注
@@ -219,7 +250,7 @@ function linkFoot(state, silent) {
       state.pos = labelStart;
       state.posMax = labelEnd;
 
-      let tokens;
+      let tokens: Token[];
 
       if (!state.env.footnotes) {
         state.env.footnotes = {};
@@ -231,15 +262,20 @@ function linkFoot(state, silent) {
       const footnoteId = state.env.footnotes.list.length;
 
       // *用来让链接倾斜
-      state.md.inline.parse(`${title}: *${footnoteContent}*`, state.md, state.env, (tokens = []));
+      state.md.inline.parse(
+        `${title}: *${footnoteContent}*`,
+        state.md,
+        state.env,
+        (tokens = []),
+      );
 
       token = state.push("footnote_word", "", 0);
       token.content = state.src.slice(labelStart, labelEnd);
 
       token = state.push("footnote_ref", "", 0);
-      token.meta = {id: footnoteId};
+      token.meta = { id: footnoteId };
 
-      state.env.footnotes.list[footnoteId] = {tokens: tokens};
+      state.env.footnotes.list[footnoteId] = { tokens: tokens };
     }
     // 不存在标题则判断域名
     else {
@@ -265,18 +301,17 @@ function linkFoot(state, silent) {
   return true;
 }
 
-// Glue footnote tokens to end of token stream
-function footnoteTail(state) {
-  var i,
-    l,
-    lastParagraph,
-    list,
-    token,
-    tokens,
-    current,
-    currentLabel,
-    insideRef = false,
-    refTokens = {};
+// 将脚注 tokens 粘合到 token 流的末尾
+function footnoteTail(state: StateCore) {
+  let i: number,
+    l: number,
+    lastParagraph: Token | null | undefined,
+    token: Token,
+    tokens: Token[] | undefined,
+    current: Token[] = [],
+    currentLabel = "",
+    insideRef = false;
+  const refTokens: Record<string, Token[]> = {};
 
   if (!state.env.footnotes) {
     return;
@@ -291,7 +326,7 @@ function footnoteTail(state) {
     }
     if (tok.type === "footnote_reference_close") {
       insideRef = false;
-      // prepend ':' to avoid conflict with Object.prototype members
+      // 前置 ':' 以避免与 Object.prototype 成员冲突
       refTokens[":" + currentLabel] = current;
       return false;
     }
@@ -304,36 +339,38 @@ function footnoteTail(state) {
   if (!state.env.footnotes.list) {
     return;
   }
-  list = state.env.footnotes.list;
+  const list = state.env.footnotes.list;
 
-  token = new state.Token("footnote_block_open", "", 1);
+  token = new Token("footnote_block_open", "", 1);
   state.tokens.push(token);
 
   for (i = 0, l = list.length; i < l; i++) {
-    token = new state.Token("footnote_open", "", 1);
-    token.meta = {id: i, label: list[i].label};
+    token = new Token("footnote_open", "", 1);
+    token.meta = { id: i, label: list[i].label };
     state.tokens.push(token);
 
     if (list[i].tokens) {
       tokens = [];
 
-      token = new state.Token("paragraph_open", "p", 1);
+      token = new Token("paragraph_open", "p", 1);
       token.block = true;
       tokens.push(token);
 
-      token = new state.Token("inline", "", 0);
+      token = new Token("inline", "", 0);
       token.children = list[i].tokens;
       token.content = "";
       tokens.push(token);
 
-      token = new state.Token("paragraph_close", "p", -1);
+      token = new Token("paragraph_close", "p", -1);
       token.block = true;
       tokens.push(token);
     } else if (list[i].label) {
       tokens = refTokens[":" + list[i].label];
     }
 
-    state.tokens = state.tokens.concat(tokens);
+    if (tokens) {
+      state.tokens = state.tokens.concat(tokens);
+    }
     if (state.tokens[state.tokens.length - 1].type === "paragraph_close") {
       lastParagraph = state.tokens.pop();
     } else {
@@ -344,15 +381,15 @@ function footnoteTail(state) {
       state.tokens.push(lastParagraph);
     }
 
-    token = new state.Token("footnote_close", "", -1);
+    token = new Token("footnote_close", "", -1);
     state.tokens.push(token);
   }
 
-  token = new state.Token("footnote_block_close", "", -1);
+  token = new Token("footnote_block_close", "", -1);
   state.tokens.push(token);
 }
 
-export default (md) => {
+export default (md: MarkdownIt) => {
   md.renderer.rules.footnote_ref = renderFootnoteRef;
   md.renderer.rules.footnote_word = renderFootnoteWord;
   md.renderer.rules.footnote_block_open = renderFootnoteBlockOpen;
@@ -360,7 +397,7 @@ export default (md) => {
   md.renderer.rules.footnote_open = renderFootnoteOpen;
   md.renderer.rules.footnote_close = renderFootnoteClose;
 
-  // helpers (only used in other rules, no tokens are attached to those)
+  // 辅助函数 (仅用于其他规则，不附加 token)
   md.renderer.rules.footnote_caption = renderFootnoteCaption;
   md.renderer.rules.footnote_anchor_name = renderFootnoteAnchorName;
 

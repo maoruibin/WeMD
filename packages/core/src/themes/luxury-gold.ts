@@ -1,6 +1,6 @@
 export const luxuryGoldTheme = `/* 黑金奢华风格 */
 #wemd {
-    padding: 40px 22px;
+    padding: 5px 22px;
     max-width: 677px;
     margin: 0 auto;
     /* 强制宋体/衬线体，移动端显示优雅字体的关键 */
@@ -400,9 +400,50 @@ export const luxuryGoldTheme = `/* 黑金奢华风格 */
 }
 
 #wemd .callout-note { border-left: 3px solid #9E8045; }
-#wemd .callout-info { border-left: 3px solid #9E8045; }
 #wemd .callout-tip { border-left: 3px solid #9E8045; }
-#wemd .callout-success { border-left: 3px solid #9E8045; }
+#wemd .callout-important { border-left: 3px solid #9E8045; }
 #wemd .callout-warning { border-left: 3px solid #D98C45; }
-#wemd .callout-danger { border-left: 3px solid #B33D25; }
+#wemd .callout-caution { border-left: 3px solid #B33D25; }
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
+}
 `;

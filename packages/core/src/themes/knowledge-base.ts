@@ -1,6 +1,6 @@
 export const knowledgeBaseTheme = `/* 知识库风格 */
 #wemd {
-    padding: 30px 24px;
+    padding: 5px 24px;
     max-width: 677px;
     margin: 0 auto;
     /* 使用系统无衬线字体，保持干净利落 */
@@ -420,19 +420,14 @@ export const knowledgeBaseTheme = `/* 知识库风格 */
     border-left-color: #37352F;
 }
 
-#wemd .callout-info { 
-    background: #E7F3F8;
-    border-left-color: #2D9CDB;
-}
-
 #wemd .callout-tip { 
     background: #FDF5F2;
     border-left-color: #F2994A;
 }
 
-#wemd .callout-success { 
-    background: #EDF7ED;
-    border-left-color: #4CAF50;
+#wemd .callout-important { 
+    background: #E7F3F8;
+    border-left-color: #2D9CDB;
 }
 
 #wemd .callout-warning { 
@@ -440,8 +435,50 @@ export const knowledgeBaseTheme = `/* 知识库风格 */
     border-left-color: #FF9800;
 }
 
-#wemd .callout-danger { 
+#wemd .callout-caution { 
     background: #FFEBEE;
     border-left-color: #F44336;
+}
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
 }
 `;

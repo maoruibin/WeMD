@@ -1,6 +1,6 @@
 export const auroraGlassTheme = `/* 极光玻璃风格 */
 #wemd {
-  padding: 24px 20px;
+  padding: 5px 20px;
   max-width: 677px;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
@@ -464,23 +464,61 @@ export const auroraGlassTheme = `/* 极光玻璃风格 */
   border-left: 4px solid #6366f1;
 }
 
-#wemd .callout-info {
-  border-left: 4px solid #4158D0;
-}
-
 #wemd .callout-tip {
   border-left: 4px solid #C850C0;
 }
 
-#wemd .callout-success {
-  border-left: 4px solid #10b981;
+#wemd .callout-important {
+  border-left: 4px solid #4158D0;
 }
 
 #wemd .callout-warning {
   border-left: 4px solid #FFCC70;
 }
 
-#wemd .callout-danger {
+#wemd .callout-caution {
   border-left: 4px solid #ef4444;
+}
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
 }
 `;

@@ -4,7 +4,9 @@
  * 主题相关功能已迁移到 themeStore.ts
  */
 import { create } from 'zustand';
-import { preprocessMarkdown } from '@wemd/core';
+import * as core from '@wemd/core';
+
+const { preprocessMarkdown } = core;
 import { useThemeStore } from './themeStore';
 // import { useUIStore } from './uiStore'; // 移除静态导入以解决循环依赖/初始化问题
 import { copyToWechat as execCopyToWechat } from '../services/wechatCopyService';

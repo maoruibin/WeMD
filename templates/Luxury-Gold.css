@@ -156,6 +156,15 @@
     font-size: 15px;
 }
 
+/* 连续引用块之间消除额外间距 */
+#wemd .multiquote-1 + .multiquote-1,
+#wemd .multiquote-2 + .multiquote-2,
+#wemd .multiquote-3 + .multiquote-3,
+#wemd .multiquote-1 + .multiquote-2,
+#wemd .multiquote-2 + .multiquote-3 {
+    margin-top: 0;
+}
+
 /* 列表 - 精致的金点 */
 #wemd ul {
     list-style: square;

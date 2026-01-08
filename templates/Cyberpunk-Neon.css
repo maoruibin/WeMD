@@ -157,6 +157,15 @@
     font-family: monospace;
 }
 
+/* 连续引用块之间消除额外间距 */
+#wemd .multiquote-1 + .multiquote-1,
+#wemd .multiquote-2 + .multiquote-2,
+#wemd .multiquote-3 + .multiquote-3,
+#wemd .multiquote-1 + .multiquote-2,
+#wemd .multiquote-2 + .multiquote-3 {
+    margin-top: 0;
+}
+
 /* 列表 */
 #wemd ul {
     list-style: disc;

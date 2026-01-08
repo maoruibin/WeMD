@@ -1,6 +1,6 @@
 export const sunsetFilmTheme = `/* 落日胶片风格 */
 #wemd {
-    padding: 30px 22px;
+    padding: 5px 22px;
     max-width: 677px;
     margin: 0 auto;
     /* 强制使用衬线体，营造电影字幕感 */
@@ -469,9 +469,50 @@ export const sunsetFilmTheme = `/* 落日胶片风格 */
 }
 
 #wemd .callout-note { border-left-color: #8D5B4C; }
-#wemd .callout-info { border-left-color: #8D5B4C; }
 #wemd .callout-tip { border-left-color: #D98C45; }
-#wemd .callout-success { border-left-color: #8D5B4C; }
+#wemd .callout-important { border-left-color: #8D5B4C; }
 #wemd .callout-warning { border-left-color: #D98C45; }
-#wemd .callout-danger { border-left-color: #B33D25; }
+#wemd .callout-caution { border-left-color: #B33D25; }
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
+}
 `;

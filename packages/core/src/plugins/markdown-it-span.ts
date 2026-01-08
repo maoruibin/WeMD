@@ -1,28 +1,35 @@
-function slugify(s, md) {
+import MarkdownIt from "markdown-it";
+import StateCore from "markdown-it/lib/rules_core/state_core";
+
+function slugify(s: string, md: MarkdownIt) {
   // Unicode-friendly
-  var spaceRegex = new RegExp(md.utils.lib.ucmicro.Z.source, "g");
+  // @ts-expect-error - accessing internal md.utils.lib.ucmicro property
+  const spaceRegex = new RegExp(md.utils.lib.ucmicro.Z.source, "g");
   return encodeURIComponent(s.replace(spaceRegex, ""));
 }
 
-function makeRule(md, options) {
-  return function addHeadingAnchors(state) {
+function makeRule(md: MarkdownIt, options: any) {
+  return function addHeadingAnchors(state: StateCore) {
     // Go to length-2 because we're going to be peeking ahead.
-    for (var i = 0; i < state.tokens.length - 1; i++) {
-      if (state.tokens[i].type !== "heading_open" || state.tokens[i + 1].type !== "inline") {
+    for (let i = 0; i < state.tokens.length - 1; i++) {
+      if (
+        state.tokens[i].type !== "heading_open" ||
+        state.tokens[i + 1].type !== "inline"
+      ) {
         continue;
       }
 
-      var headingInlineToken = state.tokens[i + 1];
+      const headingInlineToken = state.tokens[i + 1];
 
-      if (!headingInlineToken.content) {
+      if (!headingInlineToken.content || !headingInlineToken.children) {
         continue;
       }
 
       if (options.addHeadingSpan) {
-        var spanTokenPre = new state.Token("html_inline", "", 0);
+        const spanTokenPre = new state.Token("html_inline", "", 0);
         spanTokenPre.content = `<span class="prefix"></span><span class="content">`;
         headingInlineToken.children.unshift(spanTokenPre);
-        var spanTokenPost = new state.Token("html_inline", "", 0);
+        const spanTokenPost = new state.Token("html_inline", "", 0);
         spanTokenPost.content = `</span><span class="suffix"></span>`;
         headingInlineToken.children.push(spanTokenPost);
       }
@@ -33,12 +40,12 @@ function makeRule(md, options) {
   };
 }
 
-export default (md, opts) => {
-  var defaults = {
+export default (md: MarkdownIt, opts: any) => {
+  const defaults = {
     anchorClass: "markdown-it-headingspan",
     addHeadingSpan: true,
     slugify: slugify,
   };
-  var options = md.utils.assign(defaults, opts);
+  const options = md.utils.assign(defaults, opts);
   md.core.ruler.push("heading_span", makeRule(md, options));
 };

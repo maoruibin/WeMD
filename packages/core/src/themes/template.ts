@@ -545,19 +545,14 @@ export const templateTheme = `/*
     background: #f5f5ff; 
 }
 
-#wemd .callout-info { 
-    border-left-color: #0ea5e9; 
-    background: #f0f9ff; 
-}
-
 #wemd .callout-tip { 
     border-left-color: #10b981; 
     background: #ecfdf5; 
 }
 
-#wemd .callout-success { 
-    border-left-color: #10b981; 
-    background: #ecfdf5; 
+#wemd .callout-important { 
+    border-left-color: #8b5cf6; 
+    background: #f5f3ff; 
 }
 
 #wemd .callout-warning { 
@@ -565,7 +560,7 @@ export const templateTheme = `/*
     background: #fffbeb; 
 }
 
-#wemd .callout-danger { 
+#wemd .callout-caution { 
     border-left-color: #ef4444; 
     background: #fff5f5; 
 }
@@ -603,23 +598,51 @@ export const templateTheme = `/*
     text-decoration: none;
 }
 
-/* 图片流（横屏滑动） */
+
+
+
+/* ============================================
+ * 17. 图片轮播样式 (Imageflow)
+ * ============================================
+ */
 #wemd .imageflow-layer1 {
-    margin: 20px 0;
-    overflow-x: auto;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
 }
 
 #wemd .imageflow-layer2 {
-    white-space: nowrap;
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
 }
 
 #wemd .imageflow-layer3 {
-    display: inline-block;
-    vertical-align: top;
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
 }
 
 #wemd .imageflow-img {
-    display: inline-block;
-    margin-right: 10px;
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
 }
 `;

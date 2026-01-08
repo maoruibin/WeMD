@@ -1,10 +1,17 @@
 import katex from "katex";
+import MarkdownIt from "markdown-it";
+import StateInline from "markdown-it/lib/rules_inline/state_inline";
+import StateBlock from "markdown-it/lib/rules_block/state_block";
+import Token from "markdown-it/lib/token";
 
 const escapeHtml = (str: string) =>
-  str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 
-const escapeAttribute = (str: string) =>
-  escapeHtml(str).replace(/'/g, "&#39;");
+const escapeAttribute = (str: string) => escapeHtml(str).replace(/'/g, "&#39;");
 
 const renderMathJax = (latex: string, display: boolean): string | null => {
   if (typeof window === "undefined") return null;
@@ -34,18 +41,17 @@ const renderMathJax = (latex: string, display: boolean): string | null => {
   }
 };
 
-/* Process inline math */
+/* 处理内联数学公式 */
 /*
-Like markdown-it-simplemath, this is a stripped down, simplified version of:
+类似于 markdown-it-simplemath，这是一个精简版：
 https://github.com/runarberg/markdown-it-math
-It differs in that it takes (a subset of) LaTeX as input and relies on KaTeX
-for rendering output.
+区别在于它接受 (部分) LaTeX 作为输入并依赖 KaTeX 进行渲染。
 */
 /* eslint-disable */
 
-// Test if potential opening or closing delimieter
-// Assumes that there is a "$" at state.src[pos]
-function isValidDelim(state, pos) {
+// 测试是否为潜在的开始或结束定界符
+// 假设 state.src[pos] 处有 "$"
+function isValidDelim(state: StateInline, pos: number) {
   var prevChar,
     nextChar,
     max = state.posMax,
@@ -55,8 +61,8 @@ function isValidDelim(state, pos) {
   prevChar = pos > 0 ? state.src.charCodeAt(pos - 1) : -1;
   nextChar = pos + 1 <= max ? state.src.charCodeAt(pos + 1) : -1;
 
-  // Check non-whitespace conditions for opening and closing, and
-  // check that closing delimeter isn't followed by a number
+  // 检查开头和结尾的非空白条件，并且
+  // 检查结束定界符后面没有跟数字
   if (
     prevChar === 0x20 /* " " */ ||
     prevChar === 0x09 /* \t */ ||
@@ -74,8 +80,8 @@ function isValidDelim(state, pos) {
   };
 }
 
-function math_inline(state, silent) {
-  var start, match, token, res, pos, esc_count;
+function math_inline(state: StateInline, silent: boolean) {
+  var start, match, token, res, pos;
 
   if (state.src[state.pos] !== "$") {
     return false;
@@ -90,28 +96,26 @@ function math_inline(state, silent) {
     return true;
   }
 
-  // First check for and bypass all properly escaped delimieters
-  // This loop will assume that the first leading backtick can not
-  // be the first character in state.src, which is known since
-  // we have found an opening delimieter already.
+  // 首先检查并绕过所有正确转义的定界符
+  // 这个循环假设第一个前导反引号不能是 state.src 中的第一个字符，
+  // 因为我们已经找到了一个开始定界符。
   start = state.pos + 1;
   match = start;
   while ((match = state.src.indexOf("$", match)) !== -1) {
-    // Found potential $, look for escapes, pos will point to
-    // first non escape when complete
+    // 发现潜在的 $，寻找转义，完成后 pos 将指向第一个非转义字符
     pos = match - 1;
     while (state.src[pos] === "\\") {
       pos -= 1;
     }
 
-    // Even number of escapes, potential closing delimiter found
+    // 偶数个转义符，发现潜在的结束定界符
     if ((match - pos) % 2 == 1) {
       break;
     }
     match += 1;
   }
 
-  // No closing delimter found.  Consume $ and continue.
+  // 未找到结束定界符。消耗 $ 并继续。
   if (match === -1) {
     if (!silent) {
       state.pending += "$";
@@ -120,7 +124,7 @@ function math_inline(state, silent) {
     return true;
   }
 
-  // Check if we have empty content, ie: $$.  Do not parse.
+  // 检查空内容，即: $$。不解析。
   if (match - start === 0) {
     if (!silent) {
       state.pending += "$$";
@@ -129,7 +133,7 @@ function math_inline(state, silent) {
     return true;
   }
 
-  // Check for valid closing delimiter
+  // 检查有效的结束定界符
   res = isValidDelim(state, match);
   if (!res.can_close) {
     if (!silent) {
@@ -149,7 +153,12 @@ function math_inline(state, silent) {
   return true;
 }
 
-function math_block(state, start, end, silent) {
+function math_block(
+  state: StateBlock,
+  start: number,
+  end: number,
+  silent: boolean,
+) {
   var firstLine,
     lastLine,
     next,
@@ -173,7 +182,7 @@ function math_block(state, start, end, silent) {
     return true;
   }
   if (firstLine.trim().slice(-2) === "$$") {
-    // Single line expression
+    // 单行表达式
     firstLine = firstLine.trim().slice(0, -2);
     found = true;
   }
@@ -189,16 +198,11 @@ function math_block(state, start, end, silent) {
     max = state.eMarks[next];
 
     if (pos < max && state.tShift[next] < state.blkIndent) {
-      // non-empty line with negative indent should stop the list:
+      // 具有负缩进的非空行应停止列表：
       break;
     }
 
-    if (
-      state.src
-        .slice(pos, max)
-        .trim()
-        .slice(-2) === "$$"
-    ) {
+    if (state.src.slice(pos, max).trim().slice(-2) === "$$") {
       lastPos = state.src.slice(0, max).lastIndexOf("$$");
       lastLine = state.src.slice(pos, lastPos);
       found = true;
@@ -218,13 +222,13 @@ function math_block(state, start, end, silent) {
   return true;
 }
 
-export default (md, options) => {
-  // Default options
+export default (md: MarkdownIt, options: any) => {
+  // 默认选项
 
   options = options || {};
 
-  // set KaTeX as the renderer for markdown-it-simplemath
-  var katexInline = function(latex) {
+  // 设置 KaTeX 为 markdown-it-simplemath 的渲染器
+  var katexInline = function (latex: string) {
     options.displayMode = false;
     const mathJaxContent = renderMathJax(latex, false);
     if (mathJaxContent) {
@@ -244,11 +248,11 @@ export default (md, options) => {
     }
   };
 
-  var inlineRenderer = function(tokens, idx) {
+  var inlineRenderer = function (tokens: Token[], idx: number) {
     return katexInline(tokens[idx].content);
   };
 
-  var katexBlock = function(latex) {
+  var katexBlock = function (latex: string) {
     options.displayMode = true;
     const mathJaxContent = renderMathJax(latex, true);
     if (mathJaxContent) {
@@ -268,7 +272,7 @@ export default (md, options) => {
     }
   };
 
-  var blockRenderer = function(tokens, idx) {
+  var blockRenderer = function (tokens: Token[], idx: number) {
     return katexBlock(tokens[idx].content) + "\n";
   };
 

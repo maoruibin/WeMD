@@ -1,4 +1,6 @@
-function makeRule(md) {
+import MarkdownIt from "markdown-it";
+
+function makeRule(md: MarkdownIt) {
   return function replaceListItem() {
     md.renderer.rules.list_item_open = function replaceOpen() {
       return "<li><section>";
@@ -9,6 +11,6 @@ function makeRule(md) {
   };
 }
 
-export default (md) => {
+export default (md: MarkdownIt) => {
   md.core.ruler.push("replace-li", makeRule(md));
 };

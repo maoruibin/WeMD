@@ -2,7 +2,9 @@
  * 内置主题定义
  * 提取自 editorStore.ts，集中管理所有预设主题
  */
-import {
+import * as coreThemes from '@wemd/core';
+
+const {
     basicTheme,
     customDefaultTheme,
     codeGithubTheme,
@@ -18,7 +20,7 @@ import {
     receiptTheme,
     sunsetFilmTheme,
     templateTheme
-} from '@wemd/core';
+} = coreThemes;
 
 /**
  * 自定义主题接口

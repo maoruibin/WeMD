@@ -219,6 +219,15 @@
   line-height: 1.8;
 }
 
+/* 连续引用块之间消除额外间距 */
+#wemd .multiquote-1 + .multiquote-1,
+#wemd .multiquote-2 + .multiquote-2,
+#wemd .multiquote-3 + .multiquote-3,
+#wemd .multiquote-1 + .multiquote-2,
+#wemd .multiquote-2 + .multiquote-3 {
+  margin-top: 0;
+}
+
 /* 链接 - 渐变虚线 */
 #wemd a {
   color: #C850C0;

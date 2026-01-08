@@ -278,8 +278,8 @@ importers:
   packages/core:
     dependencies:
       highlight.js:
-        specifier: ^9.15.6
-        version: 9.18.5
+        specifier: ^11.11.1
+        version: 11.11.1
       juice:
         specifier: ^5.2.0
         version: 5.2.0
@@ -322,6 +322,9 @@ importers:
       markdown-it-table-of-contents:
         specifier: ^0.4.4
         version: 0.4.4
+      markdown-it-task-lists:
+        specifier: ^2.1.1
+        version: 2.1.1
       mathjax:
         specifier: ^3.0.1
         version: 3.2.2
@@ -10404,10 +10407,9 @@ packages:
     dependencies:
       function-bind: 1.1.2
 
-  /highlight.js@9.18.5:
-    resolution: {integrity: sha512-a5bFyofd/BHCX52/8i8uJkjr9DYwXIPnM/plwI6W7ezItLGqzt7X2G2nXuYSfsIJdkwwj/g9DG1LkcGJI/dDoA==}
-    deprecated: Support has ended for 9.x series. Upgrade to @latest
-    requiresBuild: true
+  /highlight.js@11.11.1:
+    resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
+    engines: {node: '>=12.0.0'}
     dev: false
 
   /hosted-git-info@4.1.0:
@@ -11929,6 +11931,10 @@ packages:
   /markdown-it-table-of-contents@0.4.4:
     resolution: {integrity: sha512-TAIHTHPwa9+ltKvKPWulm/beozQU41Ab+FIefRaQV1NRnpzwcV9QOe6wXQS5WLivm5Q/nlo0rl6laGkMDZE7Gw==}
     engines: {node: '>6.4.0'}
+    dev: false
+
+  /markdown-it-task-lists@2.1.1:
+    resolution: {integrity: sha512-TxFAc76Jnhb2OUu+n3yz9RMu4CwGfaT788br6HhEDlvWfdeJcLUsxk1Hgw2yJio0OXsxv7pyIPmvECY7bMbluA==}
     dev: false
 
   /markdown-it@13.0.2:

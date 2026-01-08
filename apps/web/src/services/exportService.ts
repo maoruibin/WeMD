@@ -1,4 +1,6 @@
-import { processHtml, createMarkdownParser } from '@wemd/core';
+import * as core from '@wemd/core';
+
+const { processHtml, createMarkdownParser } = core;
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import toast from 'react-hot-toast';

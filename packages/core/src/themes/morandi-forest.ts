@@ -1,6 +1,6 @@
 export const morandiForestTheme = `/* 莫兰迪森林风格 */
 #wemd {
-  padding: 30px 22px;
+  padding: 5px 22px;
   max-width: 677px;
   margin: 0 auto;
   font-family: "Optima", "Georgia", "PingFang SC", "Microsoft YaHei", serif;
@@ -384,9 +384,50 @@ export const morandiForestTheme = `/* 莫兰迪森林风格 */
 }
 
 #wemd .callout-note { border-left: 4px solid #739072; }
-#wemd .callout-info { border-left: 4px solid #4F6F52; }
 #wemd .callout-tip { border-left: 4px solid #86A789; }
-#wemd .callout-success { border-left: 4px solid #4F6F52; }
+#wemd .callout-important { border-left: 4px solid #4F6F52; }
 #wemd .callout-warning { border-left: 4px solid #D98C45; }
-#wemd .callout-danger { border-left: 4px solid #B33D25; }
+#wemd .callout-caution { border-left: 4px solid #B33D25; }
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
+}
 `;

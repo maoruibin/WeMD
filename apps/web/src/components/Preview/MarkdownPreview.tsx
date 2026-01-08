@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef, useMemo, useCallback } from 'react';
-import { createMarkdownParser, processHtml, preprocessMarkdown } from '@wemd/core';
+import * as core from '@wemd/core';
+
+const { createMarkdownParser, processHtml, preprocessMarkdown } = core;
 import { useEditorStore } from '../../store/editorStore';
 import { useThemeStore } from '../../store/themeStore';
 import { useUIStore } from '../../store/uiStore';

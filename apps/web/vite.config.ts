@@ -15,8 +15,10 @@ export default defineConfig({
       }
     }
   },
-  optimizeDeps: {
-    exclude: ['@wemd/core'],
+  resolve: {
+    alias: {
+      '@wemd/core': '/Users/gudong/code/person/WeiMD/packages/core/src',
+    },
   },
   build: {
     rollupOptions: {

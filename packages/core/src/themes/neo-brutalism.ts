@@ -1,6 +1,6 @@
 export const neoBrutalismTheme = `/* 新粗野主义风格 */
 #wemd {
-    padding: 30px 20px;
+    padding: 5px 22px;
     max-width: 677px;
     margin: 0 auto;
     font-family: -apple-system, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -508,9 +508,50 @@ export const neoBrutalismTheme = `/* 新粗野主义风格 */
 }
 
 #wemd .callout-note { border-left: 8px solid #6A00FF; }
-#wemd .callout-info { border-left: 8px solid #6A00FF; }
 #wemd .callout-tip { border-left: 8px solid #CCFF00; }
-#wemd .callout-success { border-left: 8px solid #6A00FF; }
+#wemd .callout-important { border-left: 8px solid #6A00FF; }
 #wemd .callout-warning { border-left: 8px solid #CCFF00; }
-#wemd .callout-danger { border-left: 8px solid #FF6B9D; }
+#wemd .callout-caution { border-left: 8px solid #FF6B9D; }
+
+/* Imageflow CSS */
+#wemd .imageflow-layer1 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  /* white-space: normal; */
+  border: 0px none;
+  padding: 0px;
+  overflow: hidden;
+}
+
+#wemd .imageflow-layer2 {
+  white-space: nowrap;
+  width: 100%;
+  overflow-x: scroll;
+}
+
+#wemd .imageflow-layer3 {
+  display: inline-block;
+  word-wrap: break-word;
+  white-space: normal;
+  vertical-align: top;
+  width: 80%;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+#wemd .imageflow-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#wemd .imageflow-caption {
+  text-align: center;
+  margin-top: 0px;
+  padding-top: 0px;
+  color: #888;
+}
 `;
