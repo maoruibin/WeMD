@@ -8,7 +8,7 @@ import {
 import toast from 'react-hot-toast';
 import { ImageHostManager } from '../../services/image/ImageUploader';
 import type { ImageHostConfig } from '../../services/image/ImageUploader';
-import { FooterTemplateModal } from '../FooterTemplate/FooterTemplateModal';
+import { useUIStore } from '../../store/uiStore';
 import './Toolbar.css';
 
 interface ToolbarProps {
@@ -18,7 +18,7 @@ interface ToolbarProps {
 export function Toolbar({ onInsert }: ToolbarProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [uploading, setUploading] = useState(false);
-    const [showFooterModal, setShowFooterModal] = useState(false);
+    const openFooterModal = useUIStore((state) => state.openFooterModal);
 
     const tools = [
         { icon: Bold, label: "粗体", prefix: "**", suffix: "**", placeholder: "粗体文字" },
@@ -112,7 +112,7 @@ export function Toolbar({ onInsert }: ToolbarProps) {
             {/* 尾部模板按钮 */}
             <button
                 className="md-toolbar-btn"
-                onClick={() => setShowFooterModal(true)}
+                onClick={openFooterModal}
                 data-tooltip="插入尾部模板"
             >
                 <PanelBottom size={16} />
@@ -126,13 +126,6 @@ export function Toolbar({ onInsert }: ToolbarProps) {
                 onChange={handleFileChange}
                 style={{ display: 'none' }}
             />
-
-            {showFooterModal && (
-                <FooterTemplateModal 
-                    onClose={() => setShowFooterModal(false)}
-                    onInsert={(html) => onInsert(html, '', '')} 
-                />
-            )}
         </div>
     );
 }

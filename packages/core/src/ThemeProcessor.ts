@@ -121,6 +121,10 @@ export const processHtml = (
       preserveImportant: true,
     });
 
+    // 微信公众号原生支持 <section> 标签！
+    // 之前的代码错误地将 section 替换为 div，导致样式丢失
+    // 参考：https://juejin.cn/post/7368777511953809434
+    // 微信支持的标签包括：section, p, span, strong, em, br, img 等
     return res;
   } catch (e) {
     console.error("Juice inline error:", e);

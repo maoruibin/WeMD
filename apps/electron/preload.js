@@ -15,6 +15,8 @@ contextBridge.exposeInMainWorld('electron', {
         renameFile: (payload) => ipcRenderer.invoke('file:rename', payload),
         deleteFile: (filePath) => ipcRenderer.invoke('file:delete', filePath),
         revealInFinder: (filePath) => ipcRenderer.invoke('file:reveal', filePath),
+        getMode: () => ipcRenderer.invoke('workspace:get-mode'),
+        migrateToFolder: () => ipcRenderer.invoke('workspace:migrate'),
 
         // 事件监听
         onRefresh: (callback) => {

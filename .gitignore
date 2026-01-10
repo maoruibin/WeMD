@@ -11,6 +11,8 @@ apps/macos/
 apps/electron/node_modules/
 apps/electron/dist/
 apps/worker/.npm-cache
+.npm-cache/
+**/.npm-cache/
 
 # AI Agent files
 .agentdocs/

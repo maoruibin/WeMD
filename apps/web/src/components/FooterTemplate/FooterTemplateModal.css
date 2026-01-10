@@ -5,38 +5,39 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1100;
-    animation: fadeIn 0.2s ease;
     backdrop-filter: blur(4px);
+    z-index: 99999;
+    animation: fadeIn 0.2s ease;
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    padding: 20px;
 }
 
 .footer-template-modal {
+    position: relative;
     background: var(--bg-primary);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
-    width: 90%;
-    max-width: 900px;
-    height: 80vh;
-    max-height: 750px;
+    width: 100%;
+    max-width: 1000px;
+    max-height: 90vh;
     display: flex;
     flex-direction: column;
-    animation: slideInUp 0.3s ease;
+    border-radius: var(--radius-lg);
     border: var(--border-width) solid var(--border-light);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideInDown 0.3s ease;
 }
 
 .footer-template-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 24px;
+    padding: 16px 24px;
     border-bottom: 1px solid var(--border-light);
 }
 
 .footer-template-header h3 {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--text-primary);
     margin: 0;
@@ -66,17 +67,18 @@
     flex: 1;
     display: flex;
     overflow: hidden;
+    max-height: 55vh;
 }
 
 /* 左侧配置区 */
 .template-config {
-    width: 360px;
-    padding: 24px;
+    width: 320px;
+    padding: 16px;
     border-right: 1px solid var(--border-light);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
 }
 
 .config-section {
@@ -184,7 +186,7 @@
 /* 右侧预览区 */
 .template-preview-area {
     flex: 1;
-    padding: 40px;
+    padding: 16px;
     background: var(--bg-secondary);
     display: flex;
     flex-direction: column;
@@ -194,28 +196,30 @@
 
 .preview-container {
     width: 100%;
-    max-width: 600px;
+    max-width: 500px;
     background: #ffffff; /* 预览区始终保持白底，模拟微信 */
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    padding: 40px;
-    min-height: 200px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    min-height: 120px;
 }
 
 .preview-label {
-    margin-bottom: 16px;
-    font-size: 13px;
+    margin-bottom: 12px;
+    font-size: 12px;
     color: var(--text-tertiary);
     text-align: center;
 }
 
 /* 底部按钮 */
 .footer-template-footer {
-    padding: 20px 24px;
+    padding: 16px 24px;
     border-top: 1px solid var(--border-light);
     display: flex;
     justify-content: flex-end;
     gap: 12px;
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
 }
 
 .btn-cancel {
@@ -236,7 +240,7 @@
 }
 
 .btn-confirm {
-    padding: 10px 32px;
+    padding: 10px 28px;
     background: var(--accent-primary);
     color: white;
     border: none;
@@ -253,12 +257,12 @@
 }
 
 /* 动画 */
-@keyframes slideInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+@keyframes slideInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

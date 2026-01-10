@@ -42,48 +42,29 @@ export function FooterTemplateModal({ onClose, onInsert }: FooterTemplateModalPr
             .replace(/\n/g, "<br/>");
     };
 
-    const generateHtml = (preview: boolean = false) => {
+    const generateHtml = () => {
         const { title, tags, content } = config;
         const safeTitle = escapeHtml(title);
         const safeTags = escapeHtml(tags);
         const safeContent = escapeHtml(content);
 
-        // 样式变量
-        const primaryColor = "#333";
-        const secondaryColor = "#666";
+        // 样式变量（针对微信公众号优化）
+        const primaryColor = "#222";       // 主标题：接近黑色，更清晰
+        const secondaryColor = "#888";     // 副标题：浅灰色，更明显
         const accentColor = "#ddd";
 
         switch (config.templateId) {
             case 'card':
-                return `
-<section style="margin: 40px 0 20px; padding: 24px; background: #f9f9f9; border-radius: 12px; border: 1px solid #eee;">
-    <div style="font-weight: bold; font-size: 18px; margin-bottom: 8px; color: ${primaryColor};">${safeTitle}</div>
-    <div style="font-size: 13px; color: ${secondaryColor}; margin-bottom: 16px; letter-spacing: 0.5px;">${safeTags}</div>
-    <div style="font-size: 15px; color: ${primaryColor}; line-height: 1.8;">${safeContent}</div>
-</section>
-<p></p>`;
-            
+                // 使用 section 标签 + 前后换行，确保 markdown-it 识别为块级元素
+                return `\n\n<section style="margin: 40px 0 20px; padding: 24px; background: #f9f9f9; border: 1px solid #eee;"><div style="font-weight: bold; font-size: 18px; margin-bottom: 8px; color: ${primaryColor};">${safeTitle}</div><div style="font-size: 14px; color: ${secondaryColor}; margin-bottom: 16px; letter-spacing: 0.5px;">${safeTags}</div><div style="font-size: 15px; color: ${primaryColor}; line-height: 1.8;">${safeContent}</div></section>\n\n`;
+
             case 'simple':
-                return `
-<section style="margin: 40px 0 20px; border-left: 4px solid ${primaryColor}; padding-left: 16px;">
-    <div style="font-weight: bold; font-size: 17px; margin-bottom: 4px; color: ${primaryColor};">${safeTitle}</div>
-    ${safeTags ? `<div style="font-size: 13px; color: ${secondaryColor}; margin-bottom: 8px;">${safeTags}</div>` : ''}
-    <div style="font-size: 14px; color: ${secondaryColor}; line-height: 1.6;">${safeContent}</div>
-</section>
-<p></p>`;
+                return `\n\n<section style="margin: 40px 0 20px; border-left: 4px solid ${primaryColor}; padding-left: 16px;"><div style="font-weight: bold; font-size: 17px; margin-bottom: 4px; color: ${primaryColor};">${safeTitle}</div>${safeTags ? `<div style="font-size: 14px; color: ${secondaryColor}; margin-bottom: 8px;">${safeTags}</div>` : ''}<div style="font-size: 14px; color: ${secondaryColor}; line-height: 1.6;">${safeContent}</div></section>\n\n`;
 
             case 'centered':
             default:
-                return `
-<section style="text-align: center; margin: 40px 0 20px;">
-    <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 12px; color: ${primaryColor};">${safeTitle}</h3>
-    <div style="font-size: 13px; color: ${secondaryColor}; margin-bottom: 24px; letter-spacing: 1px;">
-        ${safeTags.split('|').map(tag => `<span style="margin: 0 4px;">${tag.trim()}</span>`).join('<span style="color: #ddd;">|</span>')}
-    </div>
-    <div style="width: 40px; height: 2px; background: ${accentColor}; margin: 0 auto 24px; border-radius: 1px;"></div>
-    <p style="font-size: 15px; color: ${primaryColor}; line-height: 1.8; margin: 0; text-align: center;">${safeContent}</p>
-</section>
-<p></p>`;
+                const centeredTags = safeTags.split('|').map(tag => `<span style="margin: 0 4px;">${tag.trim()}</span>`).join('<span style="color: #ccc;">|</span>');
+                return `\n\n<section style="text-align: center; margin: 40px 0 20px;"><div style="font-size: 18px; font-weight: bold; margin-bottom: 12px; color: ${primaryColor};">${safeTitle}</div><div style="font-size: 14px; color: ${secondaryColor}; margin-bottom: 24px; letter-spacing: 1px;">${centeredTags}</div><div style="width: 40px; height: 2px; background: ${accentColor}; margin: 0 auto 24px;"></div><div style="font-size: 15px; color: ${primaryColor}; line-height: 1.8; margin: 0; text-align: center;">${safeContent}</div></section>\n\n`;
         }
     };
 
@@ -175,7 +156,7 @@ export function FooterTemplateModal({ onClose, onInsert }: FooterTemplateModalPr
                         <div className="preview-label">实时预览</div>
                         <div 
                             className="preview-container"
-                            dangerouslySetInnerHTML={{ __html: generateHtml(true) }}
+                            dangerouslySetInnerHTML={{ __html: generateHtml() }}
                         />
                     </div>
                 </div>

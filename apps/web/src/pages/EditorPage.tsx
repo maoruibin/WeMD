@@ -7,6 +7,7 @@ import { HistoryPanel } from '../components/History/HistoryPanel';
 import { Welcome } from '../components/Welcome/Welcome';
 import { MarkdownEditor } from '../components/Editor/MarkdownEditor';
 import { MarkdownPreview } from '../components/Preview/MarkdownPreview';
+import { FooterTemplateModal } from '../components/FooterTemplate/FooterTemplateModal';
 import { useFileSystem } from '../hooks/useFileSystem';
 import '../styles/global.css';
 import '../App.css';
@@ -24,6 +25,8 @@ export function EditorPage() {
   const historyLoading = useHistoryStore((state) => state.loading);
   const fileLoading = useFileStore((state) => state.isLoading);
   const isSidebarOpen = useUIStore((state) => state.isSidebarOpen);
+  const showFooterModal = useUIStore((state) => state.showFooterModal);
+  const setShowFooterModal = useUIStore((state) => state.setShowFooterModal);
 
   // 全局保存快捷键（统一监听器）
   useEffect(() => {
@@ -112,6 +115,18 @@ export function EditorPage() {
           </div>
         </main>
       </>
+
+      {/* 尾部模板弹窗 - 在根级别渲染，确保覆盖整个页面 */}
+      {showFooterModal && (
+        <FooterTemplateModal
+          onClose={() => setShowFooterModal(false)}
+          onInsert={(html) => {
+            // 使用自定义事件通知 MarkdownEditor 插入文本
+            window.dispatchEvent(new CustomEvent('wemd-insert-text', { detail: { text: html } }));
+            setShowFooterModal(false);
+          }}
+        />
+      )}
     </div>
   );
 }
