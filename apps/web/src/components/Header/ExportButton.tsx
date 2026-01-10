@@ -1,14 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, ChevronDown, Image, FileText, FileDown } from 'lucide-react';
+import { Send, ChevronDown, FileDown } from 'lucide-react';
 import { useEditorStore } from '../../store/editorStore';
-import { useThemeStore } from '../../store/themeStore';
 import { useFileStore } from '../../store/fileStore';
 import { exportService } from '../../services/exportService';
 import './ExportButton.css';
 
 export function ExportButton() {
     const { copyToWechat, markdown } = useEditorStore();
-    const { themeId, getThemeCSS } = useThemeStore();
     const { currentFile } = useFileStore();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -24,18 +22,6 @@ export function ExportButton() {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
-
-    const handleExportImage = () => {
-        const css = getThemeCSS(themeId);
-        exportService.exportImage(markdown, css, title);
-        setIsOpen(false);
-    };
-
-    const handleExportPDF = () => {
-        const css = getThemeCSS(themeId);
-        exportService.exportPDF(markdown, css, title);
-        setIsOpen(false);
-    };
 
     const handleExportMD = () => {
         exportService.exportMarkdown(markdown, title);
@@ -59,14 +45,6 @@ export function ExportButton() {
             
             {isOpen && (
                 <div className="export-dropdown">
-                    <button className="export-menu-item" onClick={handleExportImage}>
-                        <Image size={16} />
-                        <span>导出为长图</span>
-                    </button>
-                    <button className="export-menu-item" onClick={handleExportPDF}>
-                        <FileText size={16} />
-                        <span>导出为 PDF</span>
-                    </button>
                     <button className="export-menu-item" onClick={handleExportMD}>
                         <FileDown size={16} />
                         <span>导出 Markdown</span>
