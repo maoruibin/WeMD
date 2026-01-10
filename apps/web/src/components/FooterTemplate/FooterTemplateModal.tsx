@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import './FooterTemplateModal.css';
 
 interface FooterConfig {
@@ -32,21 +33,40 @@ export function FooterTemplateModal({ onClose, onInsert }: FooterTemplateModalPr
         }
     }, []);
 
-    const escapeHtml = (unsafe: string) => {
-        return unsafe
+    const processText = (text: string) => {
+        // 1. Escape HTML first to prevent XSS
+        let processed = text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+        // 2. Process Markdown links [text](url)
+        processed = processed.replace(
+            /\[(.*?)\]\((.*?)\)/g, 
+            '<a href="$2" style="color: inherit; text-decoration: none; border-bottom: 1px dashed currentColor;">$1</a>'
+        );
+
+        // 3. Handle newlines
+        return processed.replace(/\n/g, "<br/>");
+    };
+
+    const generateHtml = () => {
+        const { title, tags, content } = config;
+        
+        // Title doesn't support markdown links, just escape
+        const safeTitle = title
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;")
             .replace(/\n/g, "<br/>");
-    };
 
-    const generateHtml = () => {
-        const { title, tags, content } = config;
-        const safeTitle = escapeHtml(title);
-        const safeTags = escapeHtml(tags);
-        const safeContent = escapeHtml(content);
+        // Tags and Content support markdown links
+        const safeTags = processText(tags);
+        const safeContent = processText(content);
 
         // 样式变量（针对微信公众号优化）
         const primaryColor = "#222";       // 主标题：接近黑色，更清晰
@@ -55,7 +75,6 @@ export function FooterTemplateModal({ onClose, onInsert }: FooterTemplateModalPr
 
         switch (config.templateId) {
             case 'card':
-                // 使用 section 标签 + 前后换行，确保 markdown-it 识别为块级元素
                 return `\n\n<section style="margin: 40px 0 20px; padding: 24px; background: #f9f9f9; border: 1px solid #eee;"><div style="font-weight: bold; font-size: 18px; margin-bottom: 8px; color: ${primaryColor};">${safeTitle}</div><div style="font-size: 14px; color: ${secondaryColor}; margin-bottom: 16px; letter-spacing: 0.5px;">${safeTags}</div><div style="font-size: 15px; color: ${primaryColor}; line-height: 1.8;">${safeContent}</div></section>\n\n`;
 
             case 'simple':
@@ -74,7 +93,7 @@ export function FooterTemplateModal({ onClose, onInsert }: FooterTemplateModalPr
         onClose();
     };
 
-    return (
+    return createPortal(
         <div className="footer-template-modal-overlay" onClick={onClose}>
             <div className="footer-template-modal" onClick={e => e.stopPropagation()}>
                 <div className="footer-template-header">
@@ -138,6 +157,9 @@ export function FooterTemplateModal({ onClose, onInsert }: FooterTemplateModalPr
                                     onChange={e => setConfig({...config, tags: e.target.value})}
                                     placeholder={config.templateId === 'centered' ? "标签1 | 标签2" : "副标题内容"}
                                 />
+                                <div style={{ fontSize: '12px', color: '#999', marginTop: '4px' }}>
+                                    支持 Markdown 链接格式：[链接文字](URL)
+                                </div>
                             </div>
 
                             <div className="form-group">
@@ -148,6 +170,9 @@ export function FooterTemplateModal({ onClose, onInsert }: FooterTemplateModalPr
                                     placeholder="输入正文内容，支持换行"
                                     rows={6}
                                 />
+                                <div style={{ fontSize: '12px', color: '#999', marginTop: '4px' }}>
+                                    支持 Markdown 链接格式：[链接文字](URL)
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -166,6 +191,7 @@ export function FooterTemplateModal({ onClose, onInsert }: FooterTemplateModalPr
                     <button className="btn-confirm" onClick={handleSave}>确认插入</button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }

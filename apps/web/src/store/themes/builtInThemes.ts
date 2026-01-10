@@ -52,14 +52,6 @@ export const builtInThemes: CustomTheme[] = [
     {
         id: 'default',
         name: '默认主题',
-        css: basicTheme + '\n' + customDefaultTheme + '\n' + codeGithubTheme,
-        isBuiltIn: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-    },
-    {
-        id: 'geek-orange',
-        name: '极客橙',
         css: basicTheme + '\n' + geekOrangeTheme + '\n' + codeGithubTheme,
         isBuiltIn: true,
         createdAt: new Date().toISOString(),
@@ -170,7 +162,7 @@ export const defaultThemes: ThemeDefinition[] = [
     {
         id: 'default',
         name: '默认主题',
-        css: basicTheme + '\n' + customDefaultTheme + '\n' + codeGithubTheme,
+        css: basicTheme + '\n' + geekOrangeTheme + '\n' + codeGithubTheme,
     },
 ];
 

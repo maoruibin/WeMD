@@ -27,8 +27,6 @@ interface ElectronAPI {
         renameFile: (payload: { oldPath: string; newName: string }) => Promise<{ success: boolean; filePath?: string; error?: string; filename?: string }>;
         deleteFile: (path: string) => Promise<{ success: boolean; error?: string }>;
         revealInFinder: (path: string) => Promise<void>;
-        getMode: () => Promise<{ success: boolean; mode?: 'flat' | 'folder' }>;
-        migrateToFolder: () => Promise<{ success: boolean; message?: string; error?: string }>;
         onRefresh: (cb: () => void) => (() => void);
         removeRefreshListener: (handler: (() => void)) => void;
         onMenuNewFile: (cb: () => void) => (() => void);
@@ -263,7 +261,6 @@ export function useFileSystem() {
         try {
             if (electron) {
                 if (!workspacePath) return;
-                // Electron: 通过 title 参数传递，后端会根据模式创建文件
                 const res = await electron.fs.createFile({ content: initialContent, title: '未命名文章' });
                 if (res.success && res.filePath) {
                     await refreshFiles();
@@ -279,36 +276,20 @@ export function useFileSystem() {
                     toast.success('已创建新文章');
                 }
             } else if (adapter && storageReady) {
-                // Web: 使用 FileSystemAdapter 的 createArticle 方法
-                if ('createArticle' in adapter && typeof adapter.createArticle === 'function') {
-                    const path = await adapter.createArticle('未命名文章', initialContent);
-                    await refreshFiles();
-                    const newFile = {
-                        name: path.includes('/') ? path.split('/')[0] : path,
-                        path: path,
-                        createdAt: new Date(),
-                        updatedAt: new Date(),
-                        size: initialContent.length,
-                        themeName: '默认主题'
-                    };
-                    await openFile(newFile);
-                    toast.success('已创建新文章');
-                } else {
-                    // 降级：旧版适配器
-                    const filename = `未命名文章-${Date.now()}.md`;
-                    await adapter.writeFile(filename, initialContent);
-                    await refreshFiles();
-                    const newFile = {
-                        name: filename,
-                        path: filename,
-                        createdAt: new Date(),
-                        updatedAt: new Date(),
-                        size: initialContent.length,
-                        themeName: '默认主题'
-                    };
-                    await openFile(newFile);
-                    toast.success('已创建新文章');
-                }
+                // Web: 直接创建 .md 文件
+                const filename = `未命名文章-${Date.now()}.md`;
+                await adapter.writeFile(filename, initialContent);
+                await refreshFiles();
+                const newFile = {
+                    name: filename,
+                    path: filename,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    size: initialContent.length,
+                    themeName: '默认主题'
+                };
+                await openFile(newFile);
+                toast.success('已创建新文章');
             }
         } catch {
             toast.error('创建失败');
@@ -367,13 +348,10 @@ themeName: ${themeName}
         }
     }, [currentFile, electron, adapter, storageReady]);
 
-    // 7. 重命名文件保持不变...
+    // 7. 重命名文件
     const renameFile = useCallback(async (file: FileItem, newName: string) => {
-        // 检查是否为文件夹模式
-        const isFolderMode = file.meta?.isFolder === true || file.path.includes('/');
-
-        // 文件夹模式：不需要 .md 后缀；扁平模式：需要添加 .md 后缀
-        const safeName = isFolderMode ? newName : (newName.endsWith('.md') ? newName : `${newName}.md`);
+        // 添加 .md 后缀（如果没有）
+        const safeName = newName.endsWith('.md') ? newName : `${newName}.md`;
 
         if (electron) {
             const res = await electron.fs.renameFile({ oldPath: file.path, newName: safeName });
@@ -392,19 +370,14 @@ themeName: ${themeName}
             }
         } else if (adapter && storageReady) {
             try {
-                // 文件夹模式下的新路径
-                const newPath = isFolderMode
-                    ? `${safeName}/article.md`
-                    : safeName;
-
-                await adapter.renameFile(file.path, newPath);
+                await adapter.renameFile(file.path, safeName);
                 toast.success('重命名成功');
                 await refreshFiles();
                 if (currentFile && currentFile.path === file.path) {
                     setCurrentFile({
                         ...currentFile,
-                        path: newPath,
-                        name: isFolderMode ? safeName : newPath
+                        path: safeName,
+                        name: safeName
                     });
                 }
             } catch {
@@ -551,36 +524,6 @@ themeName: ${themeName}
     // 移除了此处重复的 Cmd+S 监听器
     // 应由 App.tsx 或其他顶层组件统一处理
 
-    // 9. 获取目录模式
-    const getMode = useCallback(async (): Promise<'flat' | 'folder'> => {
-        if (electron) {
-            const res = await electron.fs.getMode();
-            return res.mode || 'flat';
-        } else if (adapter && storageReady) {
-            if ('getMode' in adapter && typeof adapter.getMode === 'function') {
-                return await adapter.getMode();
-            }
-        }
-        return 'flat';
-    }, [electron, adapter, storageReady]);
-
-    // 10. 迁移到文件夹模式
-    const migrateToFolder = useCallback(async (): Promise<{ success: boolean; message: string }> => {
-        if (electron) {
-            const res = await electron.fs.migrateToFolder();
-            return {
-                success: res.success,
-                message: res.message || res.error || '迁移失败'
-            };
-        } else if (adapter && storageReady) {
-            if ('migrateToFolderMode' in adapter && typeof adapter.migrateToFolderMode === 'function') {
-                return await adapter.migrateToFolderMode();
-            }
-        }
-        return { success: false, message: '迁移功能不可用' };
-    }, [electron, adapter, storageReady]);
-
-
     return {
         workspacePath,
         files,
@@ -592,8 +535,6 @@ themeName: ${themeName}
         createFile,
         saveFile,
         renameFile,
-        deleteFile,
-        getMode,
-        migrateToFolder
+        deleteFile
     };
 }

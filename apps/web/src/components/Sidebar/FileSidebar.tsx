@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { useFileSystem } from '../../hooks/useFileSystem';
 import { useThemeStore } from '../../store/themeStore';
-import { Search, Plus, Trash2, FolderOpen, Edit2, MoreHorizontal, Copy } from 'lucide-react';
+import { Search, Plus, FolderOpen, Edit2, MoreHorizontal, Copy, Trash2 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import './FileSidebar.css';
@@ -11,17 +11,12 @@ import type { FileItem } from '../../store/fileTypes';
 // 每次加载的文件数量
 const PAGE_SIZE = 50;
 
-type DirectoryMode = 'flat' | 'folder';
-
 export function FileSidebar() {
-    const { files, currentFile, openFile, createFile, renameFile, deleteFile, selectWorkspace, workspacePath, getMode, migrateToFolder } = useFileSystem();
+    const { files, currentFile, openFile, createFile, renameFile, deleteFile, selectWorkspace, workspacePath } = useFileSystem();
     const currentThemeName = useThemeStore((state) => state.themeName);
     const [filter, setFilter] = useState('');
     const [renamingPath, setRenamingPath] = useState<string | null>(null);
     const [renameValue, setRenameValue] = useState('');
-    const [directoryMode, setDirectoryMode] = useState<DirectoryMode | null>(null);
-    const [showMigrateConfirm, setShowMigrateConfirm] = useState(false);
-    const [isMigrating, setIsMigrating] = useState(false);
 
     // 无限滚动状态
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
@@ -76,34 +71,6 @@ export function FileSidebar() {
     useEffect(() => {
         setVisibleCount(PAGE_SIZE);
     }, [filter]);
-
-    // 检测目录模式
-    useEffect(() => {
-        const checkMode = async () => {
-            const mode = await getMode();
-            setDirectoryMode(mode);
-        };
-        checkMode();
-    }, [getMode]);
-
-    // 执行迁移
-    const handleMigrate = async () => {
-        setIsMigrating(true);
-        try {
-            const result = await migrateToFolder();
-            if (result.success) {
-                toast.success(result.message);
-                setDirectoryMode('folder');
-            } else {
-                toast.error(result.message);
-            }
-        } catch {
-            toast.error('迁移失败');
-        } finally {
-            setIsMigrating(false);
-            setShowMigrateConfirm(false);
-        }
-    };
 
     const handleContextMenu = (e: React.MouseEvent, file: FileItem) => {
         e.preventDefault();
@@ -224,22 +191,10 @@ export function FileSidebar() {
                             <span>加载更多...</span>
                         </div>
                     )}
-                    {filteredFiles.length === 0 && directoryMode === 'flat' && (
+                    {filteredFiles.length === 0 && (
                         <div className="fs-empty">
                             <p>暂无文件</p>
-                            {files.length === 0 && (
-                                <button
-                                    className="fs-migrate-btn"
-                                    onClick={() => setShowMigrateConfirm(true)}
-                                    style={{ marginTop: '12px', padding: '6px 12px', fontSize: '12px' }}
-                                >
-                                    从旧版迁移？
-                                </button>
-                            )}
                         </div>
-                    )}
-                    {filteredFiles.length === 0 && directoryMode !== 'flat' && (
-                        <div className="fs-empty">暂无文件</div>
                     )}
                 </div>
             </div>
@@ -289,36 +244,6 @@ export function FileSidebar() {
                                     disabled={deleting}
                                 >
                                     {deleting ? '删除中...' : '确认删除'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>,
-                    document.body
-                )}
-            {/* 迁移确认对话框 */}
-            {showMigrateConfirm &&
-                createPortal(
-                    <div className="history-confirm-backdrop" onClick={() => !isMigrating && setShowMigrateConfirm(false)}>
-                        <div className="history-confirm-modal" onClick={(e) => e.stopPropagation()}>
-                            <h4>迁移到文件夹模式</h4>
-                            <p>
-                                这将把现有的 .md 文件转换为文件夹结构（文件夹/article.md）。
-                                <br /><br />
-                                例如：<code>文章A.md</code> → <code>文章A/article.md</code>
-                                <br /><br />
-                                建议先备份原有文件。
-                            </p>
-                            <div className="history-confirm-actions">
-                                <button className="btn-secondary" onClick={() => setShowMigrateConfirm(false)} disabled={isMigrating}>
-                                    取消
-                                </button>
-                                <button
-                                    className="btn-primary"
-                                    onClick={handleMigrate}
-                                    disabled={isMigrating}
-                                    style={{ backgroundColor: '#2563eb', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '4px', cursor: isMigrating ? 'not-allowed' : 'pointer' }}
-                                >
-                                    {isMigrating ? '迁移中...' : '确认迁移'}
                                 </button>
                             </div>
                         </div>

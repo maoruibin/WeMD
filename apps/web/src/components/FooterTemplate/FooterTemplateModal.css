@@ -5,6 +5,14 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
+<<<<<<< HEAD
+=======
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+>>>>>>> 1ac6db79189ffe594a5276b114fbc399aa7daba2
     backdrop-filter: blur(4px);
     z-index: 99999;
     animation: fadeIn 0.2s ease;
@@ -17,9 +25,18 @@
 .footer-template-modal {
     position: relative;
     background: var(--bg-primary);
+<<<<<<< HEAD
     width: 100%;
     max-width: 1000px;
     max-height: 90vh;
+=======
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    width: 90vw;
+    max-width: 1200px;
+    height: 85vh;
+    max-height: none;
+>>>>>>> 1ac6db79189ffe594a5276b114fbc399aa7daba2
     display: flex;
     flex-direction: column;
     border-radius: var(--radius-lg);
