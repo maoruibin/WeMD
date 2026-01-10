@@ -5,6 +5,11 @@ export interface FileItem {
     updatedAt: Date;
     size: number;
     themeName?: string;
+    meta?: {
+        isFolder?: boolean;
+        themeName?: string;
+        [key: string]: unknown;
+    };
 }
 
 export interface FileStoreState {

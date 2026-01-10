@@ -19,7 +19,9 @@ const {
     neoBrutalismTheme,
     receiptTheme,
     sunsetFilmTheme,
-    templateTheme
+    templateTheme,
+    blackWhiteMinimalTheme,
+    vscodeDarkCodeTheme
 } = coreThemes;
 
 /**
@@ -59,6 +61,14 @@ export const builtInThemes: CustomTheme[] = [
         id: 'geek-orange',
         name: '极客橙',
         css: basicTheme + '\n' + geekOrangeTheme + '\n' + codeGithubTheme,
+        isBuiltIn: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+    },
+    {
+        id: 'black-white-minimal',
+        name: '黑白极简',
+        css: blackWhiteMinimalTheme + '\n' + vscodeDarkCodeTheme,
         isBuiltIn: true,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
