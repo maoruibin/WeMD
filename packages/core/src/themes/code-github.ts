@@ -9,6 +9,7 @@ github.com style (c) Vasily Polovnyov <vast@whiteants.net>
   padding: 16px;
   color: #333;
   background: #f8f8f8;
+  white-space: pre;
 }
 
 #wemd .hljs-comment,

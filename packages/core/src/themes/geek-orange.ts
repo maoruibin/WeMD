@@ -160,8 +160,8 @@ export const geekOrangeTheme = `/*
     font-family: Consolas, monospace;
     font-size: 13px;
     border: none;
-    white-space: pre-wrap; /* 自动换行 */
-    word-break: break-all; /* 允许在单词内换行 */
+    white-space: pre; /* 保持空白符，不自动换行 */
+    overflow-x: auto; /* 水平方向可滚动 */
 }
 #wemd p code {
     background: #fff3e0;

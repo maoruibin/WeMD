@@ -20,6 +20,26 @@ export default defineConfig({
       '@wemd/core': '/Users/gudong/code/person/WeiMD/packages/core/src',
     },
   },
+  optimizeDeps: {
+    include: [
+      'highlight.js',
+      'juice',
+      'katex',
+      'markdown-it',
+      'markdown-it-task-lists',
+      'markdown-it-container',
+      'markdown-it-deflist',
+      'markdown-it-emoji',
+      'markdown-it-implicit-figures',
+      'markdown-it-imsize',
+      'markdown-it-katex',
+      'markdown-it-mark',
+      'markdown-it-ruby',
+      'markdown-it-sub',
+      'markdown-it-sup',
+      'markdown-it-table-of-contents',
+    ],
+  },
   build: {
     rollupOptions: {
       output: {

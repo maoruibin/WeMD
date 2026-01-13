@@ -327,7 +327,7 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
   border: 1px solid #bbf7d0;
 }
 
-/* 
+/*
  * 代码块不换行 display: -webkit-box !important;
  * 代码块换行 display: block;
  */
@@ -342,6 +342,7 @@ export const customDefaultTheme = `/* 自定义样式,实时生效,浏览器实�
   line-height: 1.6;
   color: #334155;
   border: 1px solid #e2e8f0;
+  white-space: pre;
 }
 
 /*

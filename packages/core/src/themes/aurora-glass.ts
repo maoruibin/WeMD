@@ -316,8 +316,8 @@ export const auroraGlassTheme = `/* 极光玻璃风格 */
   line-height: 1.6;
   border-radius: 12px;
   font-family: sans-serif;
-  overflow-x: auto;
   white-space: pre;
+  overflow-x: auto;
   min-width: max-content;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeiMD Logo Design - WM字母版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f6f8fb 0%, #eef2f6 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .brand-color {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 8px 16px;
+            background: #07C160;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+        }
+
+        .design-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .design-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .design-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .design-badge {
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #07c160 0%, #05a850 100%);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .logo-showcase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px 0;
+        }
+
+        .logo-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 24px;
+            width: 240px;
+            height: 240px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .logo-size-group {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .logo-size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-size-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .logo-bg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .logo-bg.light {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .logo-bg.dark {
+            background: #0f172a;
+        }
+
+        .logo-bg.green {
+            background: linear-gradient(135deg, #07c160 0%, #05a850 100%);
+        }
+
+        .description {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(7, 193, 96, 0.08);
+            border-radius: 16px;
+            border-left: 4px solid #07C160;
+        }
+
+        .description h4 {
+            color: #0f172a;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .description p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .feature-tag {
+            padding: 6px 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .logo-svg {
+            transition: transform 0.3s ease;
+        }
+
+        .logo-main:hover .logo-svg {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>WeiMD Logo Design</h1>
+        <p>基于 W + M 字母的设计方案</p>
+        <div class="brand-color">Brand Color: #07C160</div>
+    </div>
+
+    <div class="container">
+        <!-- 方案1: 几何连接型 -->
+        <div class="design-card">
+            <div class="design-header">
+                <span class="design-title">方案 1 — 几何连接型</span>
+                <span class="design-badge">Geometric Link</span>
+            </div>
+
+            <div class="logo-showcase">
+                <!-- 主Logo -->
+                <div class="logo-main">
+                    <svg class="logo-svg" width="160" height="120" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- W 字母 - 深色 -->
+                        <path d="M15 35 L32.5 85 L50 60 L67.5 85 L85 35" stroke="#0F172A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                        <!-- 连接线/分隔 -->
+                        <circle cx="85" cy="60" r="5" fill="#07C160"/>
+                        <!-- M 字母 - 绿色 (起点->左下->谷底->右下->终点) -->
+                        <path d="M85 35 L85 85 L105 55 L125 85 L125 35" stroke="#07C160" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                </div>
+
+                <!-- 多尺寸展示 -->
+                <div class="logo-size-group">
+                    <div class="logo-size-item">
+                        <div class="logo-bg light" style="width: 72px; height: 72px;">
+                            <svg width="56" height="42" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 35 L32.5 85 L50 60 L67.5 85 L85 35" stroke="#0F172A" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <circle cx="85" cy="60" r="5" fill="#07C160"/>
+                                <path d="M85 35 L85 85 L102.5 60 L120 85 L145 35" stroke="#07C160" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Light</span>
+                    </div>
+                    <div class="logo-size-item">
+                        <div class="logo-bg dark" style="width: 72px; height: 72px;">
+                            <svg width="56" height="42" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 35 L32.5 85 L50 60 L67.5 85 L85 35" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <circle cx="85" cy="60" r="5" fill="#07C160"/>
+                                <path d="M85 35 L85 85 L102.5 60 L120 85 L145 35" stroke="#07C160" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Dark</span>
+                    </div>
+                    <div class="logo-size-item">
+                        <div class="logo-bg green" style="width: 72px; height: 72px;">
+                            <svg width="56" height="42" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 35 L32.5 85 L50 60 L67.5 85 L85 35" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <circle cx="85" cy="60" r="5" fill="white"/>
+                                <path d="M85 35 L85 85 L102.5 60 L120 85 L145 35" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Green</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description">
+                <h4>设计说明</h4>
+                <p>W 和 M 通过中间的圆点无缝衔接，形成连续的几何线条。W 使用深色表达稳重，M 使用品牌绿色突出微信属性。中间的圆点象征两者连接的核心，也暗示 Markdown 的语法点缀。</p>
+                <div class="features">
+                    <span class="feature-tag">几何线条</span>
+                    <span class="feature-tag">连续衔接</span>
+                    <span class="feature-tag">双色调</span>
+                    <span class="feature-tag">连接点</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 方案2: 实心块面型 -->
+        <div class="design-card">
+            <div class="design-header">
+                <span class="design-title">方案 2 — 实心块面型</span>
+                <span class="design-badge">Solid Block</span>
+            </div>
+
+            <div class="logo-showcase">
+                <!-- 主Logo -->
+                <div class="logo-main">
+                    <svg class="logo-svg" width="160" height="120" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- W 字母 - 实心块面 -->
+                        <path d="M15 30 L37.5 30 L50 70 L62.5 30 L85 30 L85 90 L70 90 L70 52 L58 90 L48 90 L35 52 L35 90 L15 90 Z" fill="#0F172A"/>
+                        <!-- M 字母 - 绿色块面 -->
+                        <path d="M90 30 L90 90 L107.5 90 L120 55 L132.5 90 L145 90 L145 30 L127.5 30 L127.5 65 L120 35 L112.5 35 L105 65 L105 30 Z" fill="#07C160"/>
+                    </svg>
+                </div>
+
+                <!-- 多尺寸展示 -->
+                <div class="logo-size-group">
+                    <div class="logo-size-item">
+                        <div class="logo-bg light" style="width: 72px; height: 72px;">
+                            <svg width="56" height="42" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 30 L37.5 30 L50 70 L62.5 30 L85 30 L85 90 L70 90 L70 52 L58 90 L48 90 L35 52 L35 90 L15 90 Z" fill="#0F172A"/>
+                                <path d="M90 30 L90 90 L107.5 90 L120 55 L132.5 90 L145 90 L145 30 L127.5 30 L127.5 65 L120 35 L112.5 35 L105 65 L105 30 Z" fill="#07C160"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Light</span>
+                    </div>
+                    <div class="logo-size-item">
+                        <div class="logo-bg dark" style="width: 72px; height: 72px;">
+                            <svg width="56" height="42" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 30 L37.5 30 L50 70 L62.5 30 L85 30 L85 90 L70 90 L70 52 L58 90 L48 90 L35 52 L35 90 L15 90 Z" fill="#E2E8F0"/>
+                                <path d="M90 30 L90 90 L107.5 90 L120 55 L132.5 90 L145 90 L145 30 L127.5 30 L127.5 65 L120 35 L112.5 35 L105 65 L105 30 Z" fill="#07C160"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Dark</span>
+                    </div>
+                    <div class="logo-size-item">
+                        <div class="logo-bg green" style="width: 72px; height: 72px;">
+                            <svg width="56" height="42" viewBox="0 0 160 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 30 L37.5 30 L50 70 L62.5 30 L85 30 L85 90 L70 90 L70 52 L58 90 L48 90 L35 52 L35 90 L15 90 Z" fill="white"/>
+                                <path d="M90 30 L90 90 L107.5 90 L120 55 L132.5 90 L145 90 L145 30 L127.5 30 L127.5 65 L120 35 L112.5 35 L105 65 L105 30 Z" fill="white"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Green</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description">
+                <h4>设计说明</h4>
+                <p>采用实心块面设计，W 和 M 分别呈现为几何实体。W 使用深灰色，M 使用品牌绿色，两者并排放置形成强烈对比。整体风格现代、稳重，适合作为 App 图标和品牌标识使用。</p>
+                <div class="features">
+                    <span class="feature-tag">实心块面</span>
+                    <span class="feature-tag">高对比度</span>
+                    <span class="feature-tag">现代风格</span>
+                    <span class="feature-tag">高识别度</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

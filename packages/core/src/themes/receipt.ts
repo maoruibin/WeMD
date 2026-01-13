@@ -296,6 +296,8 @@ export const receiptTheme = `/* 购物小票风格 */
     font-size: 13px;
     padding: 15px;
     line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
 }
 
 /* 如果没有语法高亮，设置默认黑色 */

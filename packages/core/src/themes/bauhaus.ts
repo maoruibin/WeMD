@@ -278,6 +278,8 @@ export const bauhausTheme = `/* 包豪斯风格 */
     border-radius: 0;
     font-family: monospace;
     border: 2px solid #111;
+    white-space: pre;
+    overflow-x: auto;
 }
 
 /* 语法高亮颜色覆盖 - 确保在黑色背景上可读 */
