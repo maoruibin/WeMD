@@ -8,7 +8,7 @@
         "dev:web": "pnpm --filter @wemd/web run dev",
         "dev:electron": "ELECTRON_START_URL=http://localhost:5173 NODE_ENV=development pnpm --filter wemd-electron run dev -- --dev",
         "dev:desktop": "node scripts/run-desktop-dev.mjs",
-        "build:cf": "pnpm --filter @wemd/web build && pnpm --filter @wemd/docs build && mkdir -p apps/web/dist/docs && cp -r apps/docs/src/.vuepress/dist/* apps/web/dist/docs/",
+        "build:cf": "pnpm --filter @wemd/core build && pnpm --filter @wemd/web build && pnpm --filter @wemd/docs build && mkdir -p apps/web/dist/docs && cp -r apps/docs/src/.vuepress/dist/* apps/web/dist/docs/",
         "lint": "turbo run lint",
         "format": "prettier --write \"**/*.{ts,tsx,md}\""
     },
