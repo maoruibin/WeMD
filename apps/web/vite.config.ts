@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'node:path'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -17,7 +18,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@wemd/core': '/Users/gudong/code/person/WeiMD/packages/core/src',
+      '@wemd/core': path.resolve(__dirname, '../../packages/core/src'),
     },
   },
   optimizeDeps: {
