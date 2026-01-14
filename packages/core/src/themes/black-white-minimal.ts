@@ -54,7 +54,7 @@ export const blackWhiteMinimalTheme = `/*
     color: #000000;
 }
 
-/* H2: 显示 ## 前缀 */
+/* H2 */
 #wemd h2 {
     font-size: 28px;
 }
@@ -65,14 +65,12 @@ export const blackWhiteMinimalTheme = `/*
     color: #000000;
 }
 
+/* 隐藏空的 prefix，避免产生额外间隙 */
 #wemd h2 .prefix {
-    display: inline !important;
-    color: #6e7681;
-    font-weight: 400;
-    margin-right: 8px;
+    display: none;
 }
 
-/* H3: 显示 ### 前缀 */
+/* H3 */
 #wemd h3 {
     font-size: 24px;
 }
@@ -83,11 +81,9 @@ export const blackWhiteMinimalTheme = `/*
     color: #000000;
 }
 
+/* 隐藏空的 prefix，避免产生额外间隙 */
 #wemd h3 .prefix {
-    display: inline !important;
-    color: #6e7681;
-    font-weight: 400;
-    margin-right: 8px;
+    display: none;
 }
 
 /* H4-H6 */

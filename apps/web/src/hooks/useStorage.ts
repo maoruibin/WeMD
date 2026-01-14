@@ -13,16 +13,34 @@ export function useStorage() {
   useEffect(() => {
     manager
       .restoreLastAdapter()
-      .then((instance) => {
+      .then(async (instance) => {
         if (instance) {
           setAdapter(instance);
           setType(instance.type);
           setReady(true);
           setMessage(instance.type === 'filesystem' ? '已启用本地文件夹模式' : '已启用浏览器存储模式');
+        } else {
+          // 恢复失败，自动 fallback 到 IndexedDB
+          const result = await manager.setAdapter('indexeddb');
+          if (result.ready) {
+            setAdapter(manager.currentAdapter);
+            setType('indexeddb');
+            setReady(true);
+            setMessage('本地文件夹权限失效，已切换到浏览器存储。如需访问之前的文章，请从"更多"菜单选择存储模式。');
+          }
         }
       })
-      .catch((error) => {
-        setMessage(error.message);
+      .catch(async (error) => {
+        // 发生错误，尝试 fallback 到 IndexedDB
+        const result = await manager.setAdapter('indexeddb');
+        if (result.ready) {
+          setAdapter(manager.currentAdapter);
+          setType('indexeddb');
+          setReady(true);
+          setMessage(`本地文件夹加载失败，已切换到浏览器存储。如需访问之前的文章，请从"更多"菜单选择存储模式。`);
+        } else {
+          setMessage('初始化失败，请刷新页面重试');
+        }
       });
   }, [manager]);
 
