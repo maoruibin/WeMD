@@ -44,7 +44,7 @@ export const exportService = {
         try {
             const cleanedMarkdown = cleanMarkdown(markdown);
             const blob = new Blob([cleanedMarkdown], { type: 'text/markdown;charset=utf-8' });
-            const filename = `${title || 'WeMD_Export'}_${getTimestamp()}.md`;
+            const filename = `${title || 'WeiMD_Export'}_${getTimestamp()}.md`;
             downloadFile(blob, filename);
             toast.success('已导出 Markdown');
         } catch (error) {
@@ -80,7 +80,7 @@ export const exportService = {
 </html>`;
 
             const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-            const filename = `${title || 'WeMD_Export'}_${getTimestamp()}.html`;
+            const filename = `${title || 'WeiMD_Export'}_${getTimestamp()}.html`;
             downloadFile(blob, filename);
             toast.success('已导出 HTML');
         } catch (error) {

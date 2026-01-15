@@ -37,7 +37,7 @@ export const uploadImageToGitHub = async (file: File, config: GithubConfig): Pro
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            message: `Upload ${filename} via WeMD`,
+            message: `Upload ${filename} via WeiMD`,
             content: content,
             branch: config.branch || 'main',
         }),

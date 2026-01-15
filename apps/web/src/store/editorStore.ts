@@ -37,7 +37,7 @@ interface EditorStore {
 /**
  * 默认 Markdown 内容
  */
-export const defaultMarkdown = `# 欢迎使用 WeMD
+export const defaultMarkdown = `# 欢迎使用 WeiMD
 
 这是一个现代化的 Markdown 编辑器，专为**微信公众号**排版设计。
 
@@ -120,7 +120,7 @@ export const defaultMarkdown = `# 欢迎使用 WeMD
 \`\`\`javascript
 // JavaScript 示例
 function hello() {
-  console.log('Hello, WeMD!');
+  console.log('Hello, WeiMD!');
   const a = 1;
   const b = 2;
   return a + b;
@@ -146,7 +146,7 @@ $$
 ---
 
 ## 9. 图片
-![WeMD](https://img.wemd.app/favicon-dark.png)
+![WeiMD](https://img.wemd.app/favicon-dark.png)
 
 **开始编辑吧!** 🚀
 `;

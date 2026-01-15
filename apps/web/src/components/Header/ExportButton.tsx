@@ -11,7 +11,7 @@ export function ExportButton() {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const title = currentFile?.name?.replace(/\.md$/i, '') || 'WeMD_Article';
+    const title = currentFile?.name?.replace(/\.md$/i, '') || 'WeiMD_Article';
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

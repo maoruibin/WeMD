@@ -10,10 +10,10 @@ export function Welcome() {
             <div className="welcome-content">
                 <img
                     src="./favicon-dark.svg"
-                    alt="WeMD Logo"
+                    alt="WeiMD Logo"
                     className="welcome-logo"
                 />
-                <h1>欢迎使用 WeMD</h1>
+                <h1>欢迎使用 WeiMD</h1>
                 <p>请选择一个文件夹作为工作区以开始写作</p>
                 <button className="btn-primary" onClick={selectWorkspace}>
                     <FolderOpen size={20} />

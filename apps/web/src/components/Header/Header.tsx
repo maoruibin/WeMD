@@ -20,7 +20,7 @@ const DefaultLogoMark = () => (
 const structuralismLogoSrc = `${import.meta.env.BASE_URL}favicon-light.svg`;
 
 const StructuralismLogoMark = () => (
-    <img src={structuralismLogoSrc} alt="WeMD Logo" width={40} height={40} style={{ display: 'block' }} />
+    <img src={structuralismLogoSrc} alt="WeiMD Logo" width={40} height={40} style={{ display: 'block' }} />
 );
 
 export function Header() {
