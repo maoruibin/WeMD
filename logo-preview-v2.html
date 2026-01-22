@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeiMD Logo Design - 方案A：极简书签</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #f6f8fb 0%, #eef2f6 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .brand-color {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 8px 16px;
+            background: #07C160;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+        }
+
+        .design-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .design-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .design-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .design-badge {
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #07c160 0%, #05a850 100%);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .logo-showcase {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px 0;
+        }
+
+        .logo-main {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 24px;
+            width: 280px;
+            height: 280px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .logo-size-group {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .logo-size-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-size-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .logo-bg {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .logo-bg.light {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .logo-bg.dark {
+            background: #0f172a;
+        }
+
+        .logo-bg.green {
+            background: linear-gradient(135deg, #07c160 0%, #05a850 100%);
+        }
+
+        .description {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(7, 193, 96, 0.08);
+            border-radius: 16px;
+            border-left: 4px solid #07C160;
+        }
+
+        .description h4 {
+            color: #0f172a;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .description p {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .feature-tag {
+            padding: 6px 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .logo-svg {
+            transition: transform 0.3s ease;
+        }
+
+        .logo-main:hover .logo-svg {
+            transform: scale(1.05);
+        }
+
+        /* 方案对比区 */
+        .variant-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .variant-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .variant-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .variant-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+        }
+
+        .variant-name {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .app-icon-preview {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 20px;
+            margin-top: 30px;
+        }
+
+        .app-icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .app-icon-label {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>WeiMD Logo Design</h1>
+        <p>方案 A — 极简书签 (Minimalist Bookmark)</p>
+        <div class="brand-color">Brand Color: #07C160</div>
+    </div>
+
+    <div class="container">
+        <!-- 主设计 -->
+        <div class="design-card">
+            <div class="design-header">
+                <span class="design-title">主设计</span>
+                <span class="design-badge">Bookmark + WM Fusion</span>
+            </div>
+
+            <div class="logo-showcase">
+                <!-- 主Logo -->
+                <div class="logo-main">
+                    <svg class="logo-svg" width="180" height="180" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 书签形状：圆角矩形 + 右下角 V 形切口 -->
+                        <path d="M40 30 H160 C172 30 180 38 180 50 V150 C180 162 172 170 160 170 H120 L100 155 L80 170 H40 C28 170 20 162 20 150 V50 C20 38 28 30 40 30 Z" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+
+                        <!-- W 字母：左侧深色，带有书签般的优雅曲线 -->
+                        <path d="M50 75 L65 125 L75 100 L85 125 L100 75" stroke="#0F172A" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+                        <!-- M 字母：右侧绿色，与 W 形成呼应 -->
+                        <path d="M100 125 L100 75 L115 105 L130 75 L130 125" stroke="#07C160" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+                        <!-- 绿色底边：微信属性 -->
+                        <rect x="40" y="145" width="120" height="8" rx="4" fill="#07C160"/>
+                    </svg>
+                </div>
+
+                <!-- 多尺寸展示 -->
+                <div class="logo-size-group">
+                    <div class="logo-size-item">
+                        <div class="logo-bg light" style="width: 80px; height: 80px;">
+                            <svg width="64" height="64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M40 30 H160 C172 30 180 38 180 50 V150 C180 162 172 170 160 170 H120 L100 155 L80 170 H40 C28 170 20 162 20 150 V50 C20 38 28 30 40 30 Z" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+                                <path d="M50 75 L65 125 L75 100 L85 125 L100 75" stroke="#0F172A" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <path d="M100 125 L100 75 L115 105 L130 75 L130 125" stroke="#07C160" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <rect x="40" y="145" width="120" height="8" rx="4" fill="#07C160"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Light</span>
+                    </div>
+                    <div class="logo-size-item">
+                        <div class="logo-bg dark" style="width: 80px; height: 80px;">
+                            <svg width="64" height="64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M40 30 H160 C172 30 180 38 180 50 V150 C180 162 172 170 160 170 H120 L100 155 L80 170 H40 C28 170 20 162 20 150 V50 C20 38 28 30 40 30 Z" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                                <path d="M50 75 L65 125 L75 100 L85 125 L100 75" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <path d="M100 125 L100 75 L115 105 L130 75 L130 125" stroke="#07C160" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <rect x="40" y="145" width="120" height="8" rx="4" fill="#07C160"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Dark</span>
+                    </div>
+                    <div class="logo-size-item">
+                        <div class="logo-bg green" style="width: 80px; height: 80px;">
+                            <svg width="64" height="64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M40 30 H160 C172 30 180 38 180 50 V150 C180 162 172 170 160 170 H120 L100 155 L80 170 H40 C28 170 20 162 20 150 V50 C20 38 28 30 40 30 Z" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                                <path d="M50 75 L65 125 L75 100 L85 125 L100 75" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <path d="M100 75 L100 125 L115 105 L130 125 L130 75" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                <rect x="40" y="145" width="120" height="8" rx="4" fill="white"/>
+                            </svg>
+                        </div>
+                        <span class="logo-size-label">Green</span>
+                    </div>
+                </div>
+
+                <!-- App Icon 预览 -->
+                <div class="app-icon-preview">
+                    <div class="app-icon-item">
+                        <svg width="64" height="64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="180" height="180" rx="44" fill="#07C160"/>
+                            <path d="M40 50 L60 110 L75 85 L90 110 L110 50" stroke="white" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <path d="M110 50 L110 110 L125 85 L140 110 L140 50" stroke="white" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <rect x="40" y="140" width="120" height="10" rx="5" fill="white"/>
+                        </svg>
+                        <span class="app-icon-label">iOS Icon</span>
+                    </div>
+                    <div class="app-icon-item">
+                        <svg width="64" height="64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="180" height="180" rx="20" fill="#0F172A"/>
+                            <path d="M40 50 L60 110 L75 85 L90 110 L110 50" stroke="white" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <path d="M110 110 L110 50 L125 85 L140 50 L140 110" stroke="#07C160" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <rect x="40" y="140" width="120" height="10" rx="5" fill="#07C160"/>
+                        </svg>
+                        <span class="app-icon-label">Android Icon</span>
+                    </div>
+                    <div class="app-icon-item">
+                        <svg width="64" height="64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="180" height="180" rx="20" fill="white" stroke="#e2e8f0" stroke-width="4"/>
+                            <path d="M40 50 L60 110 L75 85 L90 110 L110 50" stroke="#0F172A" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <path d="M110 110 L110 50 L125 85 L140 50 L140 110" stroke="#07C160" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <rect x="40" y="140" width="120" height="10" rx="5" fill="#07C160"/>
+                        </svg>
+                        <span class="app-icon-label">Favicon</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description">
+                <h4>设计说明</h4>
+                <p>以**书签**为载体，象征"保存/收藏文章"。W 和 M 融合成统一符号：W (Wei) 用深色，M (Markdown) 用品牌绿色，两者在视觉上形成连贯。绿色底边强调微信属性，右下角 V 形切口增加书签的辨识度。</p>
+                <div class="features">
+                    <span class="feature-tag">书签隐喻</span>
+                    <span class="feature-tag">WM 融合</span>
+                    <span class="feature-tag">极简风格</span>
+                    <span class="feature-tag">双色调</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 变体设计 -->
+        <div class="design-card">
+            <div class="design-header">
+                <span class="design-title">变体设计</span>
+                <span class="design-badge">Alternative Versions</span>
+            </div>
+
+            <div class="logo-showcase">
+                <!-- 变体网格 -->
+                <div class="variant-grid">
+                    <!-- 变体1: 连笔融合 -->
+                    <div class="variant-item">
+                        <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M40 40 H160 C172 40 180 48 180 60 V140 C180 152 172 160 160 160 H120 L100 145 L80 160 H40 C28 160 20 152 20 140 V60 C20 48 28 40 40 40 Z" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+                            <!-- W 和 M 共享中间笔画 -->
+                            <path d="M45 70 L65 130 L100 70 L100 130" stroke="#0F172A" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <path d="M100 130 L100 70 L120 100 L140 70 L155 130" stroke="#07C160" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <rect x="40" y="145" width="120" height="8" rx="4" fill="#07C160"/>
+                        </svg>
+                        <span class="variant-name">连笔融合</span>
+                    </div>
+
+                    <!-- 变体2: 实心块面 -->
+                    <div class="variant-item">
+                        <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M40 40 H160 C172 40 180 48 180 60 V140 C180 152 172 160 160 160 H120 L100 145 L80 160 H40 C28 160 20 152 20 140 V60 C20 48 28 40 40 40 Z" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+                            <!-- 实心 W -->
+                            <path d="M45 65 L65 135 L85 65 L85 135 L65 135 Z" fill="#0F172A"/>
+                            <!-- 实心 M -->
+                            <path d="M100 65 L100 135 L115 100 L130 135 L155 65 L140 65 L115 115 L115 65 Z" fill="#07C160"/>
+                            <rect x="40" y="145" width="120" height="8" rx="4" fill="#07C160"/>
+                        </svg>
+                        <span class="variant-name">实心块面</span>
+                    </div>
+
+                    <!-- 变体3: 极简线条 -->
+                    <div class="variant-item">
+                        <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M40 40 H160 C172 40 180 48 180 60 V140 C180 152 172 160 160 160 H120 L100 145 L80 160 H40 C28 160 20 152 20 140 V60 C20 48 28 40 40 40 Z" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+                            <!-- 极简 W -->
+                            <path d="M50 70 L70 120 L90 70" stroke="#0F172A" stroke-width="12" stroke-linecap="round" fill="none"/>
+                            <!-- 极简 M -->
+                            <path d="M110 120 L110 70 L130 90 L150 70 L150 120" stroke="#07C160" stroke-width="12" stroke-linecap="round" fill="none"/>
+                            <rect x="40" y="145" width="120" height="6" rx="3" fill="#07C160"/>
+                        </svg>
+                        <span class="variant-name">极简线条</span>
+                    </div>
+
+                    <!-- 变体4: 渐变绿色 -->
+                    <div class="variant-item">
+                        <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#07C160"/>
+                                    <stop offset="100%" style="stop-color:#05A850"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M40 40 H160 C172 40 180 48 180 60 V140 C180 152 172 160 160 160 H120 L100 145 L80 160 H40 C28 160 20 152 20 140 V60 C20 48 28 40 40 40 Z" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+                            <path d="M50 75 L65 125 L75 100 L85 125 L100 75" stroke="#0F172A" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <path d="M100 75 L100 125 L115 105 L130 125 L130 75" stroke="url(#greenGrad)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <rect x="40" y="145" width="120" height="8" rx="4" fill="url(#greenGrad)"/>
+                        </svg>
+                        <span class="variant-name">渐变绿色</span>
+                    </div>
+
+                    <!-- 变体5: 深色主题 -->
+                    <div class="variant-item">
+                        <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M40 40 H160 C172 40 180 48 180 60 V140 C180 152 172 160 160 160 H120 L100 145 L80 160 H40 C28 160 20 152 20 140 V60 C20 48 28 40 40 40 Z" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+                            <path d="M50 75 L65 125 L75 100 L85 125 L100 75" stroke="#e2e8f0" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <path d="M100 125 L100 75 L115 105 L130 75 L130 125" stroke="#07C160" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <rect x="40" y="145" width="120" height="8" rx="4" fill="#07C160"/>
+                        </svg>
+                        <span class="variant-name">深色主题</span>
+                    </div>
+
+                    <!-- 变体6: 单色版本 -->
+                    <div class="variant-item">
+                        <svg width="120" height="120" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M40 40 H160 C172 40 180 48 180 60 V140 C180 152 172 160 160 160 H120 L100 145 L80 160 H40 C28 160 20 152 20 140 V60 C20 48 28 40 40 40 Z" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+                            <path d="M50 75 L65 125 L75 100 L85 125 L100 75 L100 125 L115 105 L130 125 L130 75" stroke="#0F172A" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                            <rect x="40" y="145" width="120" height="8" rx="4" fill="#0F172A"/>
+                        </svg>
+                        <span class="variant-name">单色版本</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="description">
+                <h4>变体说明</h4>
+                <p>根据不同使用场景提供多种变体：连笔融合更适合大尺寸展示，实心块面适合 App 图标，极简线条适合小尺寸 favicon，单色版本适合打印和水印使用。</p>
+                <div class="features">
+                    <span class="feature-tag">6 种变体</span>
+                    <span class="feature-tag">多场景适配</span>
+                    <span class="feature-tag">可扩展</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -8,6 +8,7 @@ import { Palette, ImageIcon, Sun, Moon, MoreHorizontal, Database, Menu, HelpCirc
 import { useUITheme } from '../../hooks/useUITheme';
 import { useUIStore } from '../../store/uiStore';
 import { ExportButton } from './ExportButton';
+import { CoverButton } from './CoverButton';
 
 const DefaultLogoMark = () => (
     <svg width="40" height="40" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -171,7 +172,12 @@ export function Header() {
                             </div>
                         )}
 
-                        {isEditorPage && <ExportButton />}
+                        {isEditorPage && (
+                            <>
+                                <CoverButton />
+                                <ExportButton />
+                            </>
+                        )}
                     </div>
                 </header>
             </div>

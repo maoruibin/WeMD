@@ -10,7 +10,8 @@
         "dev:desktop": "node scripts/run-desktop-dev.mjs",
         "build:cf": "pnpm --filter @wemd/core build && pnpm --filter @wemd/web build && pnpm --filter @wemd/docs build && mkdir -p apps/web/dist/docs && cp -r apps/docs/src/.vuepress/dist/* apps/web/dist/docs/",
         "lint": "turbo run lint",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\""
+        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+        "update-icons": "tsx scripts/icon-update/index.ts"
     },
     "devDependencies": {
         "wait-on": "^7.0.1",
