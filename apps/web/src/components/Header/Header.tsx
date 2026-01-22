@@ -4,11 +4,11 @@ import { ThemePanel } from '../Theme/ThemePanel';
 import { StorageModeSelector } from '../StorageModeSelector/StorageModeSelector';
 import { ImageHostSettings } from '../Settings/ImageHostSettings';
 import './Header.css';
-import { Palette, ImageIcon, Sun, Moon, MoreHorizontal, Database, Menu, HelpCircle, X, Info, Users, ArrowLeft, Pilcrow } from 'lucide-react';
+import { Palette, ImageIcon, Sun, Moon, MoreHorizontal, Database, Menu, HelpCircle, X, Info, Users, ArrowLeft, Pilcrow, Image as ImageIcon2 } from 'lucide-react';
 import { useUITheme } from '../../hooks/useUITheme';
 import { useUIStore } from '../../store/uiStore';
 import { ExportButton } from './ExportButton';
-import { CoverButton } from './CoverButton';
+import { useFileStore } from '../../store/fileStore';
 
 const DefaultLogoMark = () => (
     <svg width="40" height="40" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -29,6 +29,15 @@ export function Header() {
     const navigate = useNavigate();
     const isEditorPage = location.pathname === '/';
     const isShowcasePage = location.pathname === '/showcase';
+    const { currentFile } = useFileStore();
+
+    // 打开 Gudong Cover 生成封面图
+    const handleOpenCover = () => {
+        const title = currentFile?.name?.replace(/\.md$/i, '') || 'WeiMD_Article';
+        const params = new URLSearchParams({ title, from: 'weimd' });
+        window.open(`https://cover.gudong.site/?${params.toString()}`, '_blank');
+        setShowMoreMenu(false);
+    };
 
     const [showThemePanel, setShowThemePanel] = useState(false);
     const [showStorageModal, setShowStorageModal] = useState(false);
@@ -156,6 +165,10 @@ export function Header() {
                                                     <Users />
                                                     <span>创作者案例</span>
                                                 </Link>
+                                                <button className="header-menu-item" onClick={handleOpenCover}>
+                                                    <ImageIcon2 />
+                                                    <span>生成封面图</span>
+                                                </button>
                                             </>
                                         )}
                                         <div style={{ height: '1px', background: 'var(--border-color)', margin: '4px 0' }}></div>
@@ -172,12 +185,7 @@ export function Header() {
                             </div>
                         )}
 
-                        {isEditorPage && (
-                            <>
-                                <CoverButton />
-                                <ExportButton />
-                            </>
-                        )}
+                        {isEditorPage && <ExportButton />}
                     </div>
                 </header>
             </div>
